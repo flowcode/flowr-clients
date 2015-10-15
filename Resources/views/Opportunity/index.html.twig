@@ -1,0 +1,67 @@
+{% extends "FlowerCoreBundle::layout.html.twig" %}
+
+{% block title %}{{ '%entity% list'|trans({'%entity%': 'Opportunity'}, 'Opportunity') }} - {{ parent() }}{% endblock %}
+{% macro thead(name, field, label) %}
+    {% spaceless %}
+        {% set sort = app.session.get('sort.' ~ name) %}
+        {% if sort and sort.field == field %}
+            {% if sort.type == 'DESC' %}
+                <a href="{{ path('opportunity_sort', {field: field, type: 'ASC'}) }}">{{ label | trans({},'Opportunity')}} <i class="fa fa-sort-down"></i></a>
+            {% elseif sort.type == 'ASC' %}
+                <a href="{{ path('opportunity_sort', {field: field, type: 'DESC'}) }}">{{ label | trans({},'Opportunity')}} <i class="fa fa-sort-up"></i></a>
+            {% endif %}
+        {% else %}
+            <a href="{{ path('opportunity_sort', {field: field, type: 'ASC'}) }}">{{ label | trans({},'Opportunity')}} <i class="fa fa-sort"></i></a>
+        {% endif %}
+    {% endspaceless %}
+{% endmacro %}
+
+{% from _self import thead %}
+
+
+{% block body %}
+    <section class="content-header">
+        <h1>{{ 'Opportunity' | trans({}, 'Opportunity')}}</h1>
+    </section>
+    <section class="content">
+        <div class="box">
+            <div class="box-header">
+                <div class="box-tools pull-right">
+                    <a class="btn btn-link btn-sm" href={{ path('opportunity_new') }}>
+                        <i class="fa fa-plus"></i> {{ 'Create a new %entity%'|trans({'%entity%': 'Opportunity'}, 'Opportunity') }}
+                    </a>
+                            </div>
+            </div>
+            <div class="box-body">
+            <table class="table table-condensed">
+                <thead>
+                    <tr>
+                        <th scope="col">{{ thead('opportunity', 'name', 'Name') }}</th>
+                        <th scope="col">{{ thead('opportunity', 'price', 'Price') }}</th>
+                        <th scope="col">{{ thead('opportunity', 'status', 'Status') }}</th>
+                        <th>{{ 'account' }}</th>
+                        <th>{{ 'contact' }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for opportunity in paginator %}
+                        <tr>
+                            <td title="{{ opportunity.description }}"><a href="{{ path('opportunity_show', {id: opportunity.id}) }}">{{ opportunity.name }}</a></td>
+                            <td>{{ opportunity.price }}</td>
+                            <td>{{ opportunity.status | trans({}, 'Opportunity') | capitalize }}</td>
+                            <td>{{ opportunity.account }}</td>
+                            <td>{{ opportunity.contact }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            {{ knp_pagination_render(paginator) }}
+            </div>
+        <div class="box-footer">
+
+        </div>
+
+    </section>
+
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends "FlowerCoreBundle::layout.html.twig" %}
+
+{% block title %}{{ '%entity% list'|trans({'%entity%': 'Contact'}, 'Contact') }} - {{ parent() }}{% endblock %}
+{% macro thead(name, field, label) %}
+    {% spaceless %}
+        {% set sort = app.session.get('sort.' ~ name) %}
+        {% if sort and sort.field == field %}
+            {% if sort.type == 'DESC' %}
+                <a href="{{ path('contact_sort', {field: field, type: 'ASC'}) }}">{{ label | trans({},'Contact')}} <i class="fa fa-sort-down"></i></a>
+                {% elseif sort.type == 'ASC' %}
+                <a href="{{ path('contact_sort', {field: field, type: 'DESC'}) }}">{{ label | trans({},'Contact')}} <i class="fa fa-sort-up"></i></a>
+                {% endif %}
+            {% else %}
+            <a href="{{ path('contact_sort', {field: field, type: 'ASC'}) }}">{{ label | trans({},'Contact')}} <i class="fa fa-sort"></i></a>
+            {% endif %}
+        {% endspaceless %}
+    {% endmacro %}
+
+{% from _self import thead %}
+
+
+{% block body %}
+    <section class="content-header">
+        <h1>
+            {{ 'contacts'|trans|capitalize }}
+        </h1>
+
+    </section>
+    <section class="content">
+        <div class="box box-solid">
+            <div class="box-header">
+                <h3 class="box-title"></h3>
+                <div class="box-tools pull-right">
+                    <a class="btn btn-link btn-xs" href={{ path('contact_new') }}>
+                        <i class="fa fa-plus"></i> {{ 'Create a new %entity%'|trans({'%entity%': 'Contact'}, 'Contact') }}
+                    </a>
+                </div>
+            </div>
+            <div class="box-body">
+                <table class="table table-condensed">
+                    <thead>
+                        <tr>
+                            <th scope="col">{{ thead('contact', 'firstname', 'Firstname') }}</th>
+                            <th scope="col">{{ thead('contact', 'lastname', 'Lastname') }}</th>
+                            <th scope="col">{{ thead('contact', 'email', 'Email') }}</th>
+                            <th scope="col">{{ thead('contact', 'address', 'Address') }}</th>
+                            <th scope="col">{{ thead('contact', 'phone', 'Phone') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for contact in paginator %}
+                            <tr>
+                                <td><a href="{{ path('contact_show', {id: contact.id}) }}">{{ contact.firstname }}</a></td>
+                                <td><a href="{{ path('contact_show', {id: contact.id}) }}">{{ contact.lastname }}</a></td>
+                                <td>{{ contact.email }}</td>
+                                <td>{{ contact.address }}</td>
+                                <td>{{ contact.phone }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                {{ knp_pagination_render(paginator) }}
+            </div>
+            <div class="box-footer">
+
+            </div>
+
+    </section>
+
+{% endblock %}

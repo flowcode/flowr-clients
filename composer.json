@@ -1,0 +1,35 @@
+{
+    "name" : "flower/clientsbundle",
+    "description" : "user bundle",
+    "type" : "symfony-bundle",
+    "authors" : [{
+        "name" : "Francisco Memoli",
+        "email" : "fmemoli@flowcode.com.ar"
+    },
+    {
+        "name" : "Juan Manuel Agüero",
+        "email" : "jaguero@flowcode.com.ar"
+    }],
+    "keywords" : [
+        "user bundle"
+    ],
+    "license" : [
+        "MIT"
+    ],
+    "require" : {
+        "flower/userbundle": "dev-master"
+    },
+    "autoload" : {
+        "psr-0" : {
+            "Flower\\ClientsBundle" : ""
+        }
+    },
+    "target-dir" : "Flower/ClientsBundle",
+    "repositories" : [{
+    }],
+    "extra" : {
+    "branch-alias" : {
+            "dev-master" : "1.0.0-dev"
+        }
+    }
+}
