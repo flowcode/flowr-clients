@@ -297,10 +297,10 @@ abstract class Contact
     /**
      * Set assignee
      *
-     * @param \Flower\ModelBundle\Entity\Clients\User $assignee
+     * @param \Flower\ModelBundle\Entity\User\User $assignee
      * @return Contact
      */
-    public function setAssignee(\Flower\ModelBundle\Entity\Clients\User $assignee = null)
+    public function setAssignee(\Flower\ModelBundle\Entity\User\User $assignee = null)
     {
         $this->assignee = $assignee;
 
@@ -310,7 +310,7 @@ abstract class Contact
     /**
      * Get assignee
      *
-     * @return \Flower\ModelBundle\Entity\Clients\User
+     * @return \Flower\ModelBundle\Entity\User\User
      */
     public function getAssignee()
     {

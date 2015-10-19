@@ -7,9 +7,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Flower\ModelBundle\Entity\Opportunity;
+use Flower\ModelBundle\Entity\Clients\Opportunity;
 use Doctrine\ORM\QueryBuilder;
 use Flower\ClientsBundle\Form\Type\OpportunityType;
+use Flower\ModelBundle\Entity\Board\Board;
 
 /**
  * Opportunity controller.
@@ -28,7 +29,7 @@ class OpportunityController extends Controller
     public function indexAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $qb = $em->getRepository('FlowerModelBundle:Clients/Opportunity')->createQueryBuilder('o');
+        $qb = $em->getRepository('FlowerModelBundle:Clients\Opportunity')->createQueryBuilder('o');
         $this->addQueryBuilderSort($qb, 'opportunity');
         $paginator = $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), 20);
 
@@ -49,7 +50,7 @@ class OpportunityController extends Controller
         $deleteForm = $this->createDeleteForm($opportunity->getId(), 'opportunity_delete');
 
         $em = $this->getDoctrine()->getManager();
-        $opportunityBoards = $em->getRepository("FlowerModelBundle:Board")->getCurrentBoards(null,null,$opportunity->getId());
+        $opportunityBoards = $opportunity->getBoards();
 
         return array(
             'opportunity' => $opportunity,
@@ -232,22 +233,47 @@ class OpportunityController extends Controller
         /**
      * Displays a form to create a new Board entity.
      *
-     * @Route("/opportunity/{id}/new", name="board_new_to_opportunity")
+     * @Route("/board/{id}/new", name="board_new_to_opportunity")
      * @Method("GET")
      * @Template("FlowerBoardBundle:Board:new.html.twig")
      */
     public function newToOpportunityAction(Opportunity $opportunity)
     {
         $board = new Board();
-        $board->setOpportunity($opportunity);
         $form = $this->createForm($this->get("form.type.board"), $board, array(
-            'action' => $this->generateUrl('board_create'),
+            'action' => $this->generateUrl('oporunity_board_create',array("id"=>$opportunity->getId())),
             'method' => 'POST',
         ));
 
         return array(
             'board' => $board,
             'form' => $form->createView(),
+        );
+    }
+
+    /**
+     * Creates a new Board entity.
+     *
+     * @Route("/{id}/create", name="oporunity_board_create")
+     * @Method("POST")
+     * @Template("FlowerBoardBundle:Board:new.html.twig")
+     */
+    public function createBoardAction(Opportunity $opportunity, Request $request)
+    {
+        $board = new Board();
+        $form = $this->createForm($this->get('form.type.board'), $board);
+        if ($form->handleRequest($request)->isValid()) {
+            $opportunity->addBoard($board);
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($board);
+            $em->flush();
+
+            return $this->redirect($this->generateUrl('board_show', array('id' => $board->getId())));
+        }
+
+        return array(
+            'board' => $board,
+            'form'   => $form->createView(),
         );
     }
 }
