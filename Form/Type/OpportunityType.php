@@ -5,7 +5,7 @@ namespace Flower\ClientsBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Flower\ModelBundle\Entity\Opportunity;
+use Flower\ModelBundle\Entity\Clients\Opportunity;
 
 class OpportunityType extends AbstractType
 {
