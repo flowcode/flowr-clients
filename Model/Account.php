@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\ManyToOne;
+use Doctrine\ORM\Mapping\JoinTable;
 use Doctrine\ORM\Mapping\OneToMany;
 use Gedmo\Mapping\Annotation as Gedmo;
 use JMS\Serializer\Annotation\Groups;
@@ -18,7 +19,7 @@ use Flower\ModelBundle\Entity\User\User;
  * Account
  *
  */
-class Account
+abstract  class Account
 {
 
     /**
@@ -29,7 +30,7 @@ class Account
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({"search", "public_api"})
      */
-    private $id;
+    protected $id;
 
     /**
      * @var string
@@ -37,14 +38,14 @@ class Account
      * @ORM\Column(name="name", type="string", length=255)
      * @Groups({"search", "public_api"})
      */
-    private $name;
+    protected $name;
     /**
      * @var string
      *
      * @ORM\Column(name="phone", type="string", length=255, nullable=true)
      * @Groups({"search", "public_api"})
      */
-    private $phone;
+    protected $phone;
 
     /**
      * @var string
@@ -52,7 +53,7 @@ class Account
      * @ORM\Column(name="address", type="string", length=255, nullable=true)
      * @Groups({"search", "public_api"})
      */
-    private $address;
+    protected $address;
 
     /**
      * @var string
@@ -60,30 +61,34 @@ class Account
      * @ORM\Column(name="cuit", type="string", length=255, nullable=true)
      * @Groups({"search", "public_api"})
      */
-    private $cuit;
+    protected $cuit;
 
     /**
      * @ManyToMany(targetEntity="\Flower\ModelBundle\Entity\Clients\Contact", mappedBy="accounts")
      */
-    private $contacts;
+    protected $contacts;
 
     /**
      * @ManyToOne(targetEntity="\Flower\ModelBundle\Entity\User\User")
      * @JoinColumn(name="user_id", referencedColumnName="id")
      * */
-    private $assignee;
+    protected $assignee;
 
     /**
-     * @OneToMany(targetEntity="Board", mappedBy="account")
-     * */
-    private $boards;
+     * @ManyToMany(targetEntity="\Flower\ModelBundle\Entity\Board\Board")
+     * @JoinTable(name="accounts_boards",
+     *      joinColumns={@JoinColumn(name="account_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@JoinColumn(name="board_id", referencedColumnName="id", unique=true)}
+     *      )
+     **/
+    protected $boards;
 
     /**
      * @var DateTime
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(name="created", type="datetime")
      */
-    private $created;
+    protected $created;
 
     /**
      * @var DateTime
@@ -91,20 +96,12 @@ class Account
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(name="updated", type="datetime")
      */
-    private $updated;
+    protected $updated;
     /**
      * @OneToMany(targetEntity="\Flower\ModelBundle\Entity\Clients\Note", mappedBy="account")
      * */
-    private $notes;
+    protected $notes;
 
-    /**
-     * @ManyToMany(targetEntity="\Flower\ModelBundle\Entity\Board")
-     * @JoinTable(name="accounts_boards",
-     *      joinColumns={@JoinColumn(name="account_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@JoinColumn(name="board_id", referencedColumnName="id", unique=true)}
-     *      )
-     **/
-    private $boards;
 
     public function __construct()
     {
@@ -360,10 +357,10 @@ class Account
     /**
      * Add boards
      *
-     * @param \Flower\ModelBundle\Entity\Board $boards
+     * @param \Flower\ModelBundle\Entity\Board\Board $boards
      * @return Account
      */
-    public function addBoard(\Flower\ModelBundle\Entity\Board $boards)
+    public function addBoard(\Flower\ModelBundle\Entity\Board\Board $boards)
     {
         $this->boards[] = $boards;
 
@@ -373,9 +370,9 @@ class Account
     /**
      * Remove boards
      *
-     * @param \Flower\ModelBundle\Entity\Board $boards
+     * @param \Flower\ModelBundle\Entity\Board\Board $boards
      */
-    public function removeBoard(\Flower\ModelBundle\Entity\Board $boards)
+    public function removeBoard(\Flower\ModelBundle\Entity\Board\Board $boards)
     {
         $this->boards->removeElement($boards);
     }

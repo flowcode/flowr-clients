@@ -229,4 +229,25 @@ class OpportunityController extends Controller
             ->getForm()
         ;
     }
+        /**
+     * Displays a form to create a new Board entity.
+     *
+     * @Route("/opportunity/{id}/new", name="board_new_to_opportunity")
+     * @Method("GET")
+     * @Template("FlowerBoardBundle:Board:new.html.twig")
+     */
+    public function newToOpportunityAction(Opportunity $opportunity)
+    {
+        $board = new Board();
+        $board->setOpportunity($opportunity);
+        $form = $this->createForm($this->get("form.type.board"), $board, array(
+            'action' => $this->generateUrl('board_create'),
+            'method' => 'POST',
+        ));
+
+        return array(
+            'board' => $board,
+            'form' => $form->createView(),
+        );
+    }
 }

@@ -29,7 +29,7 @@ class AccountType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Flower\ModelBundle\Entity\Account',
+            'data_class' => 'Flower\ModelBundle\Entity\Clients\Account',
             'translation_domain' => 'Account',
         ));
     }

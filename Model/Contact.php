@@ -1,6 +1,6 @@
 <?php
 
-namespace Flower\ClientBundle\Model;
+namespace Flower\ClientsBundle\Model;
 
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -16,7 +16,7 @@ use Flower\ModelBundle\Entity\User\User;
 /**
  * Contact
  */
-class Contact
+abstract class Contact
 {
 
     /**
@@ -27,7 +27,7 @@ class Contact
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({"search"})
      */
-    private $id;
+    protected $id;
 
     /**
      * @var string
@@ -35,7 +35,7 @@ class Contact
      * @ORM\Column(name="firstname", type="string", length=255, nullable=true)
      * @Groups({"search"})
      */
-    private $firstname;
+    protected $firstname;
 
     /**
      * @var string
@@ -43,7 +43,7 @@ class Contact
      * @ORM\Column(name="lastname", type="string", length=255, nullable=true)
      * @Groups({"search"})
      */
-    private $lastname;
+    protected $lastname;
 
     /**
      * @var string
@@ -51,7 +51,7 @@ class Contact
      * @ORM\Column(name="email", type="string", length=255)
      * @Groups({"search"})
      */
-    private $email;
+    protected $email;
 
     /**
      * @var string
@@ -59,14 +59,14 @@ class Contact
      * @ORM\Column(name="address", type="string", length=255, nullable=true)
      * @Groups({"search"})
      */
-    private $address;
+    protected $address;
 
     /**
      * @var boolean
      *
      * @ORM\Column(name="allow_campaign_mail", type="boolean")
      */
-    private $allowCampaignMail;
+    protected $allowCampaignMail;
 
     /**
      * @var string
@@ -74,32 +74,32 @@ class Contact
      * @ORM\Column(name="phone", type="string", length=255, nullable=true)
      * @Groups({"search"})
      */
-    private $phone;
+    protected $phone;
 
     /**
      * @ManyToMany(targetEntity="\Flower\ModelBundle\Entity\Clients\Account", inversedBy="contacts")
      * @JoinTable(name="account_contact")
      * */
-    private $accounts;
+    protected $accounts;
 
     /**
      * @ManyToOne(targetEntity="\Flower\ModelBundle\Entity\User\User")
      * @JoinColumn(name="user_id", referencedColumnName="id")
      * */
-    private $assignee;
+    protected $assignee;
     /**
      * @var DateTime
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(name="created", type="datetime")
      */
-    private $created;
+    protected $created;
 
     /**
      * @var DateTime
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(name="updated", type="datetime")
      */
-    private $updated;
+    protected $updated;
 
     public function __construct()
     {

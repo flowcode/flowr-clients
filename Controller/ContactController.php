@@ -30,11 +30,7 @@ class ContactController extends Controller
     public function indexAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $userAccount = $this->getUser()->getUserAccount();
-        
-        $qb = $em->getRepository('FlowerModelBundle:Clients/Contact')->createQueryBuilder('c');
-        $qb->where("c.userAccount = :user_account")->setParameter("user_account", $userAccount);
-        
+        $qb = $em->getRepository('FlowerModelBundle:Clients\Contact')->createQueryBuilder('c');        
         $this->addQueryBuilderSort($qb, 'contact');
         $paginator = $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), 20);
 
@@ -109,11 +105,7 @@ class ContactController extends Controller
         $contact = new Contact();
         $form = $this->createForm($this->get('form.type.contact'), $contact);
         if ($form->handleRequest($request)->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            
-            $userAccount = $this->getUser()->getUserAccount();
-            $contact->setUserAccount($userAccount);
-            
+            $em = $this->getDoctrine()->getManager();            
             $em->persist($contact);
             $em->flush();
 

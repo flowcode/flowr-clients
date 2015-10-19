@@ -5,8 +5,9 @@ namespace Flower\ClientsBundle\Controller;
 use Doctrine\ORM\QueryBuilder;
 use Flower\ClientsBundle\Form\Type\AccountType;
 use Flower\ModelBundle\Entity\Clients\Account;
-use Flower\ModelBundle\Entity\TaskStatus;
-use Flower\ModelBundle\Entity\TaskType;
+use Flower\ModelBundle\Entity\Board\TaskStatus;
+use Flower\ModelBundle\Entity\Board\Board;
+use Flower\ModelBundle\Entity\Board\TaskType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -31,11 +32,8 @@ class AccountController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
-        $userAccount = $this->getUser()->getUserAccount();
-        
-        $qb = $em->getRepository('FlowerModelBundle:Clients/Account')->createQueryBuilder('a');
-        $qb->where("a.userAccount = :user_account")->setParameter("user_account", $userAccount);
+        $em = $this->getDoctrine()->getManager();        
+        $qb = $em->getRepository('FlowerModelBundle:Clients\Account')->createQueryBuilder('a');
         $this->addQueryBuilderSort($qb, 'account');
         $paginator = $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), 20);
 
@@ -57,15 +55,15 @@ class AccountController extends Controller
 
         $em = $this->getDoctrine()->getManager();
 
-        $todoStatus = $em->getRepository("FlowerModelBundle:TaskStatus")->findOneBy(array("name" => TaskStatus::STATUS_TODO));
+        $todoStatus = $em->getRepository("FlowerModelBundle:Board\TaskStatus")->findOneBy(array("name" => TaskStatus::STATUS_TODO));
        // $nextBugs = $em->getRepository("FlowerModelBundle:Task")->findByStatusAndType(TaskType::TYPE_BUG, $todoStatus->getId(), $account->getId(), null, null, 10);
 
         //$todoTasks = $em->getRepository("FlowerModelBundle:Task")->findByStatusAndType(TaskType::TYPE_TASK, $todoStatus->getId(), $account->getId(), null, null, 10);
-        $accountBoards = $em->getRepository("FlowerModelBundle:Board")->getCurrentBoards($account->getId());
+        $accountBoards = $account->getBoards();
 
-        $currentProjects = $em->getRepository("FlowerModelBundle:Project")->findBy(array("account" => $account));
+        $currentProjects = $em->getRepository("FlowerModelBundle:Project\Project")->findBy(array("account" => $account));
 
-        $qb = $em->getRepository('FlowerModelBundle:Contact')->getByAccountQuery($account->getId());
+        $qb = $em->getRepository('FlowerModelBundle:Clients\Contact')->getByAccountQuery($account->getId());
         $paginator = $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), 20);
 
         return array(
@@ -110,10 +108,6 @@ class AccountController extends Controller
         $form = $this->createForm(new AccountType(), $account);
         if ($form->handleRequest($request)->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            
-            $userAccount = $this->getUser()->getUserAccount();
-            $account->setUserAccount($userAccount);
-            
             $em->persist($account);
             $em->flush();
 
@@ -254,4 +248,52 @@ class AccountController extends Controller
         ;
     }
 
+    /**
+     * Displays a form to create a new Board entity.
+     *
+     * @Route("/account/{id}/new", name="board_new_to_account")
+     * @Method("GET")
+     * @Template("FlowerBoardBundle:Board:new.html.twig")
+     */
+    public function newBoardAction(Account $account)
+    {
+        $board = new Board();
+        $form = $this->createForm($this->get('form.type.board'), $board);
+                $form = $this->createForm($this->get("form.type.board"), $board, array(
+                    'action' => $this->generateUrl('account_board_create',array("id" => $account->getId())),
+                    'method' => 'POST',
+                ));
+
+        return array(
+            'board' => $board,
+            'form' => $form->createView(),
+        );
+    }
+
+
+    /**
+     * Creates a new Board entity.
+     *
+     * @Route("/{id}/create", name="account_board_create")
+     * @Method("POST")
+     * @Template("FlowerBoardBundle:Board:new.html.twig")
+     */
+    public function createBoardAction(Account $account, Request $request)
+    {
+        $board = new Board();
+        $form = $this->createForm($this->get('form.type.board'), $board);
+        if ($form->handleRequest($request)->isValid()) {
+            $account->addBoard($board);
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($board);
+            $em->flush();
+
+            return $this->redirect($this->generateUrl('board_show', array('id' => $board->getId())));
+        }
+
+        return array(
+            'board' => $board,
+            'form'   => $form->createView(),
+        );
+    }
 }

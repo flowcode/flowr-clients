@@ -38,7 +38,7 @@ class OpportunityType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Flower\ModelBundle\Entity\Opportunity',
+            'data_class' => 'Flower\ModelBundle\Entity\Clients\Opportunity',
             'translation_domain' => 'Opportunity',
         ));
     }

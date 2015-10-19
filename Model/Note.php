@@ -12,7 +12,7 @@ use JMS\Serializer\Annotation\Groups;
  * Note
  *
  */
-class Note
+abstract  class Note
 {
     /**
      * @var integer
@@ -22,7 +22,7 @@ class Note
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({"search"})
      */
-    private $id;
+    protected $id;
 
     /**
      * @var string
@@ -30,7 +30,7 @@ class Note
      * @ORM\Column(name="title", type="string", length=255)
      * @Groups({"search"})
      */
-    private $title;
+    protected $title;
 
     /**
      * @var string
@@ -38,27 +38,27 @@ class Note
      * @ORM\Column(name="body", type="text")
      * @Groups({"search"})
      */
-    private $body;
+    protected $body;
     /**
      * @ManyToOne(targetEntity="\Flower\ModelBundle\Entity\Clients\Account", inversedBy="notes")
      * @JoinColumn(name="user_note_id", referencedColumnName="id")
      * @Groups({"search"})
      * */
-    private $account;
+    protected $account;
 
     /**
      * @var DateTime
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(name="created", type="datetime")
      */
-    private $created;
+    protected $created;
 
     /**
      * @var DateTime
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(name="updated", type="datetime")
      */
-    private $updated;
+    protected $updated;
     /**
      * Get id
      *

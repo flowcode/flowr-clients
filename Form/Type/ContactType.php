@@ -23,7 +23,6 @@ class ContactType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $userAccount = $this->securityContext->getToken()->getUser()->getUserAccount();
 
         $builder
                 ->add('firstname', null, array('required' => false))
@@ -32,12 +31,8 @@ class ContactType extends AbstractType
                 ->add('address', null, array('required' => false))
                 ->add('phone', null, array('required' => false))
                 ->add('accounts', 'entity', array(
-                    'class' => 'FlowerModelBundle:Account',
+                    'class' => 'FlowerModelBundle:Clients\Account',
                     'multiple'    => true,
-                    'query_builder' => function (EntityRepository $er) use ($userAccount) {
-                        return $er->createQueryBuilder('ac')
-                                ->where('ac.userAccount = :user_account')->setParameter("user_account", $userAccount);
-                    },
                 ))
         ;
     }
@@ -48,7 +43,7 @@ class ContactType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Flower\ModelBundle\Entity\Contact',
+            'data_class' => 'Flower\ModelBundle\Entity\Clients\Contact',
             'translation_domain' => 'Contact',
         ));
     }

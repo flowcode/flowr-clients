@@ -5,8 +5,10 @@ namespace Flower\ClientsBundle\Model;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\JoinTable;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToMany;
+use Doctrine\ORM\Mapping\ManyToMany;
 use JMS\Serializer\Annotation\Groups;
 use Doctrine\Common\Collections\ArrayCollection;
 use Flower\ModelBundle\Entity\User\User;
@@ -15,7 +17,7 @@ use Flower\ModelBundle\Entity\User\User;
  * Opportunity
  *
  */
-class Opportunity
+abstract  class Opportunity
 {
     const status_pending = 'status_pending';
     const status_won = 'status_won';
@@ -28,65 +30,65 @@ class Opportunity
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
      */
-    private $name;
+    protected $name;
 
     /**
      * @var string
      *
      * @ORM\Column(name="description", type="text")
      */
-    private $description;
+    protected $description;
 
     /**
      * @var string
      *
      * @ORM\Column(name="price", type="string", length=255)
      */
-    private $price;
+    protected $price;
 
     /**
      * @var string
      *
      * @ORM\Column(name="status", type="string", length=255)
      */
-    private $status;
+    protected $status;
 
     /**
      * @ManyToOne(targetEntity="\Flower\ModelBundle\Entity\User\User")
      * @JoinColumn(name="user_id", referencedColumnName="id")
      * @Groups({"public_api","search"})
      * */
-    private $assignee;
+    protected $assignee;
 
     /**
      * @ManyToOne(targetEntity="\Flower\ModelBundle\Entity\Clients\Contact")
      * @JoinColumn(name="contact_id", referencedColumnName="id")
      * @Groups({"public_api","search"})
      * */
-    private $contact;
+    protected $contact;
 
     /**
      * @ManyToOne(targetEntity="\Flower\ModelBundle\Entity\Clients\Account")
      * @JoinColumn(name="account_id", referencedColumnName="id")
      * @Groups({"public_api"})
      * */
-    private $account;
+    protected $account;
 
     /**
-     * @ManyToMany(targetEntity="\Flower\ModelBundle\Entity\Board")
+     * @ManyToMany(targetEntity="\Flower\ModelBundle\Entity\Board\Board")
      * @JoinTable(name="oportinities_boards",
      *      joinColumns={@JoinColumn(name="oportunity_id", referencedColumnName="id")},
      *      inverseJoinColumns={@JoinColumn(name="board_id", referencedColumnName="id", unique=true)}
      *      )
      **/
-    private $boards;
+    protected $boards;
 
     /**
      * @var DateTime
@@ -94,7 +96,7 @@ class Opportunity
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(name="created", type="datetime")
      */
-    private $created;
+    protected $created;
 
     /**
      * @var DateTime
@@ -102,7 +104,7 @@ class Opportunity
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(name="updated", type="datetime")
      */
-    private $updated;
+    protected $updated;
 
     function __construct()
     {
@@ -335,10 +337,10 @@ class Opportunity
     /**
      * Add boards
      *
-     * @param \Flower\ModelBundle\Entity\Board $boards
+     * @param \Flower\ModelBundle\Entity\Board\Board $boards
      * @return Account
      */
-    public function addBoard(\Flower\ModelBundle\Entity\Board $boards)
+    public function addBoard(\Flower\ModelBundle\Entity\Board\Board $boards)
     {
         $this->boards[] = $boards;
 
@@ -348,9 +350,9 @@ class Opportunity
     /**
      * Remove boards
      *
-     * @param \Flower\ModelBundle\Entity\Board $boards
+     * @param \Flower\ModelBundle\Entity\Board\Board $boards
      */
-    public function removeBoard(\Flower\ModelBundle\Entity\Board $boards)
+    public function removeBoard(\Flower\ModelBundle\Entity\Board\Board $boards)
     {
         $this->boards->removeElement($boards);
     }
