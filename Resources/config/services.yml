@@ -1,0 +1,4 @@
+services:
+#    flower_core.example:
+#        class: Flower\CoreBundle\Example
+#        arguments: [@service_id, "plain_value", %parameter%]
