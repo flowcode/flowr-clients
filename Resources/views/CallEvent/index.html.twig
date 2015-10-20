@@ -1,0 +1,105 @@
+{% extends "FlowerCoreBundle::layout.html.twig" %}
+
+{% block title %}{{ '%entity% list'|trans({'%entity%': 'CallEvent'}, 'CallEvent') }} - {{ parent() }}{% endblock %}
+{% macro thead(name, field, label) %}
+    {% spaceless %}
+        {% set sort = app.session.get('sort.' ~ name) %}
+        {% if sort and sort.field == field %}
+            {% if sort.type == 'DESC' %}
+                <a href="{{ path('callevent_sort', {field: field, type: 'ASC'}) }}">{{ label | trans({},'CallEvent')}} <i class="fa fa-sort-down"></i></a>
+                {% elseif sort.type == 'ASC' %}
+                <a href="{{ path('callevent_sort', {field: field, type: 'DESC'}) }}">{{ label | trans({},'CallEvent')}} <i class="fa fa-sort-up"></i></a>
+                {% endif %}
+            {% else %}
+            <a href="{{ path('callevent_sort', {field: field, type: 'ASC'}) }}">{{ label | trans({},'CallEvent')}} <i class="fa fa-sort"></i></a>
+            {% endif %}
+        {% endspaceless %}
+    {% endmacro %}
+
+{% from _self import thead %}
+
+
+{% block body %}
+    <section class="content-header">
+        <h1>
+            {{ 'calls'|trans|capitalize }}
+        </h1>
+    </section>
+    <section class="content">    
+        <div class="box">
+            <div class="box-header">
+                <h3 class="box-title"></h3>
+                <div class="box-tools pull-right">
+                    <a class="btn btn-link btn-sm" href={{ path('callevent_new') }}>
+                        <i class="fa fa-plus"></i> {{ 'Create a new %entity%'|trans({'%entity%': 'CallEvent'}, 'CallEvent') }}
+                    </a>
+                </div>
+            </div>
+            <div class="box-body">    
+                <table class="table table-condensed">
+                    <thead>
+                        <tr>
+                            <th scope="col"><input type="checkbox"  onclick="selectAll(this)" class="" ></th>
+                            <th scope="col">{{ thead('callevent', 'subject', 'subject') }}</th>
+                            <th scope="col">{{ thead('callevent', 's.name', 'status') }}</th>
+                            <th scope="col">{{ thead('callevent', 'a.name', 'account') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for callevent in paginator %}
+                            <tr class="bulk">
+                                <td><input type="checkbox" value="{{callevent.id}}" name="callevent[]" class="bulk-check" ></td>
+                                <td><a href="{{ path('callevent_show', {id: callevent.id}) }}">{{ callevent.subject }}</a></td>
+                                <td>{{ callevent.status }}</td>
+                                <td>{{ callevent.account }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                {{ knp_pagination_render(paginator) }}
+            </div>
+            <div class="box-footer">
+
+            </div>
+
+    </section>        
+
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        function selectAll(parent){
+            $(".bulk input.bulk-check").attr("checked",parent.checked);
+        }
+        function toogleSelect (element, me) {
+            var multiple = $(element).attr("multiple");
+            if(multiple === undefined){
+                $(element).attr("multiple",true);
+                $(me).addClass("ion-ios-minus-outline")
+                $(me).removeClass("ion-plus-circled")
+            }else{
+                $(element).removeAttr("multiple");
+                $(me).removeClass("ion-ios-minus-outline")
+                $(me).addClass("ion-plus-circled")
+            }
+        }
+        $(".bulk-action").click(function () {
+            var action = $(this).attr("action");
+            var calleventIds = [];
+            $(".bulk input.bulk-check:checked").each(function () {
+                calleventIds.push($(this).val());
+            });
+
+            $.ajax({
+                "url": action,
+                "type": "GET",
+                "data": {"callevent": calleventIds},
+                "success": function () {
+                    location.reload();
+                }
+            });
+
+        });
+    </script>
+{% endblock%}

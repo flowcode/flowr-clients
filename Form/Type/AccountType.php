@@ -18,6 +18,7 @@ class AccountType extends AbstractType
                 ->add('name')
                 ->add('phone', null, array('required' => false))
                 ->add('address', null, array('required' => false))
+                ->add('activity')
                 ->add('cuit', null, array('required' => false,"label" => "CUIT/CUIL/DNI"))
                 ->add('assignee')
         ;

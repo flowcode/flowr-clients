@@ -19,7 +19,7 @@ use Flower\ModelBundle\Entity\User\User;
  * Account
  *
  */
-abstract  class Account
+abstract class Account
 {
 
     /**
@@ -75,6 +75,12 @@ abstract  class Account
     protected $assignee;
 
     /**
+     * @ManyToOne(targetEntity="\Flower\ModelBundle\Entity\Clients\Activity")
+     * @JoinColumn(name="activity_id", referencedColumnName="id")
+     * */
+    protected $activity;
+    
+    /**
      * @ManyToMany(targetEntity="\Flower\ModelBundle\Entity\Board\Board")
      * @JoinTable(name="accounts_boards",
      *      joinColumns={@JoinColumn(name="account_id", referencedColumnName="id")},
@@ -102,6 +108,11 @@ abstract  class Account
      * */
     protected $notes;
 
+    
+    /**
+     * @ORM\OneToMany(targetEntity="\Flower\ModelBundle\Entity\Clients\CallEvent", mappedBy="account")
+     */
+    protected $calls;
 
     public function __construct()
     {
@@ -387,4 +398,59 @@ abstract  class Account
         return $this->boards;
     }
 
+    /**
+     * Set activity
+     *
+     * @param \Flower\ModelBundle\Entity\Clients\Activity $activity
+     * @return Account
+     */
+    public function setActivity(\Flower\ModelBundle\Entity\Clients\Activity $activity = null)
+    {
+        $this->activity = $activity;
+
+        return $this;
+    }
+
+    /**
+     * Get activity
+     *
+     * @return \Flower\ModelBundle\Entity\Clients\Activity 
+     */
+    public function getActivity()
+    {
+        return $this->activity;
+    }
+
+    /**
+     * Add calls
+     *
+     * @param \Flower\ModelBundle\Entity\Clients\CallEvent $calls
+     * @return Account
+     */
+    public function addCall(\Flower\ModelBundle\Entity\Clients\CallEvent $calls)
+    {
+        $this->calls[] = $calls;
+
+        return $this;
+    }
+
+    /**
+     * Remove calls
+     *
+     * @param \Flower\ModelBundle\Entity\Clients\CallEvent $calls
+     */
+    public function removeCall(\Flower\ModelBundle\Entity\Clients\CallEvent $calls)
+    {
+        $this->calls->removeElement($calls);
+    }
+
+    /**
+     * Get calls
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getCalls()
+    {
+        return $this->calls;
+    }
 }
