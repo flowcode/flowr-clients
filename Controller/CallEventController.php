@@ -5,12 +5,15 @@ namespace Flower\ClientsBundle\Controller;
 use Doctrine\ORM\QueryBuilder;
 use Flower\ClientsBundle\Form\Type\CallEventType;
 use Flower\ModelBundle\Entity\Clients\CallEvent;
+use Flower\ModelBundle\Entity\Clients\CallEventStatus;
+use Flower\ModelBundle\Entity\User\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
 /**
  * CallEvent controller.
  *
@@ -20,6 +23,40 @@ class CallEventController extends Controller
 {
     const formName = "form.type.callevent";
 
+    private function addFilter($qb, $filter, $field){
+        if($filter && count($filter) > 0){    
+            if( implode(",", $filter) != ""){
+                $filterAux = array();
+                $nullFilter = "";
+                foreach ($filter as $element) {
+                    if($element == "-1"){
+                        $nullFilter = " OR  (".$field." is NULL)";
+                    }else{
+                        $filterAux[] = $element;
+                    }
+                }
+                if(count($filterAux) > 0){
+                    $qb->andWhere(" ( ".$field." in (:".str_replace(".","_",$field)."_param) ".$nullFilter." )")->setParameter(str_replace(".","_",$field)."_param", $filterAux);
+                }else{
+                    $qb->andWhere(" ( 1 = 2 ".$nullFilter." )");
+                }
+            }
+        }
+    }
+    private function addDateFilter($qb, $startDate,$endDate, $field){
+        if($startDate && $endDate){
+            //die($field. " between $startDate AND $endDate ");
+            $qb->andWhere($field. " between :startDate AND :endDate ") ->setParameter("startDate", $startDate)
+                                                                ->setParameter("endDate", $endDate);
+        }else{
+            if($startDate){
+                $qb->andWhere($field. " >= :startDate ") ->setParameter("startDate", $startDate);
+            }
+            if($endDate){
+                $qb->andWhere($field. " >= :endDate ") ->setParameter("endDate", $endDate);
+            }
+        }
+    }
     /**
      * Lists all Account entities.
      *
@@ -33,14 +70,79 @@ class CallEventController extends Controller
         $qb = $em->getRepository('FlowerModelBundle:Clients\CallEvent')->createQueryBuilder('ce');
         $qb->leftJoin("ce.status","s");
         $qb->leftJoin("ce.account","a");
+        $qb->leftJoin("ce.assignee","u");
+        $statusFilter = $request->query->get('statusFilter');
+        $this->addFilter($qb,$statusFilter,"ce.status");
+
+        $assigneeFilter = $request->query->get('assigneeFilter');
+        $this->addFilter($qb,$assigneeFilter,"ce.assignee");
+        $accountFilter = $request->query->get('accountFilter');
+        $this->addFilter($qb,$accountFilter,"ce.account");
+
+        $startDateFilter = $request->query->get('startDateFilter');
+        $endDateFilter = $request->query->get('endDateFilter');
+        $starDate = \DateTime::createFromFormat('d/m/Y H:i', $startDateFilter);
+        $endDate = \DateTime::createFromFormat('d/m/Y H:i', $endDateFilter);
+        $this->addDateFilter($qb,$starDate,$endDate,"ce.date");
+
         $this->addQueryBuilderSort($qb, 'callevent');
         $paginator = $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), 20);
+        $statuses = $em->getRepository('FlowerModelBundle:Clients\CallEventStatus')->findAll();
+        $users = $em->getRepository('FlowerModelBundle:User\User')->findAll();
+        $accounts = $em->getRepository('FlowerModelBundle:Clients\Account')->findAll();
 
+            
         return array(
+            'startDateFilter' => $startDateFilter,
+            'endDateFilter' => $endDateFilter,
+            'assigneeFilter' => $assigneeFilter,
+            'statusFilter' => $statusFilter,
+            'users' => $users,
+            'accountFilter' => $accountFilter,
+            'accounts' => $accounts,
+            'statuses' => $statuses,
             'paginator' => $paginator,
         );
     }
 
+    /**
+     *
+     * @Route("/{id}/bulk_user", name="callevent_bulk_user", requirements={"id"="\d+"})
+     * @Method("GET")
+     */
+    public function bulkSetAssigneeAction(User $user, Request $request)
+    {
+        $callevents = $request->query->get("callevents");
+        if(!$callevents){
+            return new JsonResponse(null, 403);
+        }
+        $em = $this->getDoctrine()->getManager();
+        foreach ($callevents as $calleventsId) {
+            $task = $em->getRepository('FlowerModelBundle:Clients\CallEvent')->find($calleventsId);
+            $task->setAssignee($user);
+        }
+        $em->flush();
+        return new JsonResponse(null, 200);
+    }
+    /**
+     *
+     * @Route("/{id}/bulk_status", name="callevent_bulk_status", requirements={"id"="\d+"})
+     * @Method("GET")
+     */
+    public function bulkSetStatusAction(CallEventStatus $status, Request $request)
+    {
+        $callevents = $request->query->get("callevents");
+        if(!$callevents){
+            return new JsonResponse(null, 403);
+        }
+        $em = $this->getDoctrine()->getManager();
+        foreach ($callevents as $calleventId) {
+            $task = $em->getRepository('FlowerModelBundle:Clients\CallEvent')->find($calleventId);
+            $task->setStatus($status);
+        }
+        $em->flush();
+        return new JsonResponse(null, 200);
+    }
     /**
      * Finds and displays a CallEvent entity.
      *
@@ -51,7 +153,13 @@ class CallEventController extends Controller
     public function showAction(CallEvent $callevent, Request $request)
     {
         $deleteForm = $this->createDeleteForm($callevent->getId(), 'callevent_delete');
+
+        $editForm = $this->createForm($this->get(CallEventController::formName), $callevent, array(
+            'action' => $this->generateUrl('callevent_update', array('id' => $callevent->getid())),
+            'method' => 'PUT',
+        ));
         return array(
+            'edit_form' => $editForm->createView(),
             'callevent' => $callevent,
             'delete_form' => $deleteForm->createView(),
         );

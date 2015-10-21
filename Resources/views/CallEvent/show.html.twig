@@ -16,17 +16,18 @@
     </section>
     <section class="content">
         <div class="row">
-            <div class="col-sm-12">
-                <div class="box">
+            <div class="col-md-6">
+                <div class="box" id="showCallEvent">
                     <div class="box-header">
+                        <h4>{{ callevent.subject |capitalize}}</h4>
                         <div class="box-tools">
                             {{ form_start(delete_form) }}
                             {{ form_widget(delete_form) }}
 
                             <div class="btn-group record_actions">
 
-                                <a class="btn btn-link  btn-sm" href="{{ path('callevent_edit', {id: callevent.id}) }}">
-                                    {{ 'Edit'|trans({}, 'CallEvent') }}
+                                <a class="btn btn-link  btn-sm" onclick="showEdit(true)">
+                                    {{ 'Edit'|trans({}, 'Account') }}
                                 </a>
                                 <button class="btn btn-link btn-sm" type="submit">{{ 'Delete'|trans({}, 'CallEvent') }}</button>
 
@@ -62,22 +63,10 @@
                                     <th scope="row">{{'contactName'|trans({}, 'CallEvent')}}</th>
                                     <td>{{ callevent.contactName }}</td>
                                 </tr>
-
-                                <tr>
-                                    <th scope="row">{{'frequency'|trans({}, 'CallEvent')}}</th>
-                                    <td>{{ callevent.frequency }}</td>
-                                </tr>
-
                                 <tr>
                                     <th scope="row">{{'status'|trans({}, 'CallEvent')}}</th>
                                     <td>{{ callevent.status }}</td>
                                 </tr>
-
-                                <tr>
-                                    <th scope="row">{{'subject'|trans({}, 'CallEvent')}}</th>
-                                    <td>{{ callevent.subject }}</td>
-                                </tr>
-
                                 <tr>
                                     <th scope="row">{{'description'|trans({}, 'CallEvent')}}</th>
                                     <td>{{ callevent.description }}</td>
@@ -87,10 +76,7 @@
                                     <th scope="row">{{'date'|trans({}, 'CallEvent')}}</th>
                                     <td>{{ callevent.date | date ('y-m-d H:i')}}</td>
                                 </tr>
-                                <tr>
-                                    <th scope="row">{{'assignee'|trans({}, 'CallEvent')}}</th>
-                                    <td>{{ callevent.assignee }}</td>
-                                </tr>
+                                
                             </tbody>
                         </table>
                     </div>
@@ -98,10 +84,110 @@
 
                     </div>
                 </div>
+                <div class="box" id="editFormCallEvent" style="display: none;">
+                    <div class="box-header">
+                        <div class="box-tools">
+                            <div class="btn-group record_actions">
+                                <a class="btn btn-link  btn-sm" onclick="showEdit(false)">
+                                {{ 'Cancel'|trans({}, 'Account') }}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-body">
+                        {{ form_start(edit_form) }}
+                            {{ form_widget(edit_form) }}
+                        {{ form_end(edit_form) }}
+                    </div>
+                </div>
             </div>
+            {% if callevent.account %}
+                <div class="col-md-6">
+                    <div class="box">
+                        <div class="box-header">
+                                <h4>{{ callevent.account.name |capitalize}}</h4>
+                        </div>
+                        <div class="box-body">
+                            <table class="table table-hover record_properties">
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">{{'phone'|trans({}, 'Account')}}</th>
+                                        <td>{{ callevent.account.phone }}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <th scope="row">{{'address'|trans({}, 'Account')}}</th>
+                                        <td>{{ callevent.account.address }}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <th scope="row">{{'cuit'|trans({}, 'Account')}}</th>
+                                        <td>{{ callevent.account.cuit }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="box-footer">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">{{ 'contacts'|trans|capitalize }}</h3>
+                            <div class="box-tools">
+                                <a class="btn btn-link" href="{{ path('contact_new_to_account', { id: callevent.account.id }) }}">
+                                    <i class="fa fa-plus"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table class="table table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th>{{ 'name'|trans }}</th>
+                                        <th>{{ 'email'|trans }}</th>
+                                        <th>{{ 'phone'|trans }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for contact in callevent.account.contacts %}
+                                        <tr>
+                                            <td>
+                                                <a href="{{ path('contact_show', {id: contact.id}) }}">{{ contact.happyname }} </a>
+                                            </td>
+                                            <td>
+                                                {{ contact.email }}
+                                            </td>
+                                            <td>{{ contact.phone }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+        {% endif %}
         </div>
 
 
     </section>
 
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        function showEdit(show){
+            if(show){
+                $("#showCallEvent").hide();
+                $("#editFormCallEvent").show();
+            }else{
+                $("#showCallEvent").show();
+                $("#editFormCallEvent").hide();
+            }
+        }
+        
+    </script>
+    {{ form_javascript(edit_form) }}
 {% endblock %}
