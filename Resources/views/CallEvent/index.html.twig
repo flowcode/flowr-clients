@@ -68,7 +68,8 @@
                     </div>
                 </div>
                 {% set open = "" %}
-                {% if statusFilter |length > 0 and assigneeFilter |length > 0 %}
+                {% if endDateFilter != "" or startDateFilter != "" or accountFilter |length > 0 or statusFilter |length > 0 or assigneeFilter |length > 0 %}
+
                     {% set open = "in" %}
                 {% endif %}
                 <div id="filter" class="collapse {{open}} row filters-content">

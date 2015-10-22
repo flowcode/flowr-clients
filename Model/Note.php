@@ -50,6 +50,7 @@ abstract  class Note
      * @var DateTime
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(name="created", type="datetime")
+     * @Groups({"search"})
      */
     protected $created;
 

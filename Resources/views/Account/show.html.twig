@@ -115,6 +115,33 @@
             <div class="col-sm-4">
                 <div class="box">
                     <div class="box-header">
+                        <h3 class="box-title">{{ 'calls'|trans|capitalize }}</h3>
+                        <div class="box-tools">
+
+                            <a class="btn btn-link" href="{{ path('callevent') }}?accountFilter%5B%5D={{account.id}}">
+                                <i class="fa fa-plus"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="box-body">
+                        <ul class="products-list product-list-in-box">
+                            {% for call in accauntcalls %}
+                                <li class="item cursor-pointer" ng-repeat="item in notes.notes">
+                                    <a class="product-title">
+                                            {{call.subject}} <small class="text-muted pull-right"><i class="fa fa-calendar"></i> {{call.date| date("m/d")}}</small>
+                                    </a>
+                                    <span class="product-description">
+                                        {{call.status}}
+                                    </span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="box-footer">
+                    </div>
+                </div>
+                <div class="box">
+                    <div class="box-header">
                         <h3 class="box-title">{{ 'boards'|trans|capitalize }}</h3>
                         <div class="box-tools">
                             <a class="btn btn-link" href="{{ path('board_new_to_account', { id: account.id }) }}">

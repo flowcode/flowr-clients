@@ -91,7 +91,10 @@ class AccountController extends Controller
         $qb = $em->getRepository('FlowerModelBundle:Clients\Contact')->getByAccountQuery($account->getId());
         $paginator = $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), 20);
 
+        $accauntcalls = $em->getRepository('FlowerModelBundle:Clients\CallEvent')->findBy(array("account" => $account),array("date" => "DESC"),10);
+
         return array(
+            'accauntcalls' => $accauntcalls,
             'account' => $account,
            // 'nextBugs' => $nextBugs,
             //'todoTasks' => $todoTasks,
