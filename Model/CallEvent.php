@@ -29,7 +29,7 @@ abstract class CallEvent
     /**
      * @var string
      *
-     * @ORM\Column(name="contactName", type="string", length=255)
+     * @ORM\Column(name="contactName", type="string", length=255, nullable=true)
      */
     protected $contactName;
 
