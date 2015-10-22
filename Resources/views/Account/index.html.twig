@@ -35,6 +35,59 @@
                     </a>
                 </div>
             </div>
+            <div class="panel-heading">
+                <div class="btn-group">
+                    <div class="panel-heading">               
+                        <button type="button" class="btn btn-default btn-sm filter collapsed" data-toggle="collapse" data-target="#filter">Filter <i class="fa fa-filter"></i> </button>
+                    </div>
+                </div>
+                {% set open = "" %}
+                {% if activityFilter |length > 0 %}
+                    {% set open = "in" %}
+                {% endif %}
+                <div id="filter" class="collapse {{open}} row filters-content">
+                    <form method="get" action="" class=" form-horizontal">
+                        <div  class="col-sm-6" >
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label " for="activityFilter">{{'Activity' | trans}}</label>
+                                <div class="col-sm-8">
+                                    {% set multiple = "" %}
+                                    {% set icon = "ion-plus-circled" %}
+                                    {% if activityFilter |length > 1 %}
+                                        {% set  multiple = "multiple='true'" %}
+                                        {% set icon = "ion-ios-minus-outline" %}
+                                    {% endif %}
+                                    <select id="activityFilter" name="activityFilter[]" {{multiple}} class="form-control">
+                                        <option value=""></option>
+                                        {% set  selected = "" %}
+                                        {% if "-1" in activityFilter %}
+                                            {% set  selected = "selected" %}
+                                        {% endif %}
+                                        <option value="-1" {{selected}}> {{'Not Assignee' | trans}}</option>
+                                        {% for activity in activities %}
+                                            {% set  selected = "" %}
+                                            {% if activity.id in activityFilter %}
+                                                {% set  selected = "selected" %}
+                                            {% endif %}
+                                            <option value="{{activity.id}}" {{selected}}>{{activity.name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                
+                                <div class="col-sm-1">
+                                    <span class="cursor-pointer text-left  ionicons {{icon}}" style="margin-top: 8px;" onclick="toogleSelect(activityFilter,this)"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class=" col-sm-9">
+                                    <a class="btn btn-default btn-sm" href="{{ path('account') }}"><i class="fa fa-times"></i> {{'clean' | trans | capitalize}}</a>
+                                    <button class="btn btn-primary btn-sm" type="submit">{{'apply' | trans | capitalize}}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
             <div class="box-body">    
                 <table class="table table-condensed">
                     <thead>
@@ -42,6 +95,7 @@
                             <th scope="col">{{ thead('account', 'name', 'Name') }}</th>
                             <th scope="col">{{ thead('account', 'phone', 'Phone') }}</th>
                             <th scope="col">{{ thead('account', 'address', 'Address') }}</th>
+                            <th scope="col">{{ thead('account', 'ac.name', 'Activity') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -50,6 +104,7 @@
                                 <td><a href="{{ path('account_show', {id: account.id}) }}">{{ account.name }}</a></td>
                                 <td>{{ account.phone }}</td>
                                 <td>{{ account.address }}</td>
+                                <td>{{ account.activity | capitalize}}</td>
                             </tr>
                         {% endfor %}
                     </tbody>
@@ -64,3 +119,24 @@
     </section>        
 
 {% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+
+        function selectAll(parent){
+            $(".bulk input.bulk-check").attr("checked",parent.checked);
+        }
+        function toogleSelect (element, me) {
+            var multiple = $(element).attr("multiple");
+            if(multiple === undefined){
+                $(element).attr("multiple",true);
+                $(me).addClass("ion-ios-minus-outline")
+                $(me).removeClass("ion-plus-circled")
+            }else{
+                $(element).removeAttr("multiple");
+                $(me).removeClass("ion-ios-minus-outline")
+                $(me).addClass("ion-plus-circled")
+            }
+        }
+    </script>
+{% endblock%}

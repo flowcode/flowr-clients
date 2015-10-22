@@ -34,14 +34,39 @@ class AccountController extends Controller
     {
         $em = $this->getDoctrine()->getManager();        
         $qb = $em->getRepository('FlowerModelBundle:Clients\Account')->createQueryBuilder('a');
+        $qb->leftJoin("a.activity","ac");
         $this->addQueryBuilderSort($qb, 'account');
+        $activityFilter = $request->query->get('activityFilter');
+        $this->addFilter($qb,$activityFilter,"ac.id");
         $paginator = $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), 20);
-
+        $activities = $em->getRepository('FlowerModelBundle:Clients\Activity')->findAll();
         return array(
             'paginator' => $paginator,
+            'activityFilter' => $activityFilter,
+            'activities' => $activities,
         );
     }
 
+    private function addFilter($qb, $filter, $field){
+        if($filter && count($filter) > 0){    
+            if( implode(",", $filter) != ""){
+                $filterAux = array();
+                $nullFilter = "";
+                foreach ($filter as $element) {
+                    if($element == "-1"){
+                        $nullFilter = " OR  (".$field." is NULL)";
+                    }else{
+                        $filterAux[] = $element;
+                    }
+                }
+                if(count($filterAux) > 0){
+                    $qb->andWhere(" ( ".$field." in (:".str_replace(".","_",$field)."_param) ".$nullFilter." )")->setParameter(str_replace(".","_",$field)."_param", $filterAux);
+                }else{
+                    $qb->andWhere(" ( 1 = 2 ".$nullFilter." )");
+                }
+            }
+        }
+    }
     /**
      * Finds and displays a Account entity.
      *
@@ -210,7 +235,11 @@ class AccountController extends Controller
     {
         $alias = current($qb->getDQLPart('from'))->getAlias();
         if (is_array($order = $this->getOrder($name))) {
-            $qb->orderBy($alias . '.' . $order['field'], $order['type']);
+            if (strpos($order['field'], '.') !== FALSE){
+                $qb->orderBy($order['field'], $order['type']);
+            }else{
+                $qb->orderBy($alias . '.' . $order['field'], $order['type']);
+            }            
         }
     }
 

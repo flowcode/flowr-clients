@@ -29,6 +29,10 @@ abstract class Activity
      */
     protected $name;
 
+    public function __toString()
+    {
+        return $this->name;
+    }
     /**
      * Get id
      *
