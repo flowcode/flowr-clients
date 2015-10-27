@@ -64,7 +64,7 @@
                 </div>
                 <div class="btn-group">
                     <div class="panel-heading">               
-                        <button type="button" class="btn btn-default btn-sm filter collapsed" data-toggle="collapse" data-target="#filter">Filter <i class="fa fa-filter"></i> </button>
+                        <button type="button" class="btn btn-default btn-sm filter collapsed" data-toggle="collapse" data-target="#filter">{{'Filter' | trans }} <i class="fa fa-filter"></i> </button>
                     </div>
                 </div>
                 {% set open = "" %}
@@ -146,7 +146,7 @@
                         </div>
                         <div  class="col-sm-6" >
                             <div class="form-group">
-                                <label class="col-sm-2 control-label" for="statusFilter">Status</label>
+                                <label class="col-sm-2 control-label" for="statusFilter">{{'Status' | trans ({},'Board')}}</label>
                                 <div class="col-sm-8" class="input-group">
                                     {% set multiple = "" %}
                                     {% set icon = "ion-plus-circled" %}
