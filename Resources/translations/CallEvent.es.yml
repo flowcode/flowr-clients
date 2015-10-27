@@ -1,2 +1,18 @@
-%entity%: call
-Create a new %entity%: Create a new Call
+'%entity% creation': 'Creación de Llamado'
+'%entity% edit': 'Edición de Llamado '
+'%entity% list': 'Lista de Llamado'
+'Confirm delete': 'Confirmar borrado'
+'Create a new %entity%': 'Crear nuevo llamado'
+Delete: Borrar
+'Do you want to proceed?': '¿Desea continuar de todos modos?'
+'New CallEvent': 'Nuevo llamado'
+'No': 'No'
+Save: Guardar
+'Save and add': 'Guardar y crear otro'
+'Yes': Si
+'You are about to delete an item': 'Usted esta por borrar un elemento'
+contactName: 'atendió (nombre)'
+date: fecha
+description: Descripción
+status: estado
+'this procedure is irreversible': 'esta accion será irreversible'

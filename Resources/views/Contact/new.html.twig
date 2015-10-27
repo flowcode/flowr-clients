@@ -5,9 +5,9 @@
 {% block body %}
     <section class="content-header">
         <h1>
-            <a href="{{ path('contact') }}"> {{ 'Contacts'|trans|capitalize }}</a>
+            <a href="{{ path('contact') }}"> {{ 'contacts'|trans({}, 'Contact') | capitalize}}</a>
             /
-            {{ 'New Contacts' | trans({}, 'Contacts')}}
+            {{ 'New Contact' | trans({}, 'Contact')}}
         </h1>
     </section>        
     <section class="content">

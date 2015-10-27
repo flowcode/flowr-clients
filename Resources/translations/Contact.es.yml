@@ -1,0 +1,23 @@
+'%entity% creation': 'Creación de Contacto'
+'%entity% edit': 'Edición de Contacto'
+'%entity% list': 'Lista Contactos'
+Address: Dirección
+'Confirm delete': 'Confirmar borrado'
+Create: Crear
+'Create a new %entity%': 'Crear nuevo Contacto'
+Created: Creado
+Delete: Borrar
+'Do you want to proceed?': '¿Desea continuar de todos modos?'
+Edit: Editar
+Email: Email
+Firstname: Nombre
+Id: Id
+Lastname: Apellido
+'New Contact': 'Nuevo contacto'
+'No': 'No'
+Phone: Teléfono
+Updated: Actualizado
+'Yes': Si
+'You are about to delete an item': 'Usted esta por borrar un elemento'
+contacts: contactos
+'this procedure is irreversible': 'esta accion será irreversible'

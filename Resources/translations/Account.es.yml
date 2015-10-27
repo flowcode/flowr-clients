@@ -1,0 +1,23 @@
+'%entity% creation': 'Creación de Cuenta'
+'%entity% edit': 'Edición de Cuenta'
+'%entity% list': 'Lista de Cuenta'
+Activity: Actividad
+Address: Dirección
+CUIT/CUIL/DNI: CUIT/CUIL/DNI
+Cancel: Cancelar
+'Confirm delete': 'Confirmar borrado'
+Create: Crear
+'Create a new %entity%': 'Crear nueva Cuenta'
+Delete: Borrar
+'Do you want to proceed?': '¿Desea continuar de todos modos?'
+Edit: Editar
+'New Account': 'Nueva Cuenta'
+'No': 'No'
+Phone: Teléfono
+Save: Guardar
+'Yes': Si
+'You are about to delete an item': 'Usted esta por borrar un elemento'
+address: Dirección
+cuit: cuit
+phone: teléfono
+'this procedure is irreversible': 'esta accion será irreversible'
