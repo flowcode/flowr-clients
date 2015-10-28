@@ -33,6 +33,9 @@
                     <a class="btn btn-link btn-sm" href={{ path('account_new') }}>
                         <i class="fa fa-plus"></i> {{ 'Create a new %entity%'|trans({'%entity%': 'Account'}, 'Account') }}
                     </a>
+                    <a class="btn btn-link btn-sm" href={{ path('account') }} id="export">
+                        <i class="fa fa-download"></i> {{ '%entity%'|trans({'%entity%': 'Export'}, 'Account') }}
+                    </a>
                 </div>
             </div>
             <div class="panel-heading">

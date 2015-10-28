@@ -6,9 +6,12 @@ services:
         class: Flower\ClientsBundle\Form\Type\ContactType
         arguments: ["@security.context"]
         tags:
-            - { name: form.type, alias: contact_type } 
+            - { name: form.type, alias: contact_type }
     form.type.callevent:
         class: Flower\ClientsBundle\Form\Type\CallEventType
         arguments: ["@security.context"]
         tags:
-            - { name: form.type, alias: contact_type } 
+            - { name: form.type, alias: contact_type }
+    client.service.excelexport:
+        class: Flower\ClientsBundle\Service\ExcelExportService
+        arguments: ['@service_container']

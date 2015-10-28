@@ -47,7 +47,8 @@ class AccountController extends Controller
         );
     }
 
-    private function addFilter($qb, $filter, $field){
+    private function addFilter($qb, $filter, $field)
+    {
         if($filter && count($filter) > 0){    
             if( implode(",", $filter) != ""){
                 $filterAux = array();
@@ -67,6 +68,25 @@ class AccountController extends Controller
             }
         }
     }
+
+    /**
+     * Exports displayed Account entities.
+     *
+     * @Route("/export", name="account_export")
+     * @Method("GET")
+     * @Template()
+     */
+    public function exportDataAction(Request $request)
+    {
+        $accounts = $request->query->get('activities');
+            print_r($accounts[0]);
+            echo " || ";
+            die("asd");
+        foreach ($accounts as $account) {
+        }
+        $this->get('client.service.excelexport')->exportAll();
+    }
+
     /**
      * Finds and displays a Account entity.
      *
