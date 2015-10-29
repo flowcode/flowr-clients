@@ -38,7 +38,7 @@
             <div class="panel-heading">
                 <div class="btn-group">
                     <div class="panel-heading">               
-                        <button type="button" class="btn btn-default btn-sm filter collapsed" data-toggle="collapse" data-target="#filter">Filter <i class="fa fa-filter"></i> </button>
+                        <button type="button" class="btn btn-default btn-sm filter collapsed" data-toggle="collapse" data-target="#filter">{{'Filter'|trans}} <i class="fa fa-filter"></i> </button>
                     </div>
                 </div>
                 {% set open = "" %}
@@ -80,7 +80,7 @@
                             </div>
                             <div class="form-group">
                                 <div class=" col-sm-9">
-                                    <a class="btn btn-default btn-sm" href="{{ path('account') }}"><i class="fa fa-times"></i> {{'clean' | trans | capitalize}}</a>
+                                    <a class="btn btn-default btn-sm" href="{{ path('account') }}?reset"><i class="fa fa-times"></i> {{'clean' | trans | capitalize}}</a>
                                     <button class="btn btn-primary btn-sm" type="submit">{{'apply' | trans | capitalize}}</button>
                                 </div>
                             </div>

@@ -4,6 +4,7 @@
 
 {% block body %}
     <section class="content-header">
+        {% include 'FlowerCoreBundle:Default:admin_nav.html.twig' %}
         <h1><a href="{{ path('admin_dash') }}"> {{ 'Settings'|trans}}</a>
             /
             <a href="{{ path('calleventstatus') }}"> {{ '%entity% List'|trans({'%entity%': 'CallEventStatus'}, 'CallEventStatus') }}</a>
