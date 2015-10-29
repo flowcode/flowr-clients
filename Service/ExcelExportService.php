@@ -5,6 +5,7 @@ namespace Flower\ClientsBundle\Service;
 use PHPExcel;
 use PHPExcel_IOFactory;
 
+use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Description of ExcelExportService
  *
@@ -12,42 +13,66 @@ use PHPExcel_IOFactory;
  */
 class ExcelExportService
 {
+    /**
+     * @var Container
+     */
+    private $container;
+
+    public function __construct(ContainerInterface $container = NULL)
+    {
+        $this->container = $container;
+        $this->em = $this->container->get("doctrine.orm.entity_manager");
+    }
 
     /**
      * ExportAll() genera el archivo excel para exportar todo el contenido.
      *
      */
-    public function exportAll()
+    public function exportData($data,$title, $description = null)
     {
     	// Create new PHPExcel object
 		$objPHPExcel = new PHPExcel();
 		// Set document properties
-		$objPHPExcel->getProperties()->setCreator("Maarten Balliauw")
-									 ->setLastModifiedBy("Maarten Balliauw")
-									 ->setTitle("PHPExcel Test Document")
-									 ->setSubject("PHPExcel Test Document")
-									 ->setDescription("Test document for PHPExcel, generated using PHP classes.")
-									 ->setKeywords("office PHPExcel php")
-									 ->setCategory("Test result file");
-		// Add some data
-		$objPHPExcel->setActiveSheetIndex(0)
-		            ->setCellValue('A1', 'Hello')
-		            ->setCellValue('B2', 'world!')
-		            ->setCellValue('C1', 'Hello')
-		            ->setCellValue('D2', 'world!');
-		// Miscellaneous glyphs, UTF-8
-		$objPHPExcel->setActiveSheetIndex(0)
-		            ->setCellValue('A4', 'Miscellaneous glyphs')
-		            ->setCellValue('A5', 'éàèùâêîôûëïüÿäöüç');
-		$objPHPExcel->getActiveSheet()->setCellValue('A8',"Hello\nWorld");
-		$objPHPExcel->getActiveSheet()->getRowDimension(8)->setRowHeight(-1);
-		$objPHPExcel->getActiveSheet()->getStyle('A8')->getAlignment()->setWrapText(true);
+		$objPHPExcel->getProperties()->setCreator("Flower")
+									 ->setTitle($title)
+									 ->setSubject("PHPExcel Test Document");
+		if($description){
+			$objPHPExcel->getProperties()->setDescription($description);
+		}
+
+		//setCellValueByColumnAndRow (columna, fila, valor)
+		$row = 1;
+		foreach ($data as $rowData) {
+			$column = 0;
+			foreach ($rowData as $item) {
+				if($item){
+					$objPHPExcel->setActiveSheetIndex(0)
+								->setCellValueByColumnAndRow($column, $row, $item);
+					$column++;
+				}
+			}
+			$row++;
+		}
+        
 		// Rename worksheet
 		$objPHPExcel->getActiveSheet()->setTitle('Simple');
 		// Set active sheet index to the first sheet, so Excel opens this as the first sheet
 		$objPHPExcel->setActiveSheetIndex(0);
 		// Save Excel 2007 file
 		$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
-		$objWriter->save(str_replace('.php', '.xlsx', __FILE__));
+		//TODO: Acomodar RUTA
+		$webdir = $this->container->getParameter('kernel.root_dir') . "/../web";
+		$completeFileName = $webdir.'/account.xlsx';
+
+		// Redirect output to a client’s web browser (Excel2007)
+		header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+		header('Content-Disposition: attachment;filename="'.$title.'.xlsx"');
+		header('Cache-Control: max-age=0');
+		header('Cache-Control: max-age=1');
+		header ('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+		header ('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT'); // always modified
+		header ('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+		header ('Pragma: public'); // HTTP/1.0
+		$objWriter->save( 'php://output');
     }
 }

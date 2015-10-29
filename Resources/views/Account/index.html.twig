@@ -33,7 +33,7 @@
                     <a class="btn btn-link btn-sm" href={{ path('account_new') }}>
                         <i class="fa fa-plus"></i> {{ 'Create a new %entity%'|trans({'%entity%': 'Account'}, 'Account') }}
                     </a>
-                    <a class="btn btn-link btn-sm" href={{ path('account') }} id="export">
+                    <a class="btn btn-link btn-sm" href="{{ path('account_export') }}">
                         <i class="fa fa-download"></i> {{ '%entity%'|trans({'%entity%': 'Export'}, 'Account') }}
                     </a>
                 </div>
@@ -83,7 +83,7 @@
                             </div>
                             <div class="form-group">
                                 <div class=" col-sm-9">
-                                    <a class="btn btn-default btn-sm" href="{{ path('account') }}"><i class="fa fa-times"></i> {{'clean' | trans | capitalize}}</a>
+                                    <a class="btn btn-default btn-sm" href="{{ path('account') }}?reset"><i class="fa fa-times"></i> {{'clean' | trans | capitalize}}</a>
                                     <button class="btn btn-primary btn-sm" type="submit">{{'apply' | trans | capitalize}}</button>
                                 </div>
                             </div>
@@ -141,5 +141,9 @@
                 $(me).addClass("ion-plus-circled")
             }
         }
+
+        function CopyMe(oFileInput, sTargetID) {
+            document.getElementById(sTargetID).value = oFileInput.value;
+        }
     </script>
-{% endblock%}
+{% endblock %}

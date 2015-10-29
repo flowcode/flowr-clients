@@ -2,6 +2,9 @@
 
 namespace Flower\ClientsBundle\Controller;
 
+use PHPExcel;
+use PHPExcel_IOFactory;
+
 use Doctrine\ORM\QueryBuilder;
 use Flower\ClientsBundle\Form\Type\AccountType;
 use Flower\ModelBundle\Entity\Clients\Account;
@@ -35,20 +38,52 @@ class AccountController extends Controller
         $em = $this->getDoctrine()->getManager();        
         $qb = $em->getRepository('FlowerModelBundle:Clients\Account')->createQueryBuilder('a');
         $qb->leftJoin("a.activity","ac");
-        $this->addQueryBuilderSort($qb, 'account');
-        $activityFilter = $request->query->get('activityFilter');
-        $this->addFilter($qb,$activityFilter,"ac.id");
-        $paginator = $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), 20);
+                
+        $filters = array('activityFilter' => "ac.id");
+
+        if($request->query->has('reset')) {
+            $request->getSession()->set('filter.account', null);
+            return $this->redirectToRoute("account");
+        }
+
+        $this->saveFilters($request, $filters, 'account','account');
+        $paginator = $this->filter($qb,'account',$request);
         $activities = $em->getRepository('FlowerModelBundle:Clients\Activity')->findAll();
         return array(
             'paginator' => $paginator,
-            'activityFilter' => $activityFilter,
+            'activityFilter' => $request->query->get("activityFilter"),
             'activities' => $activities,
         );
     }
 
-    private function addFilter($qb, $filter, $field)
-    {
+    private function filter($qb,$name,$request){
+        $this->addQueryBuilderSort($qb, $name);
+        if(!is_null($this->getFilters($name))){
+            foreach ($this->getFilters($name) as $key => $value) {
+                $this->addFilter($qb, $value, $key);
+            }
+        }
+        return $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), 20);
+
+    }
+    private function getFilters($name){
+        return $this->getRequest()->getSession()->get('filter.' . $name);
+    }
+
+    private function saveFilters($request , $filters, $name, $route = null, array $params = null){
+
+        $myFilters = array();
+        foreach ($filters as $key => $value) {
+            if($request->query->get($key)){
+                $myFilters[$value] = $request->query->get($key);
+            }   
+        }
+        if(count($myFilters) > 0){
+            $request->getSession()->set('filter.' . $name, $myFilters);
+        }
+    }
+
+    private function addFilter($qb, $filter, $field){
         if($filter && count($filter) > 0){    
             if( implode(",", $filter) != ""){
                 $filterAux = array();
@@ -70,21 +105,31 @@ class AccountController extends Controller
     }
 
     /**
-     * Exports displayed Account entities.
      *
      * @Route("/export", name="account_export")
      * @Method("GET")
-     * @Template()
      */
-    public function exportDataAction(Request $request)
+    public function exportViewAction(Request $request)
     {
-        $accounts = $request->query->get('activities');
-            print_r($accounts[0]);
-            echo " || ";
-            die("asd");
+        $em = $this->getDoctrine()->getManager();        
+        $qb = $em->getRepository('FlowerModelBundle:Clients\Account')->createQueryBuilder('a');
+        $qb->leftJoin("a.activity","ac");
+        $accounts = $this->filter($qb,'account',$request);
+        $data = array();
+        $data["header"] = array( 
+            "Identificador", "Nombre",
+            "Teléfono", "Dirección",
+            "Actividad");
+        $index = 1;
         foreach ($accounts as $account) {
+            $data[$index] = array(
+                $account->getId(), $account->getName(),
+                $account->getPhone(), $account->getAddress(),
+                $account->getActivity());
+            $index++;
         }
-        $this->get('client.service.excelexport')->exportAll();
+        $this->get("client.service.excelexport")->exportData($data,"Cuentas","Mi descripcion");
+        return $this->redirectToRoute("account");
     }
 
     /**
