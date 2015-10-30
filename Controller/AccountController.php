@@ -23,7 +23,7 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @Route("/account")
  */
-class AccountController extends Controller
+class AccountController extends BaseController
 {
 
     /**
@@ -56,54 +56,6 @@ class AccountController extends Controller
         );
     }
 
-    private function filter($qb,$name,$request){
-        $this->addQueryBuilderSort($qb, $name);
-        if(!is_null($this->getFilters($name))){
-            foreach ($this->getFilters($name) as $key => $value) {
-                $this->addFilter($qb, $value, $key);
-            }
-        }
-        return $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), 20);
-
-    }
-    private function getFilters($name){
-        return $this->getRequest()->getSession()->get('filter.' . $name);
-    }
-
-    private function saveFilters($request , $filters, $name, $route = null, array $params = null){
-
-        $myFilters = array();
-        foreach ($filters as $key => $value) {
-            if($request->query->get($key)){
-                $myFilters[$value] = $request->query->get($key);
-            }   
-        }
-        if(count($myFilters) > 0){
-            $request->getSession()->set('filter.' . $name, $myFilters);
-        }
-    }
-
-    private function addFilter($qb, $filter, $field){
-        if($filter && count($filter) > 0){    
-            if( implode(",", $filter) != ""){
-                $filterAux = array();
-                $nullFilter = "";
-                foreach ($filter as $element) {
-                    if($element == "-1"){
-                        $nullFilter = " OR  (".$field." is NULL)";
-                    }else{
-                        $filterAux[] = $element;
-                    }
-                }
-                if(count($filterAux) > 0){
-                    $qb->andWhere(" ( ".$field." in (:".str_replace(".","_",$field)."_param) ".$nullFilter." )")->setParameter(str_replace(".","_",$field)."_param", $filterAux);
-                }else{
-                    $qb->andWhere(" ( 1 = 2 ".$nullFilter." )");
-                }
-            }
-        }
-    }
-
     /**
      *
      * @Route("/export", name="account_export")
@@ -115,19 +67,7 @@ class AccountController extends Controller
         $qb = $em->getRepository('FlowerModelBundle:Clients\Account')->createQueryBuilder('a');
         $qb->leftJoin("a.activity","ac");
         $accounts = $this->filter($qb,'account',$request);
-        $data = array();
-        $data["header"] = array( 
-            "Identificador", "Nombre",
-            "Teléfono", "Dirección",
-            "Actividad");
-        $index = 1;
-        foreach ($accounts as $account) {
-            $data[$index] = array(
-                $account->getId(), $account->getName(),
-                $account->getPhone(), $account->getAddress(),
-                $account->getActivity());
-            $index++;
-        }
+        $data = $this->get("client.service.callevent")->callEventDataExport($accounts);
         $this->get("client.service.excelexport")->exportData($data,"Cuentas","Mi descripcion");
         return $this->redirectToRoute("account");
     }

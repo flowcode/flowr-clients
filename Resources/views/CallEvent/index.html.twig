@@ -32,6 +32,9 @@
                     <a class="btn btn-link btn-sm" href={{ path('callevent_new') }}>
                         <i class="fa fa-plus"></i> {{ 'Create a new %entity%'|trans({'%entity%': 'CallEvent'}, 'CallEvent') }}
                     </a>
+                    <a class="btn btn-link btn-sm" href="{{ path('callevent_export') }}">
+                        <i class="fa fa-download"></i> {{ '%entity%'|trans({'%entity%': 'Export'}, 'CallEvent') }}
+                    </a>
                 </div>
             </div>
             <div class="panel-heading">
@@ -139,7 +142,7 @@
                             </div>
                             <div class="form-group">
                                 <div class=" col-sm-9">
-                                    <a class="btn btn-default btn-sm" href="{{ path('callevent') }}"><i class="fa fa-times"></i> {{'clean' | trans | capitalize}}</a>
+                                    <a class="btn btn-default btn-sm" href="{{ path('callevent') }}?reset"><i class="fa fa-times"></i> {{'clean' | trans | capitalize}}</a>
                                     <button class="btn btn-primary btn-sm" type="submit">{{'apply' | trans | capitalize}}</button>
                                 </div>
                             </div>

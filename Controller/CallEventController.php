@@ -19,44 +19,10 @@ use Symfony\Component\HttpFoundation\JsonResponse;
  *
  * @Route("/callevent")
  */
-class CallEventController extends Controller
+class CallEventController extends BaseController
 {
     const formName = "form.type.callevent";
 
-    private function addFilter($qb, $filter, $field){
-        if($filter && count($filter) > 0){    
-            if( implode(",", $filter) != ""){
-                $filterAux = array();
-                $nullFilter = "";
-                foreach ($filter as $element) {
-                    if($element == "-1"){
-                        $nullFilter = " OR  (".$field." is NULL)";
-                    }else{
-                        $filterAux[] = $element;
-                    }
-                }
-                if(count($filterAux) > 0){
-                    $qb->andWhere(" ( ".$field." in (:".str_replace(".","_",$field)."_param) ".$nullFilter." )")->setParameter(str_replace(".","_",$field)."_param", $filterAux);
-                }else{
-                    $qb->andWhere(" ( 1 = 2 ".$nullFilter." )");
-                }
-            }
-        }
-    }
-    private function addDateFilter($qb, $startDate,$endDate, $field){
-        if($startDate && $endDate){
-            //die($field. " between $startDate AND $endDate ");
-            $qb->andWhere($field. " between :startDate AND :endDate ") ->setParameter("startDate", $startDate)
-                                                                ->setParameter("endDate", $endDate);
-        }else{
-            if($startDate){
-                $qb->andWhere($field. " >= :startDate ") ->setParameter("startDate", $startDate);
-            }
-            if($endDate){
-                $qb->andWhere($field. " >= :endDate ") ->setParameter("endDate", $endDate);
-            }
-        }
-    }
     /**
      * Lists all Account entities.
      *
@@ -71,38 +37,58 @@ class CallEventController extends Controller
         $qb->leftJoin("ce.status","s");
         $qb->leftJoin("ce.account","a");
         $qb->leftJoin("ce.assignee","u");
-        $statusFilter = $request->query->get('statusFilter');
-        $this->addFilter($qb,$statusFilter,"ce.status");
 
-        $assigneeFilter = $request->query->get('assigneeFilter');
-        $this->addFilter($qb,$assigneeFilter,"ce.assignee");
-        $accountFilter = $request->query->get('accountFilter');
-        $this->addFilter($qb,$accountFilter,"ce.account");
+        $filters = array(
+            'statusFilter' => "s.id",
+            'assigneeFilter' => "u.id",
+            'accountFilter' => "a.id",
+            'startDateFilter' => array("field"=> "ce.date", "type" => "date" , "operation" => ">"),
+            'endDateFilter' => array("field"=> "ce.date", "type" => "date" , "operation" => "<="),
+            );
 
-        $startDateFilter = $request->query->get('startDateFilter');
-        $endDateFilter = $request->query->get('endDateFilter');
-        $starDate = \DateTime::createFromFormat('d/m/Y H:i', $startDateFilter);
-        $endDate = \DateTime::createFromFormat('d/m/Y H:i', $endDateFilter);
-        $this->addDateFilter($qb,$starDate,$endDate,"ce.date");
+        if($request->query->has('reset')) {
+            $request->getSession()->set('filter.callevent', null);
+            return $this->redirectToRoute("callevent");
+        }
+        $this->saveFilters($request, $filters, 'callevent','callevent');
+        $paginator = $this->filter($qb,'callevent',$request);
 
-        $this->addQueryBuilderSort($qb, 'callevent');
-        $paginator = $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), 20);
         $statuses = $em->getRepository('FlowerModelBundle:Clients\CallEventStatus')->findAll();
         $users = $em->getRepository('FlowerModelBundle:User\User')->findAll();
         $accounts = $em->getRepository('FlowerModelBundle:Clients\Account')->findAll();
 
-            
         return array(
-            'startDateFilter' => $startDateFilter,
-            'endDateFilter' => $endDateFilter,
-            'assigneeFilter' => $assigneeFilter,
-            'statusFilter' => $statusFilter,
+            'startDateFilter' => $request->query->get('startDateFilter'),
+            'endDateFilter' => $request->query->get('endDateFilter'),
+            'assigneeFilter' => $request->query->get('assigneeFilter'),
+            'statusFilter' => $request->query->get('statusFilter'),
             'users' => $users,
-            'accountFilter' => $accountFilter,
+            'accountFilter' => $request->query->get('accountFilter'),
             'accounts' => $accounts,
             'statuses' => $statuses,
             'paginator' => $paginator,
         );
+    }
+
+    /**
+     *
+     * @Route("/export", name="callevent_export")
+     * @Method("GET")
+     */
+    public function exportViewAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();        
+        $qb = $em->getRepository('FlowerModelBundle:Clients\CallEvent')->createQueryBuilder('ce');
+        $qb->leftJoin("ce.status","s");
+        $qb->leftJoin("ce.account","a");
+        $qb->leftJoin("ce.assignee","u");
+
+        $qb->orderBy("a.id");
+
+        $callevents = $this->filter($qb,'callevent',$request);
+        $data = $this->get("client.service.callevent")->callEventDataExport($callevents);
+        $this->get("client.service.excelexport")->exportData($data,"Llamadas","Mi descripcion");
+        return $this->redirectToRoute("callevent");
     }
 
     /**
@@ -259,55 +245,6 @@ class CallEventController extends Controller
     }
 
     /**
-     * Save order.
-     *
-     * @Route("/order/{field}/{type}", name="callevent_sort")
-     */
-    public function sortAction($field, $type)
-    {
-        $this->setOrder('callevent', $field, $type);
-
-        return $this->redirect($this->generateUrl('callevent'));
-    }
-
-    /**
-     * @param string $name  session name
-     * @param string $field field name
-     * @param string $type  sort type ("ASC"/"DESC")
-     */
-    protected function setOrder($name, $field, $type = 'ASC')
-    {
-        $this->getRequest()->getSession()->set('sort.' . $name, array('field' => $field, 'type' => $type));
-    }
-
-    /**
-     * @param  string $name
-     * @return array
-     */
-    protected function getOrder($name)
-    {
-        $session = $this->getRequest()->getSession();
-
-        return $session->has('sort.' . $name) ? $session->get('sort.' . $name) : null;
-    }
-
-    /**
-     * @param QueryBuilder $qb
-     * @param string       $name
-     */
-    protected function addQueryBuilderSort(QueryBuilder $qb, $name)
-    {
-        $alias = current($qb->getDQLPart('from'))->getAlias();
-        if (is_array($order = $this->getOrder($name))) {
-            if (strpos($order['field'], '.') !== FALSE){
-                $qb->orderBy($order['field'], $order['type']);
-            }else{
-                $qb->orderBy($alias . '.' . $order['field'], $order['type']);
-            }            
-        }
-    }
-
-    /**
      * Deletes a CallEvent entity.
      *
      * @Route("/{id}/delete", name="callevent_delete", requirements={"id"="\d+"})
@@ -326,19 +263,15 @@ class CallEventController extends Controller
     }
 
     /**
-     * Create Delete form
+     * Save order.
      *
-     * @param integer                       $id
-     * @param string                        $route
-     * @return Form
+     * @Route("/order/{field}/{type}", name="callevent_sort")
      */
-    protected function createDeleteForm($id, $route)
+    public function sortAction($field, $type)
     {
-        return $this->createFormBuilder(null, array('attr' => array('id' => 'delete')))
-                        ->setAction($this->generateUrl($route, array('id' => $id)))
-                        ->setMethod('DELETE')
-                        ->getForm()
-        ;
+        $this->setOrder('callevent', $field, $type);
+
+        return $this->redirect($this->generateUrl('callevent'));
     }
 
 }

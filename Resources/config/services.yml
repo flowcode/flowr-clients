@@ -15,3 +15,9 @@ services:
     client.service.excelexport:
         class: Flower\ClientsBundle\Service\ExcelExportService
         arguments: ['@service_container']
+    client.service.account:
+        class: Flower\ClientsBundle\Service\AccountService
+        arguments: ['@service_container']
+    client.service.callevent:
+        class: Flower\ClientsBundle\Service\CallEventService
+        arguments: ['@service_container']
