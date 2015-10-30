@@ -17,6 +17,7 @@ class CallEventType extends AbstractType
         $builder
                 ->add('subject')
                 ->add('account')
+                ->add('contactName')
                 ->add('date','collot_datetime', array( 'required' => true,'pickerOptions' =>
                                                 array('format' => 'dd/mm/yyyy  hh:ii',
                                                     'autoclose' => true,

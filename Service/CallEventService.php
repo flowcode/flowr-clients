@@ -40,15 +40,21 @@ class CallEventService
 		        $data[$index++] = array( 
 		            "Identificador", "Subject",
 		            "Nombre de Usuario", "Nombre de Contacto",
-		            "Estado llamado","Frecuencia","Fecha");
+		            "Estado llamado","Fecha");
             }
+            $id = $callevent->getId()? : " ";
+            $subject = $callevent->getSubject()? : " ";
+            $assignee = $callevent->getAssignee()? : " ";
+            $contactname = $callevent->getContactName()? : " ";
+            $status = $callevent->getStatus()? : " ";
+            $date = $callevent->getDate()? : " ";
             $data[$index++] = array(
-                $callevent->getId(), $callevent->getSubject(),
-                $callevent->getAssignee(),
-                $callevent->getContactName(),
-                $callevent->getStatus(),
-                $callevent->getFrequency(),
-                $callevent->getDate());
+                $id ,
+                $subject ,
+                $assignee ,
+                $contactname ,
+                $status ,
+                $date );
             $oldAccount = $callevent->getAccount()->getId();
         }
         return $data;

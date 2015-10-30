@@ -56,14 +56,14 @@ class CallEventController extends BaseController
         $statuses = $em->getRepository('FlowerModelBundle:Clients\CallEventStatus')->findAll();
         $users = $em->getRepository('FlowerModelBundle:User\User')->findAll();
         $accounts = $em->getRepository('FlowerModelBundle:Clients\Account')->findAll();
-
+        $filters = $this->getFilters('callevent');
         return array(
-            'startDateFilter' => $request->query->get('startDateFilter'),
-            'endDateFilter' => $request->query->get('endDateFilter'),
-            'assigneeFilter' => $request->query->get('assigneeFilter'),
-            'statusFilter' => $request->query->get('statusFilter'),
+            'startDateFilter' => isset($filters['startDateFilter'])?$filters['startDateFilter']["value"] : null,
+            'endDateFilter' => isset($filters['endDateFilter'])?$filters['endDateFilter']["value"] : null,
+            'assigneeFilter' => isset($filters['assigneeFilter'])?$filters['assigneeFilter']["value"] : null,
+            'statusFilter' => isset($filters['statusFilter'])?$filters['statusFilter']["value"] : null,
             'users' => $users,
-            'accountFilter' => $request->query->get('accountFilter'),
+            'accountFilter' => isset($filters['accountFilter'])?$filters['accountFilter']["value"] : null,
             'accounts' => $accounts,
             'statuses' => $statuses,
             'paginator' => $paginator,
