@@ -1,0 +1,21 @@
+'%entity% List': 'Lista de %entity%'
+'%entity% creation': 'Creación de %entity%'
+'%entity% edit': 'Edición de %entity%'
+'%entity% List': 'Lista de %entity%'
+Actions: Acciones
+CallEventStatus: Estado de llamados
+'Confirm delete': 'Confirmar borrado'
+Create: Crear
+'Create a new %entity%': 'Crear nueva %entity%'
+Delete: Borrar
+'Do you want to proceed?': '¿Desea continuar de todos modos?'
+edit: editar
+Finished: Finalizado
+Id: Id
+Name: Nombre
+'No': 'No'
+'Yes': 'Si'
+'You are about to delete an item': 'Usted esta por borrar un elemento'
+edit: editar
+show: ver
+'this procedure is irreversible': 'esta accion será irreversible'

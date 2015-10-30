@@ -39,8 +39,8 @@
                         <th scope="col">{{ thead('opportunity', 'name', 'Name') }}</th>
                         <th scope="col">{{ thead('opportunity', 'price', 'Price') }}</th>
                         <th scope="col">{{ thead('opportunity', 'status', 'Status') }}</th>
-                        <th>{{ 'account' }}</th>
-                        <th>{{ 'contact' }}</th>
+                        <th>{{ 'Account' | trans({}, 'Opportunity') | capitalize }}</th>
+                        <th>{{ 'Contact' | trans({}, 'Opportunity') | capitalize}}</th>
                     </tr>
                 </thead>
                 <tbody>
