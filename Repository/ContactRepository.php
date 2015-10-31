@@ -41,9 +41,10 @@ class ContactRepository extends EntityRepository
     public function getByContactList($contactListId, $offset, $limit)
     {
         $qb = $this->createQueryBuilder("c");
-        $qb->select("c");
-        $qb->join("FlowerModelBundle:Marketing\ContactList", "cl", Join::WITH, "cl.id = :contact_list_id");
+        $qb->join("FlowerModelBundle:Marketing\ContactList", "cl", "WITH", "1=1");
+        $qb->join("cl.contacts", "c2");
         $qb->where("cl.id = :contact_list_id");
+        $qb->andWhere("c2.id = c.id");
         $qb->setParameter("contact_list_id", $contactListId);
 
         $qb->setFirstResult($offset * $limit);
