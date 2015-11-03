@@ -33,6 +33,7 @@ class ContactType extends AbstractType
                 ->add('accounts', 'entity', array(
                     'class' => 'FlowerModelBundle:Clients\Account',
                     'multiple'    => true,
+                    'required' => false
                 ))
         ;
     }

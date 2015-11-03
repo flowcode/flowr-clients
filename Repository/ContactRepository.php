@@ -27,10 +27,12 @@ class ContactRepository extends EntityRepository
 
     public function getByContactListQuery($contactListId)
     {
-        $qb = $this->createQueryBuilder("c");
-        $qb->select("c");
-        $qb->join("c.contactLists", "cl", Join::WITH, "cl.id = :contact_list_id");
-        $qb->where("cl.id = :contact_list_id");
+        $qb = $this->createQueryBuilder('c');
+        //$qb->select("c");
+        $qb->from('FlowerModelBundle:Clients\Contact c INNER JOIN FlowerModelBundle:Marketing\ContactList cl');
+        //$qb->join("FlowerModelBundle:Marketing\ContactList", "cl", Join::WITH, "cl.id = :contact_list_id");
+        //$qb->where("cl. = :contact_list_id");
+        $qb->andWhere("cl.id = :contact_list_id");
         $qb->setParameter("contact_list_id", $contactListId);
 
         return $qb;
@@ -39,9 +41,10 @@ class ContactRepository extends EntityRepository
     public function getByContactList($contactListId, $offset, $limit)
     {
         $qb = $this->createQueryBuilder("c");
-        $qb->select("c");
-        $qb->join("c.contactLists", "cl", Join::WITH, "cl.id = :contact_list_id");
+        $qb->join("FlowerModelBundle:Marketing\ContactList", "cl", "WITH", "1=1");
+        $qb->join("cl.contacts", "c2");
         $qb->where("cl.id = :contact_list_id");
+        $qb->andWhere("c2.id = c.id");
         $qb->setParameter("contact_list_id", $contactListId);
 
         $qb->setFirstResult($offset * $limit);
@@ -55,7 +58,7 @@ class ContactRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder("c");
         $qb->select("DISTINCT c.email");
-        $qb->join("c.contactLists", "cl");
+        $qb->join("FlowerModelBundle:Marketing\ContactList", "cl");
         $qb->where("cl.id IN (:contact_list_id)");
         $qb->andWhere("c.email != ''");
         $qb->andWhere("c.allowCampaignMail = :allowCampaignMail")->setParameter("allowCampaignMail", true);
@@ -75,7 +78,7 @@ class ContactRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder("c");
         $qb->select("COUNT(c.email)");
-        $qb->join("c.contactLists", "cl");
+        $qb->join("FlowerModelBundle:Marketing\ContactList", "cl");
         $qb->where("cl.id IN (:contacts_lists)");
         $qb->andWhere("c.email != ''");
         $qb->setParameter("contacts_lists", $contactsLists);
@@ -102,7 +105,7 @@ class ContactRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder("c");
         $qb->select("c");
-        $qb->join("c.contactLists", "cl");
+        $qb->join("FlowerModelBundle:Marketing\ContactList", "cl");
         $qb->where("cl.id IN (:contact_list_id)");
         $qb->andWhere("c.email != ''");
         $qb->setParameter("contact_list_id", $contactsLists);
@@ -121,7 +124,7 @@ class ContactRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder("c");
         $qb->select("COUNT(distinct c.email)");
-        $qb->join("c.contactLists", "cl");
+        $qb->join("FlowerModelBundle:Marketing\ContactList", "cl");
         $qb->where("cl.id IN (:contacts_lists)");
         $qb->andWhere("c.email != ''");
         $qb->setParameter("contacts_lists", $contactsLists);
@@ -149,7 +152,7 @@ class ContactRepository extends EntityRepository
               ->orWhere("c.email like :text")
               ->setParameter("text", "%".$completeText."%");
         $qb->setMaxResults($limit);
-              
+
         $result = $qb->getQuery()->getResult();
         $qb = $this->createQueryBuilder("c");
         $count = 0;

@@ -12,4 +12,20 @@ use Doctrine\ORM\EntityRepository;
  */
 class CallEventRepository extends EntityRepository
 {
+	function getPlannerQuery($limit = 20,$offset = 0){
+		$qb = $this->createQueryBuilder("ce");
+		$em = $this->getEntityManager();
+		$query = $em->createQuery(
+			'SELECT a, max(ce.date) as maxDate, date_diff( max(ce.date), CURRENT_DATE()) as diff FROM FlowerModelBundle:Clients\Account a 
+			 LEFT JOIN FlowerModelBundle:Clients\CallEvent ce WITH ce.account = a.id
+			 LEFT JOIN FlowerModelBundle:Clients\CallEventStatus ces WITH ce.status = ces.id
+			 WHERE ce.id is null or ces.finished = 1
+			 group by a.id ');
+		$query->setMaxResults($limit);
+		$query->setFirstResult($offset);
+        
+        return $query->getResult();
+
+		
+	}
 }
