@@ -31,16 +31,28 @@ class CallEventService
         $index = 0;
         $oldAccount = "";
         foreach ($callevents as $callevent) {
-        	$newAccount = $callevent->getAccount()->getId();
-            if($newAccount != $oldAccount){
-            	//Primera fila Nombre del Account
-                $data[$index++] = array(
-                    "Id" => $callevent->getAccount()->getId(),
-                    "Name" => $callevent->getAccount()->getName());
-		        $data[$index++] = array( 
-		            "Identificador", "Subject",
-		            "Nombre de Usuario", "Nombre de Contacto",
-		            "Estado llamado","Fecha");
+            if($callevent->getAccount()){
+                $newAccount = $callevent->getAccount()->getId();
+                if($newAccount != $oldAccount){
+                	//Primera fila Nombre del Account
+                   $data[$index++] = array();
+                    $data[$index++] = array(
+                        "Id" => "Cuenta:",
+                        "Name" => $callevent->getAccount()->getName());
+                    $data[$index++] = array( 
+                    "Identificador", "Subject",
+                    "Nombre de Usuario", "Nombre de Contacto",
+                    "Estado llamado","Fecha");
+                }
+                $oldAccount = $callevent->getAccount()->getId();
+            }else{
+                if($oldAccount == "" ){
+    		        $data[$index++] = array( 
+    		            "Identificador", "Subject",
+    		            "Nombre de Usuario", "Nombre de Contacto",
+    		            "Estado llamado","Fecha");
+                }
+                $oldAccount = "done";
             }
             $id = $callevent->getId()? : " ";
             $subject = $callevent->getSubject()? : " ";
@@ -55,7 +67,7 @@ class CallEventService
                 $contactname ,
                 $status ,
                 $date );
-            $oldAccount = $callevent->getAccount()->getId();
+            
         }
         return $data;
     }
