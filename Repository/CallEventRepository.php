@@ -11,21 +11,137 @@ use Doctrine\ORM\EntityRepository;
  * repository methods below.
  */
 class CallEventRepository extends EntityRepository
-{
-	function getPlannerQuery($limit = 20,$offset = 0){
+{	
+	function countPlannerQuery($filters){
 		$qb = $this->createQueryBuilder("ce");
 		$em = $this->getEntityManager();
-		$query = $em->createQuery(
-			'SELECT a, max(ce.date) as maxDate, date_diff( max(ce.date), CURRENT_DATE()) as diff FROM FlowerModelBundle:Clients\Account a 
-			 LEFT JOIN FlowerModelBundle:Clients\CallEvent ce WITH ce.account = a.id
-			 LEFT JOIN FlowerModelBundle:Clients\CallEventStatus ces WITH ce.status = ces.id
-			 WHERE ce.id is null or ces.finished = 1
-			 group by a.id ');
+		
+        $filters = $this->getFilterForPlannerQuery($filters);
+        $arrayFiltes = $filters["params"];
+        $filterString = $filters["query"];
+
+		$queryString = 
+			" SELECT DISTINCT a.id ".
+			$this->getPlannerQuery().
+			$filterString;
+		$statuses_finished = $em->getRepository('FlowerModelBundle:Clients\CallEventStatus')->findBy(array("finished" => 1));
+        $query = $em->createQuery($queryString);
+		$query->setParameter("statuses_finished", $statuses_finished);
+		foreach ($arrayFiltes as $filter) {
+			$query->setParameter($filter["params"]["key"], $filter["params"]["value"]);
+		}
+        return $query->getResult();
+	}
+
+	protected function getPlannerQuery(){
+		return " FROM FlowerModelBundle:Clients\Account a 
+				LEFT JOIN  FlowerModelBundle:Clients\CallEvent ce WITH  a.id = ce.account 
+				LEFT JOIN  FlowerModelBundle:Clients\CallEvent cepending WITH  a.id = cepending.account and cepending.status not in (:statuses_finished)
+				LEFT JOIN FlowerModelBundle:Clients\CallEventStatus ces WITH ces.id = ce.status 
+				WHERE 
+				".//busca los que no tienen llamados
+				" (not exists (SELECT ce3.id from FlowerModelBundle:Clients\CallEvent ce3 WHERE a.id = ce3.account ) or
+					". // filtra para traer solo los call events mas grandes que cumplen con el estado adecuado.
+				" not exists (
+				SELECT ce2.id from FlowerModelBundle:Clients\CallEvent ce2 WHERE ce.account = ce2.account and ce2.date > ce.date and 
+				(ce2.status in (:statuses_finished) or (ce2.status is null)))) 
+				AND (ce.status in (:statuses_finished) or ce.status is null ) ";
+	}
+
+	protected function getFilterForPlannerQuery($filters){
+		$filterString = "and 1=1 ";
+        $arrayFiltes = array();
+        if(!is_null($filters)){
+        	$filterNumber = 0;
+            foreach ($filters as $search) {
+            	$filterNumber++;
+            	$value = $search["value"];
+            	$options  = $search["options"];
+            	if(is_array($options)) {
+            		$elementfilter = $this->addCustomFilter($value, $options,$filterNumber);
+            	} else {
+                	$elementfilter = $this->addFilter( $value, $options,$filterNumber);
+            	}
+            	if($elementfilter["query"] != ""){
+            		if(array_key_exists("params",$elementfilter) ){
+	        			array_push($arrayFiltes, $elementfilter);
+            		}
+	        		$filterString .= " and " .$elementfilter["query"];
+            	}
+            }
+        }
+        return array("params" => $arrayFiltes, "query" => $filterString);
+	}
+	function getPlannerAccounts($filters, $order, $limit = 20,$offset = 0){
+		$qb = $this->createQueryBuilder("ce");
+		$em = $this->getEntityManager();
+		$orderString = "diffDates";
+		if (is_array($order)) {
+            $orderString = $order['field']." ". $order['type'];       
+        }
+        $filters = $this->getFilterForPlannerQuery($filters);
+        $arrayFiltes = $filters["params"];
+        $filterString = $filters["query"];
+
+		$orderString = "order by $orderString";
+		$queryString = 
+			"SELECT a as account,ces.name AS status, ce.date AS lastDate , date_diff(ce.date,CURRENT_DATE()) as diffDates, count(cepending.id) as penddings ".
+			$this->getPlannerQuery().
+			$filterString.
+			" group by a.id " .$orderString;
+		$statuses_finished = $em->getRepository('FlowerModelBundle:Clients\CallEventStatus')->findBy(array("finished" => 1));
+        $query = $em->createQuery($queryString);
+		$query->setParameter("statuses_finished", $statuses_finished);
+		foreach ($arrayFiltes as $filter) {
+			$query->setParameter($filter["params"]["key"], $filter["params"]["value"]);
+		}
 		$query->setMaxResults($limit);
 		$query->setFirstResult($offset);
-        
         return $query->getResult();
-
-		
 	}
+	
+	protected function addCustomFilter($value, $options,$filterNumber){	
+    	$field = $options["field"];
+    	$type =  $options["type"];
+    	if($type == "date"){
+    		$value = \DateTime::createFromFormat($options["format"], $value);
+    	}
+    	if($type == "dinamic"){
+    		if(count($value) > 0 && $value[0] != ""){
+				return array("query" => $field. " ".$value[0]);
+    		}else{
+    			return array("query" => "");
+    		}
+    	}
+    	if($type == "array"){
+    		$this->addFilter($value,$field);
+    	}else{
+    		$name = str_replace(".","_",$field)."_".$filterNumber;		
+    		$operation = $options["operation"];	
+			return array("query" => $field. " ".$operation." :".$name."_value", "params" => array("key" => $name."_value", "value" => $value));
+    	}
+    }
+    protected function addFilter($filter, $field,$filterNumber)
+    {
+        if($filter && count($filter) > 0){    
+            if( implode(",", $filter) != ""){
+                $filterAux = array();
+                $nullFilter = "";
+                foreach ($filter as $element) {
+                    if($element == "-1"){
+                        $nullFilter = " OR  (".$field." is NULL)";
+                    }else{
+                        $filterAux[] = $element;
+                    }
+                }
+                if(count($filterAux) > 0){
+                	$name = str_replace(".","_",$field)."_".$filterNumber;
+                    return array("query" => " ( ".$field." in (:".$name."_param) ".$nullFilter." )", "params" => array("key" => $name."_param","value" => $filterAux));
+                }else{
+                	return array("query" => "( 1 = 2 ".$nullFilter." )" );
+                }
+            }
+        }
+    }
+
 }

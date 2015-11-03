@@ -41,8 +41,15 @@ class BaseController extends Controller
     	$field = $options["field"];
     	$type =  $options["type"];
     	if($type == "date"){
-    		$value = \DateTime::createFromFormat('d/m/Y H:i', $value);
+            $value = \DateTime::createFromFormat($options["format"], $value);
     	}
+        if($type == "dinamic"){
+            if(count($value) > 0 && $value[0] != ""){
+                $qb->andWhere($field. " ".$value[0]);
+            }else{
+                return ;
+            }
+        }
     	if($type == "array"){
     		$this->addFilter($qb,$value,$field);
     	}else{

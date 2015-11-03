@@ -6,12 +6,12 @@
         {% set sort = app.session.get('sort.' ~ name) %}
         {% if sort and sort.field == field %}
             {% if sort.type == 'DESC' %}
-                <a href="{{ path('callevent_sort', {field: field, type: 'ASC'}) }}">{{ label | trans({},'CallEvent')}} <i class="fa fa-sort-down"></i></a>
+                <a href="{{ path('callevent_planner_sort', {field: field, type: 'ASC'}) }}">{{ label | trans({},'CallEvent')}} <i class="fa fa-sort-down"></i></a>
                 {% elseif sort.type == 'ASC' %}
-                <a href="{{ path('callevent_sort', {field: field, type: 'DESC'}) }}">{{ label | trans({},'CallEvent')}} <i class="fa fa-sort-up"></i></a>
+                <a href="{{ path('callevent_planner_sort', {field: field, type: 'DESC'}) }}">{{ label | trans({},'CallEvent')}} <i class="fa fa-sort-up"></i></a>
                 {% endif %}
             {% else %}
-            <a href="{{ path('callevent_sort', {field: field, type: 'ASC'}) }}">{{ label | trans({},'CallEvent')}} <i class="fa fa-sort"></i></a>
+            <a href="{{ path('callevent_planner_sort', {field: field, type: 'ASC'}) }}">{{ label | trans({},'CallEvent')}} <i class="fa fa-sort"></i></a>
             {% endif %}
         {% endspaceless %}
     {% endmacro %}
@@ -22,19 +22,16 @@
 {% block body %}
     <section class="content-header">
         <h1>
-            {{ 'calls'|trans|capitalize }}
+            <a href="{{ path('callevent') }}"> {{ 'calls'|trans|capitalize }}</a>
+            /
+            {{ 'calls planner'|trans({},'CallEvent')|capitalize }}
         </h1>
     </section>
     <section class="content">    
         <div class="box">
             <div class="box-header">
                 <div class="box-tools pull-right">
-                    <a class="btn btn-link btn-sm" href={{ path('callevent_new') }}>
-                        <i class="fa fa-plus"></i> {{ 'Create a new %entity%'|trans({'%entity%': 'CallEvent'}, 'CallEvent') }}
-                    </a>
-                    <a class="btn btn-link btn-sm" href="{{ path('callevent_export') }}">
-                        <i class="fa fa-download"></i> {{ '%entity%'|trans({'%entity%': 'Export'}, 'CallEvent') }}
-                    </a>
+                  
                 </div>
             </div>
             <div class="panel-heading">
@@ -43,25 +40,8 @@
                         {{ "Action"|trans|capitalize }} <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu multi-level">
-                        <li class="dropdown-submenu">
-                            <a href="#" >{{ "change status"|trans|capitalize }}</a>
-                            <ul class="dropdown-menu">
-                                {% for status in statuses %}
-                                    <li>
-                                        <a href="#" class="bulk-action" action="{{ path('callevent_bulk_status',{id:status.id}) }}" data-id="{{status.id}}" >{{ status.name|capitalize }}</a>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        </li>
-                        <li class="dropdown-submenu">
-                            <a href="#">{{ "assignee to"|trans|capitalize }}</a>
-                            <ul class="dropdown-menu">
-                                {% for user in users %}
-                                    <li>
-                                        <a href="#" class="bulk-action"  action="{{ path('callevent_bulk_user',{id:user.id}) }}" data-id="{{user.id}}" >{{ user.happyname|capitalize }}</a>
-                                    </li>
-                                {% endfor %}
-                            </ul>
+                        <li class="">
+                            <a href="#" data-toggle="modal" data-target="#massiveModal" >{{ "create calls"|trans({},'CallEvent') | capitalize }}</a>
                         </li>
                     </ul>
                 </div>
@@ -71,44 +51,14 @@
                     </div>
                 </div>
                 {% set open = "" %}
-                {% if endDateFilter != "" or startDateFilter != "" or accountFilter |length > 0 or statusFilter |length > 0 or assigneeFilter |length > 0 %}
+                {% if endDateFilter != "" or startDateFilter != "" or accountFilter |length > 0 or statusFilter |length > 0%}
 
                     {% set open = "in" %}
                 {% endif %}
                 <div id="filter" class="collapse {{open}} row filters-content">
                     <form method="get" action="" class=" form-horizontal">
                         <div  class="col-sm-6" >
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label " for="assigneeFilter">{{'Assignee' | trans}}</label>
-
-                                <div class="col-sm-8">
-                                    {% set multiple = "" %}
-                                    {% set icon = "ion-plus-circled" %}
-                                    {% if assigneeFilter |length > 1 %}
-                                        {% set  multiple = "multiple='true'" %}
-                                        {% set icon = "ion-ios-minus-outline" %}
-                                    {% endif %}
-                                    <select id="assigneeFilter" name="assigneeFilter[]" {{multiple}} class="form-control">
-                                        <option value=""></option>
-                                        {% set  selected = "" %}
-                                        {% if "-1" in assigneeFilter %}
-                                            {% set  selected = "selected" %}
-                                        {% endif %}
-                                        <option value="-1" {{selected}}> {{'Not Assignee' | trans}}</option>
-                                        {% for user in users %}
-                                            {% set  selected = "" %}
-                                            {% if user.id in assigneeFilter %}
-                                                {% set  selected = "selected" %}
-                                            {% endif %}
-                                            <option value="{{user.id}}" {{selected}}>{{user.happyname}}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                
-                                <div class="col-sm-1">
-                                    <span class="cursor-pointer text-left  ionicons {{icon}}" style="margin-top: 8px;" onclick="toogleSelect(assigneeFilter,this)"></span>
-                                </div>
-                            </div>
+                          
                             <div class="form-group">
                                 <label class="col-sm-2 control-label " for="accountFilter">{{'Account' | trans}}</label>
 
@@ -140,9 +90,18 @@
                                     <span class="cursor-pointer text-left  ionicons {{icon}}" style="margin-top: 8px;" onclick="toogleSelect(accountFilter,this)"></span>
                                 </div>
                             </div>
+                             <div class="form-group">
+                                <label class="col-sm-3 control-label" for="statusFilter">{{'Between Dates' | trans}}</label>
+                                <div class="col-sm-4" class="input-group">
+                                   <input value="{{startDateFilter}}" placeholder="{{'start' | trans}}" type="text" id="filter_start_date" name="startDateFilter" class="form-control">
+                                </div>
+                                <div class="col-sm-4" class="input-group">
+                                   <input value="{{endDateFilter}}" placeholder="{{'end' | trans}}" type="text" id="filter_end_date" name="endDateFilter" class="form-control">
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <div class=" col-sm-9">
-                                    <a class="btn btn-default btn-sm" href="{{ path('callevent') }}?reset"><i class="fa fa-times"></i> {{'clean' | trans | capitalize}}</a>
+                                    <a class="btn btn-default btn-sm" href="{{ path('callevent_planner') }}?reset"><i class="fa fa-times"></i> {{'clean' | trans | capitalize}}</a>
                                     <button class="btn btn-primary btn-sm" type="submit">{{'apply' | trans | capitalize}}</button>
                                 </div>
                             </div>
@@ -177,15 +136,6 @@
                                     <i class="cursor-pointer ionicons text-left {{icon}}" style="margin-top: 8px;"  onclick="toogleSelect(statusFilter,this)"></i>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label" for="statusFilter">{{'Between Dates' | trans}}</label>
-                                <div class="col-sm-4" class="input-group">
-                                   <input value="{{startDateFilter}}" placeholder="{{'start' | trans}}" type="text" id="filter_start_date" name="startDateFilter" class="form-control">
-                                </div>
-                                <div class="col-sm-4" class="input-group">
-                                   <input value="{{endDateFilter}}" placeholder="{{'end' | trans}}" type="text" id="filter_end_date" name="endDateFilter" class="form-control">
-                                </div>
-                            </div>
                         </div>
                     </form>
                 </div>
@@ -195,22 +145,46 @@
                     <thead>
                         <tr>
                             <th scope="col"><input type="checkbox"  onclick="selectAll(this)" class="" ></th>
-                            <th scope="col">{{ thead('callevent', 'subject', 'subject') }}</th>
-                            <th scope="col">{{ thead('callevent', 's.name', 'status') }}</th>
-                            <th scope="col">{{ thead('callevent', 'a.name', 'account') }}</th>
-                            <th scope="col">{{ thead('callevent', 'u.username', 'assignee') }}</th>
-                            <th scope="col">{{ thead('callevent', 'date', 'date') }}</th>
+                            <th scope="col">{{ thead('callevent_planner', 'a.name', 'Account') }}</th>
+                            <th scope="col">{{ thead('callevent_planner', 'diffDates', 'diffDates') }}</th>
+                            <th scope="col">{{ thead('callevent_planner', 'status', 'Status') }}</th>
+                            <th scope="col">{{ thead('callevent_planner', 'lastDate', 'LastDate') }}</th>
+                            <th scope="col">{{ thead('callevent_planner', 'penddings', 'Has penddings') }}</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for callevent in paginator %}
                             <tr class="bulk">
-                                <td><input type="checkbox" value="{{callevent[0].id}}" name="callevent[]" class="bulk-check" ></td>
-                                <td><a href="{{ path('callevent_show', {id: callevent[0].id}) }}">{{ callevent[0].id }}</a></td>
-                                <td>{{ callevent[0].name }}</td>
-                                <td>{{ callevent[0].id }}</td>
-                                <td>{{ callevent["diff"]  }}</td>
-                                <td>{{ callevent["maxDate"]  }}</td>
+                                <td><input type="checkbox" value="{{callevent["account"].id}}" name="callevent[]" class="bulk-check" ></td>
+                                <td>
+                                    <a href="{{ path('callevent_new_account', {account: callevent["account"].id}) }}">{{ callevent["account"].name }}</a>
+                                </td>
+                                <td>
+                                    {% if not callevent["diffDates"] %}
+                                        -
+                                    {% else %}
+                                        {% if callevent["diffDates"] > 0 %}
+                                            ({{ callevent["diffDates"]  }})
+                                        {% else %}
+                                            {{ - callevent["diffDates"]  }}
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
+                                <td>{{ callevent["status"] }}</td>
+                                <td>
+                                    {% if callevent["lastDate"] %}
+                                        {{ callevent["lastDate"] | date("fullDateTime"| trans)  }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if callevent["penddings"] > 0 %}
+                                        {{'yes' |trans({}, 'CallEvent')  | capitalize}}
+                                    {% else %}
+                                        {{'no' |trans({}, 'CallEvent') | capitalize}}
+                                    {% endif %}
+                                </td>
                             </tr>
                         {% endfor %}
                     </tbody>
@@ -218,10 +192,104 @@
 
             </div>
             <div class="box-footer">
-
+                {% if pageCount > 1 %}
+                    <ul class="pagination">
+                      {% if current != 1 %}
+                          <li>
+                          <a href="{{ path("callevent_planner") }}?page={{current-1}}" aria-label="Previous">
+                              <span aria-hidden="true">«</span>
+                            </a>
+                          </li>
+                      {% else %}
+                          <li class="disabled">
+                            <span aria-hidden="true">«</span>
+                          </li>
+                      {% endif %} 
+                      {% for page in pagesInRange %}
+                        {% if page == current %}
+                          <li class="active">
+                        {% else %}
+                          <li>
+                        {% endif %}
+                          <a href="{{ path("callevent_planner") }}?page={{page}}">{{ page }}
+                            {% if page == current %}
+                                <span class="sr-only">(current)</span>
+                            {% endif %}
+                          </a>
+                          </li>
+                      {% endfor %}
+                        {% if current != last %}
+                            <li>
+                            <a href="{{ path("callevent_planner") }}?page={{current+1}}" aria-label="Next">
+                            <span aria-hidden="true">»</span>
+                            </a>
+                        {% else %}
+                            <li class="disabled">
+                            <span aria-hidden="true">»</span>
+                        {% endif %} 
+                        </li>  
+                    </ul>
+                    {% endif %}
             </div>
-
-    </section>        
+            <div class="modal fade" id="massiveModal">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">{{'Creating massives calls'| trans({},"CallEvent")}}</h4>
+                  </div>
+                  <div class="modal-body">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="massive_date">{{'subject' | trans({},"CallEvent") | capitalize}}</label>
+                            <div class="col-sm-7" class="input-group">
+                               <input  placeholder="{{'subject' | trans({},"CallEvent") | capitalize}}" type="text" id="massive_subject" name="massive_subject" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="massive_date">{{'date' | trans({},"CallEvent")| capitalize}}</label>
+                            <div class="col-sm-7" class="input-group">
+                               <input required placeholder="{{'date' | trans}}" type="text" id="massive_date" name="massive_date" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="massive_assignee">{{'status'|trans({}, 'CallEvent') | capitalize}}</label>
+                            <div class="col-sm-7">
+                                <select id="massive_status" name="massive_status[]" class="form-control">
+                                    <option value=""></option>
+                                    {% for status in statuses %}
+                                        {% set  selected = "" %}
+                                        {% if status.id == penddingStatusId %}
+                                            {% set  selected = "selected" %}
+                                        {% endif %}
+                                        <option value="{{status.id}}" {{selected}}>{{status.name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="massive_assignee">{{'assignee'|trans({}, 'CallEvent') | capitalize}}</label>
+                            <div class="col-sm-7">
+                                <select id="massive_assignee" name="massive_assignee"  class="form-control">
+                                    <option value=""></option>
+                                    {% for user in users %}
+                                        <option value="{{user.id}}" >{{user.happyname}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">{{'close' | trans | capitalize}}</button>
+                    <input hidden value="{{ path('callevent_bulk_create') }}" id="massive_action"  >
+                    <button type="button" class="btn btn-primary" onclick="massiveCreate()">{{'apply' | trans | capitalize}}</button>
+                  </div>
+                </div><!-- /.modal-content -->
+              </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+        </section>        
 
 {% endblock %}
 {% block javascripts %}
@@ -230,9 +298,11 @@
     <script type="text/javascript">
         jQuery(document).ready(function($) {
             $field = $('#filter_start_date');
-            $field.datetimepicker({"formatter":"js","format":"dd\/mm\/yyyy  hh:ii","autoclose":true,"todayBtn":true,"todayHighlight":true,"keyboardNavigation":true});
+            $field.datetimepicker({"formatter":"js","format":"dd\/mm\/yy  hh:ii","autoclose":true,"todayBtn":true,"todayHighlight":true,"keyboardNavigation":true});
             $field = $('#filter_end_date');
-            $field.datetimepicker({"formatter":"js","format":"dd\/mm\/yyyy  hh:ii","autoclose":true,"todayBtn":true,"todayHighlight":true,"keyboardNavigation":true});  
+            $field.datetimepicker({"formatter":"js","format":"dd\/mm\/yy  hh:ii","autoclose":true,"todayBtn":true,"todayHighlight":true,"keyboardNavigation":true});  
+            $field = $('#massive_date');
+            $field.datetimepicker({"formatter":"js","format":"dd\/mm\/yy  hh:ii","autoclose":true,"todayBtn":true,"todayHighlight":true,"keyboardNavigation":true});
         });
         function selectAll(parent){
             $(".bulk input.bulk-check").attr("checked",parent.checked);
@@ -249,22 +319,29 @@
                 $(me).addClass("ion-plus-circled")
             }
         }
-        $(".bulk-action").click(function () {
-            var action = $(this).attr("action");
-            var calleventIds = [];
+        function massiveCreate () {
+            var action = $("#massive_action").val();
+            var accountsIds = [];
             $(".bulk input.bulk-check:checked").each(function () {
-                calleventIds.push($(this).val());
+                accountsIds.push($(this).val());
             });
-
+            var date = $('#massive_date').val();
+            var assignee = $('#massive_assignee').val();
+            var subject = $('#massive_subject').val();
+            var status = $('#massive_status').val();
             $.ajax({
                 "url": action,
                 "type": "GET",
-                "data": {"callevents": calleventIds},
+                "data": {"accounts": accountsIds,
+                            "date":date,
+                            "assignee":assignee,
+                            "subject":subject,
+                            status:status  },
                 "success": function () {
                     location.reload();
                 }
             });
 
-        });
+        };
     </script>
 {% endblock%}

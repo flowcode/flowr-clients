@@ -39,7 +39,6 @@ class ExcelExportService
 		if($description){
 			$objPHPExcel->getProperties()->setDescription($description);
 		}
-
 		//setCellValueByColumnAndRow (columna, fila, valor)
 		$row = 1;
 		foreach ($data as $rowData) {
@@ -53,7 +52,11 @@ class ExcelExportService
 			}
 			$row++;
 		}
-        
+		for ($i=0; $i < $column; $i++) { 
+			$objPHPExcel->getActiveSheet()->getColumnDimension( \PHPExcel_Cell::stringFromColumnIndex($i))->setAutoSize(true);
+		}
+		
+
 		// Rename worksheet
 		$objPHPExcel->getActiveSheet()->setTitle('Simple');
 		// Set active sheet index to the first sheet, so Excel opens this as the first sheet

@@ -16,3 +16,21 @@ date: fecha
 description: Descripción
 status: estado
 'this procedure is irreversible': 'esta accion será irreversible'
+Account: Cuenta
+diffDates: '#días'
+Status: Estado
+LastDate: Última llamada
+Has penddings: Tiene pendientes
+calls planner: Planificador de llamadas
+subject: tema
+date: fecha
+assignee: asignado a
+Subject: Tema
+Contact name: Nombre del contacto
+Date: Fecha
+Assignee: Asignado a
+Description: Descripción
+Creating massives calls: Creando llamadas de forma masiva
+create calls: crear llamados
+yes: si
+no: no

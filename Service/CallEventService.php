@@ -40,7 +40,7 @@ class CallEventService
                         "Id" => "Cuenta:",
                         "Name" => $callevent->getAccount()->getName());
                     $data[$index++] = array( 
-                    "Identificador", "Subject",
+                     " ","Subject",
                     "Nombre de Usuario", "Nombre de Contacto",
                     "Estado llamado","Fecha");
                 }
@@ -48,20 +48,19 @@ class CallEventService
             }else{
                 if($oldAccount == "" ){
     		        $data[$index++] = array( 
-    		            "Identificador", "Subject",
+    		            " ", "Subject",
     		            "Nombre de Usuario", "Nombre de Contacto",
     		            "Estado llamado","Fecha");
                 }
                 $oldAccount = "done";
             }
-            $id = $callevent->getId()? : " ";
             $subject = $callevent->getSubject()? : " ";
             $assignee = $callevent->getAssignee()? : " ";
             $contactname = $callevent->getContactName()? : " ";
             $status = $callevent->getStatus()? : " ";
             $date = $callevent->getDate()? : " ";
             $data[$index++] = array(
-                $id ,
+                " ",
                 $subject ,
                 $assignee ,
                 $contactname ,

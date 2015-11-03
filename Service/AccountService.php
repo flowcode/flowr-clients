@@ -29,13 +29,13 @@ class AccountService
     {
         $data = array();
         $data["header"] = array( 
-            "Identificador", "Nombre",
+            "Nombre",
             "Teléfono", "Dirección",
             "Actividad");
         $index = 1;
         foreach ($accounts as $account) {
             $data[$index] = array(
-                $account->getId(), $account->getName(),
+                $account->getName(),
                 $account->getPhone(), $account->getAddress(),
                 $account->getActivity());
             $index++;
