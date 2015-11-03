@@ -71,6 +71,49 @@ class CallEventController extends BaseController
     }
 
     /**
+     * Lists all Account entities.
+     *
+     * @Route("/planner", name="callevent_planner")
+     * @Method("GET")
+     * @Template()
+     */
+    public function plannerAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();        
+        $accountsfilterd = $em->getRepository('FlowerModelBundle:Clients\CallEvent')->getPlannerQuery();
+/*
+        $filters = array(
+            'statusFilter' => "s.id",
+            'assigneeFilter' => "u.id",
+            'accountFilter' => "a.id",
+            'startDateFilter' => array("field"=> "ce.date", "type" => "date" , "operation" => ">"),
+            'endDateFilter' => array("field"=> "ce.date", "type" => "date" , "operation" => "<="),
+            );
+
+        if($request->query->has('reset')) {
+            $request->getSession()->set('filter.callevent', null);
+            return $this->redirectToRoute("callevent");
+        }
+        $this->saveFilters($request, $filters, 'callevent','callevent');
+        $paginator = $this->filter($query,'callevent',$request);
+        */
+        $statuses = $em->getRepository('FlowerModelBundle:Clients\CallEventStatus')->findAll();
+        $users = $em->getRepository('FlowerModelBundle:User\User')->findAll();
+        $accounts = $em->getRepository('FlowerModelBundle:Clients\Account')->findAll();
+        $filters = $this->getFilters('callevent');
+        return array(
+            'startDateFilter' => isset($filters['startDateFilter'])?$filters['startDateFilter']["value"] : null,
+            'endDateFilter' => isset($filters['endDateFilter'])?$filters['endDateFilter']["value"] : null,
+            'assigneeFilter' => isset($filters['assigneeFilter'])?$filters['assigneeFilter']["value"] : null,
+            'statusFilter' => isset($filters['statusFilter'])?$filters['statusFilter']["value"] : null,
+            'users' => $users,
+            'accountFilter' => isset($filters['accountFilter'])?$filters['accountFilter']["value"] : null,
+            'accounts' => $accounts,
+            'statuses' => $statuses,
+            'paginator' => $accountsfilterd,
+        );
+    }
+    /**
      *
      * @Route("/export", name="callevent_export")
      * @Method("GET")
