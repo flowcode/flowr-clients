@@ -150,6 +150,7 @@
                             <th scope="col">{{ thead('callevent_planner', 'status', 'Status') }}</th>
                             <th scope="col">{{ thead('callevent_planner', 'lastDate', 'LastDate') }}</th>
                             <th scope="col">{{ thead('callevent_planner', 'penddings', 'Has penddings') }}</th>
+                            <th scope="col">{{ 'Action' | trans | capitalize }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -157,7 +158,7 @@
                             <tr class="bulk">
                                 <td><input type="checkbox" value="{{callevent["account"].id}}" name="callevent[]" class="bulk-check" ></td>
                                 <td>
-                                    <a href="{{ path('callevent_new_account', {account: callevent["account"].id}) }}">{{ callevent["account"].name }}</a>
+                                    <a href="{{ path('account_show', {id: callevent["account"].id}) }}">{{ callevent["account"].name }}</a>
                                 </td>
                                 <td>
                                     {% if not callevent["diffDates"] %}
@@ -184,6 +185,9 @@
                                     {% else %}
                                         {{'no' |trans({}, 'CallEvent') | capitalize}}
                                     {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{{ path('callevent_new_account', {account: callevent["account"].id}) }}">{{'create call' | trans({}, 'CallEvent') | capitalize}}</a>
                                 </td>
                             </tr>
                         {% endfor %}
