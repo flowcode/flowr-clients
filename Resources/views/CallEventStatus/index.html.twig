@@ -1,12 +1,12 @@
 {% extends "FlowerCoreBundle::layout.html.twig" %}
 
-{% block title %}{{ '%entity% list'|trans({'%entity%': 'CallEventStatus'}, 'CallEventStatus') }} - {{ parent() }}{% endblock %}
+{% block title %}{{ '%entity% List'|trans({'%entity%': 'CallEventStatus'}, 'CallEventStatus') }} - {{ parent() }}{% endblock %}
 {% block body %}
     <section class="content-header">
         {% include 'FlowerCoreBundle:Default:admin_nav.html.twig' %}
         <h1><a href="{{ path('admin_dash') }}"> {{ 'Settings'|trans}}</a>
             /
-            {{ '%entity% list'|trans({'%entity%': 'CallEventStatus'}, 'CallEventStatus') }}
+            {{ '%entity% List'|trans({'%entity%': 'CallEventStatus'}, 'CallEventStatus') }}
         </h1>
     </section>
     <section class="content">    

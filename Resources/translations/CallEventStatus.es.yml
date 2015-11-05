@@ -1,12 +1,12 @@
-'%entity% List': 'Lista de %entity%'
-'%entity% creation': 'Creación de %entity%'
-'%entity% edit': 'Edición de %entity%'
-'%entity% List': 'Lista de %entity%'
+'%entity% List': 'Lista de estado de llamados'
+'%entity% creation': 'Creación de estado de llamado'
+'%entity% edit': 'Edición de estado de llamado'
+'%entity% List': 'Lista de estados de llamados'
 Actions: Acciones
 CallEventStatus: Estado de llamados
 'Confirm delete': 'Confirmar borrado'
 Create: Crear
-'Create a new %entity%': 'Crear nueva %entity%'
+'Create a new %entity%': 'Crear nuevo estado de llamados'
 Delete: Borrar
 'Do you want to proceed?': '¿Desea continuar de todos modos?'
 edit: editar
