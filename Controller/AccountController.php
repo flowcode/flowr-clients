@@ -97,8 +97,13 @@ class AccountController extends BaseController
         $paginator = $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), 20);
 
         $accauntcalls = $em->getRepository('FlowerModelBundle:Clients\CallEvent')->findBy(array("account" => $account),array("date" => "DESC"),10);
+        $editForm = $this->createForm(new AccountType(), $account, array(
+            'action' => $this->generateUrl('account_update', array('id' => $account->getid())),
+            'method' => 'PUT',
+        ));
 
         return array(
+            'edit_form' => $editForm->createView(),
             'accauntcalls' => $accauntcalls,
             'account' => $account,
            // 'nextBugs' => $nextBugs,
