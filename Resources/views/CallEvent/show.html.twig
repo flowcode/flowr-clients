@@ -25,11 +25,11 @@
                             {{ form_widget(delete_form) }}
 
                             <div class="btn-group record_actions">
+                                <button class="btn btn-link btn-sm" type="submit">{{ 'Delete'|trans({}, 'CallEvent') }}</button>
 
                                 <a class="btn btn-link  btn-sm" onclick="showEdit(true)">
                                     {{ 'Edit'|trans({}, 'Account') }}
                                 </a>
-                                <button class="btn btn-link btn-sm" type="submit">{{ 'Delete'|trans({}, 'CallEvent') }}</button>
 
                             </div>
 

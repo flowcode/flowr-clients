@@ -19,10 +19,10 @@
                             {{ form_start(delete_form) }}
                             {{ form_widget(delete_form) }}
                             <div class="btn-group record_actions">
+                                <button class="btn btn-link btn-sm" type="submit">{{ 'Delete'|trans({}, 'Account') }}</button>
                                 <a class="btn btn-link  btn-sm" onclick="showEdit(true)">
                                     {{ 'Edit'|trans({}, 'Account') }}
                                 </a>
-                                <button class="btn btn-link btn-sm" type="submit">{{ 'Delete'|trans({}, 'Account') }}</button>
 
                             </div>
 
@@ -108,9 +108,10 @@
                         <table class="table table-condensed">
                             <thead>
                                 <tr>
-                                    <th>{{ 'name'|trans }}</th>
-                                    <th>{{ 'email'|trans }}</th>
-                                    <th>{{ 'phone'|trans }}</th>
+                                    <th>{{ 'Name'|trans({}, 'Contact') }}</th>
+                                    <th>{{ 'Email'|trans({}, 'Contact') }}</th>
+                                    <th>{{ 'Observations'|trans({}, 'Contact') }}</th>
+                                    <th>{{ 'Phone'|trans({}, 'Contact') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -121,6 +122,9 @@
                                         </td>
                                         <td>
                                             {{ contact.email }}
+                                        </td>
+                                        <td>
+                                            {{ contact.observations }}
                                         </td>
                                         <td>{{ contact.phone }}</td>
                                     </tr>

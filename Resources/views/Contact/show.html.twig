@@ -7,12 +7,18 @@
         <h1>
             <a href="{{ path('contact') }}">{{ 'contacts'|trans|capitalize }}</a>
             /
+            {% if contact.accounts | length > 0 %}
+                <a href="{{ path('account_show',{id:contact.accounts[0].id }) }}">{{ contact.accounts[0].name|capitalize }}</a>
+                /    
+            {% endif %}
             {{ contact.happyname }}
         </h1>
 
     </section>
+
+
     <section class="content">    
-        <div class="box">
+        <div class="box" id="showContact">
             <div class="box-header">
                 <h3 class="box-title"></h3>
                 <div class="box-tools">
@@ -21,10 +27,10 @@
 
                     <div class="btn-group record_actions">
 
-                        <a class="btn btn-link btn-sm" href="{{ path('contact_edit', {id: contact.id}) }}">
-                            {{ 'Edit'|trans({}, 'Contact') }}
-                        </a>
                         <button class="btn btn-link btn-sm" type="submit">{{ 'Delete'|trans({}, 'Contact') }}</button>
+                        <a class="btn btn-link  btn-sm" onclick="showEdit(true)">
+                                    {{ 'Edit'|trans({}, 'Account') }}
+                                </a>
 
                     </div>
 
@@ -55,20 +61,20 @@
                 <table class="table table-hover record_properties">
                     <tbody>
                         <tr>
-                            <th scope="row">{{'Id'|trans({}, 'Contact')}}</th>
-                            <td>{{ contact.id }}</td>
-                        </tr>
-                        <tr>
                             <th scope="row">{{'Firstname'|trans({}, 'Contact')}}</th>
-                            <td>{{ contact.firstname }}</td>
+                            <td>{{ contact.firstname | capitalize }}</td>
                         </tr>
                         <tr>
                             <th scope="row">{{'Lastname'|trans({}, 'Contact')}}</th>
-                            <td>{{ contact.lastname }}</td>
+                            <td>{{ contact.lastname | capitalize}}</td>
                         </tr>
                         <tr>
                             <th scope="row">{{'Email'|trans({}, 'Contact')}}</th>
                             <td>{{ contact.email }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">{{'Observations'|trans({}, 'Contact')}}</th>
+                            <td>{{ contact.observations }}</td>
                         </tr>
                         <tr>
                             <th scope="row">{{'Address'|trans({}, 'Contact')}}</th>
@@ -93,7 +99,43 @@
 
             </div>
         </div>
-
+        <div  class="box"  id="editFormContact" style="display: none;">
+            <div class="box-body">
+                <div class="box-header">
+                    <div class="box-tools">
+                        <div class="btn-group record_actions">
+                            <a class="btn btn-link  btn-sm" onclick="showEdit(false)">
+                            {{ 'Cancel'|trans({}, 'Account') }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="box-body">
+                    {{ form_start(edit_form) }}
+                        {{ form_widget(edit_form) }}
+                        <p>
+                            <button class="btn btn-primary" type="submit"><i class="fa fa-edit"></i> {{ 'Edit'|trans({}, 'Contact') }}</button>
+                        </p>
+                    {{ form_end(edit_form) }}
+                </div>
+            </div>
+        </div>
     </section>
 
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        function showEdit(show){
+            if(show){
+                $("#showContact").hide();
+                $("#editFormContact").show();
+            }else{
+                $("#showContact").show();
+                $("#editFormContact").hide();
+            }
+        }
+        
+    </script>
 {% endblock %}

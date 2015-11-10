@@ -48,9 +48,14 @@ class ContactController extends Controller
      */
     public function showAction(Contact $contact)
     {
+        $editForm = $this->createForm($this->get('form.type.contact'), $contact, array(
+            'action' => $this->generateUrl('contact_update', array('id' => $contact->getid())),
+            'method' => 'PUT',
+        ));
         $deleteForm = $this->createDeleteForm($contact->getId(), 'contact_delete');
 
         return array(
+            'edit_form' => $editForm->createView(),
             'contact' => $contact,
             'delete_form' => $deleteForm->createView(),
         );

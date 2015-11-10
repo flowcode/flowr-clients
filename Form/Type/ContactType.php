@@ -30,6 +30,7 @@ class ContactType extends AbstractType
                 ->add('email')
                 ->add('address', null, array('required' => false))
                 ->add('phone', null, array('required' => false))
+                ->add('observations', null, array('required' => false))
                 ->add('accounts', 'entity', array(
                     'class' => 'FlowerModelBundle:Clients\Account',
                     'multiple'    => true,

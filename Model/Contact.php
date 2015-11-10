@@ -83,6 +83,14 @@ abstract class Contact
     protected $accounts;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="observations", type="text", nullable=true)
+     * @Groups({"search"})
+     */
+    protected $observations;
+
+    /**
      * @ManyToOne(targetEntity="\Flower\ModelBundle\Entity\User\User")
      * @JoinColumn(name="user_id", referencedColumnName="id")
      * */
@@ -349,5 +357,22 @@ abstract class Contact
     {
         return $this->accounts;
     }
-
+    /**
+    * Get observations
+    * @return String 
+    */
+    public function getObservations()
+    {
+        return $this->observations;
+    }
+    
+    /**
+    * Set observations
+    * @return String 
+    */
+    public function setObservations($observations)
+    {
+        $this->observations = $observations;
+        return $this;
+    }
 }
