@@ -22,3 +22,5 @@ cuit: cuit
 phone: teléfono
 'this procedure is irreversible': 'esta accion será irreversible'
 Filter: Filtrar
+'This %entity%': 'Página actual'
+'All %entity%': 'Todo'

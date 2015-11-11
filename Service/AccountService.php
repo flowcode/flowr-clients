@@ -34,10 +34,15 @@ class AccountService
             "Actividad");
         $index = 1;
         foreach ($accounts as $account) {
+            $name = $account->getName()? : " ";
+            $phone = $account->getPhone()? : " ";
+            $address = $account->getAddress()? : " ";
+            $activity = $account->getActivity()? : " ";
             $data[$index] = array(
-                $account->getName(),
-                $account->getPhone(), $account->getAddress(),
-                $account->getActivity());
+                $name ,
+                $phone ,
+                $address ,
+                $activity );
             $index++;
         }
         return $data;

@@ -35,3 +35,5 @@ create calls: crear llamados
 yes: si
 no: no
 create call: crear llamado
+'This %entity%': 'Página actual'
+'All %entity%': 'Todo'
