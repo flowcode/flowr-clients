@@ -29,9 +29,23 @@
         <div class="box">
             <div class="box-header">
                 <div class="box-tools pull-right">
-                    <a class="btn btn-link btn-sm" href="{{ path('callevent_export') }}">
-                        <i class="fa fa-download"></i> {{ '%entity%'|trans({'%entity%': 'Export'}, 'CallEvent') }}
-                    </a>
+                    <div class="btn-group">
+                        <button class="btn btn-link btn-sm dropdown-toggle" data-toggle="dropdown" type="button">
+                            <i class="fa fa-download"></i> {{ '%entity%'|trans({'%entity%': 'Export'}, 'CallEvent') }}
+                        </button>
+                        <ul class="dropdown-menu" style="min-width: inherit;">
+                            <li>
+                                <a class="btn btn-link btn-sm" href={{ path('callevent_export' , {'page':paginator.currentPageNumber})}} style="color:#CC3E32;">
+                                    {{ 'This %entity%'|trans({'%entity%': 'Page'}, 'CallEvent') }}
+                                </a>
+                            </li>
+                            <li>
+                                <a class="btn btn-link btn-sm" href={{ path('callevent_export') }} style="color:#CC3E32;">
+                                    {{ 'All %entity%'|trans({'%entity%': 'Pages'}, 'CallEvent') }}
+                                </a>
+                            </li> 
+                        </ul>
+                    </div>
                     <a class="btn btn-link btn-sm" href={{ path('callevent_planner') }}>
                         <i class="fa fa-calendar"></i> {{ 'calls planner'|trans({}, 'CallEvent') | capitalize}}
                     </a>

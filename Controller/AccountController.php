@@ -66,7 +66,15 @@ class AccountController extends BaseController
         $em = $this->getDoctrine()->getManager();        
         $qb = $em->getRepository('FlowerModelBundle:Clients\Account')->createQueryBuilder('a');
         $qb->leftJoin("a.activity","ac");
-        $accounts = $this->filter($qb,'account',$request);
+
+        $limit = 20;
+        $currPage = $request->query->get('page');
+        if($currPage){
+            $accounts = $this->filter($qb,'account',$request, $limit, $currPage);
+        } else {
+            $accounts = $this->filter($qb,'account',$request, -1);
+        }
+        
         $data = $this->get("client.service.account")->accountDataExport($accounts);
         $this->get("client.service.excelexport")->exportData($data,"Cuentas","Mi descripcion");
         return $this->redirectToRoute("account");

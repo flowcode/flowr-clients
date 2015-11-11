@@ -144,9 +144,17 @@ class CallEventController extends BaseController
         $qb->leftJoin("ce.account","a");
         $qb->leftJoin("ce.assignee","u");
 
-        $qb->orderBy("a.id");
+        //$qb->orderBy("a.id");
 
-        $callevents = $this->filter($qb,'callevent',$request);
+        //Cantidad de paginado
+        $limit = 20;
+        $currPage = $request->query->get('page');
+        if($currPage){
+            $callevents = $this->filter($qb,'callevent',$request, $limit, $currPage);
+        } else {
+            $callevents = $this->filter($qb,'callevent',$request, -1);
+        }
+
         $data = $this->get("client.service.callevent")->callEventDataExport($callevents);
         $this->get("client.service.excelexport")->exportData($data,"Llamadas","Mi descripcion");
         return $this->redirectToRoute("callevent");

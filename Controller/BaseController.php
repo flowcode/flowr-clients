@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
  */
 class BaseController extends Controller
 {
-    protected function filter($qb,$name,$request)
+    protected function filter($qb,$name,$request,$limit = 20,$currPage = 1)
     {
     	$filterNumber = 0;
         $this->addQueryBuilderSort($qb, $name);
@@ -33,8 +33,11 @@ class BaseController extends Controller
             	}
             }
         }
-        return $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), 20);
-
+        if($limit > 0){
+            return $this->get('knp_paginator')->paginate($qb, $request->query->get('page', $currPage), $limit);
+        } else {
+            return $qb->getQuery()->getResult();
+        }
     }
     private function addCustomFilter($qb,$value, $options,$filterNumber){
     	$operation = $options["operation"];

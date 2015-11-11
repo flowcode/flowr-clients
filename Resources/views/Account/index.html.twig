@@ -33,9 +33,23 @@
                     <a class="btn btn-link btn-sm" href={{ path('account_new') }}>
                         <i class="fa fa-plus"></i> {{ 'Create a new %entity%'|trans({'%entity%': 'Account'}, 'Account') }}
                     </a>
-                    <a class="btn btn-link btn-sm" href="{{ path('account_export') }}">
-                        <i class="fa fa-download"></i> {{ '%entity%'|trans({'%entity%': 'Export'}, 'Account') }}
-                    </a>
+                    <div class="btn-group">
+                        <button class="btn btn-link btn-sm dropdown-toggle" data-toggle="dropdown" type="button">
+                            <i class="fa fa-download"></i> {{ '%entity%'|trans({'%entity%': 'Export'}, 'Account') }}
+                        </button>
+                        <ul class="dropdown-menu" style="min-width: inherit;">
+                            <li>
+                                <a class="btn btn-link btn-sm" href={{ path('account_export' , {'page':paginator.currentPageNumber})}} style="color:#CC3E32;">
+                                    {{ 'This %entity%'|trans({'%entity%': 'Page'}, 'Account') }}
+                                </a>
+                            </li>
+                            <li>
+                                <a class="btn btn-link btn-sm" href={{ path('account_export') }} style="color:#CC3E32;">
+                                    {{ 'All %entity%'|trans({'%entity%': 'Pages'}, 'Account') }}
+                                </a>
+                            </li> 
+                        </ul>
+                    </div>
                 </div>
             </div>
             <div class="panel-heading">
