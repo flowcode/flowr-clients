@@ -17,7 +17,7 @@ class CallEventType extends AbstractType
         $builder
                 ->add('subject')
                 ->add('account')
-                ->add('contactName')
+                ->add('contactName',null, array( 'required' => false))
                 ->add('date','collot_datetime', array( 'required' => true,'pickerOptions' =>
                                                 array('format' => 'dd/mm/yyyy  hh:ii',
                                                     'autoclose' => true,
@@ -28,12 +28,14 @@ class CallEventType extends AbstractType
                                                     )))
                 ->add('status')
                 ->add('assignee')
-                ->add("description")
+                ->add("description", 'textarea', array(
+                        'required' => false,
+                        'attr' => array('rows' => '10'),
+                    ))
                 ->add('save', 'submit', array('label' => 'Save'))
                 ->add('saveAndAdd', 'submit', array('label' => 'Save and add'))
         ;
     }
-
     /**
      * {@inheritdoc}
      */
