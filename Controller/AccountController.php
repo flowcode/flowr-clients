@@ -49,9 +49,14 @@ class AccountController extends BaseController
         $this->saveFilters($request, $filters, 'account','account');
         $paginator = $this->filter($qb,'account',$request);
         $activities = $em->getRepository('FlowerModelBundle:Clients\Activity')->findAll();
+        $activityFilter = $request->query->get("activityFilter");
+        $filters = $this->getFilters('account');
+        if(!$activityFilter && $filters['activityFilter'] && $filters['activityFilter']["value"]){
+            $activityFilter = $filters['activityFilter']["value"];
+        }
         return array(
             'paginator' => $paginator,
-            'activityFilter' => $request->query->get("activityFilter"),
+            'activityFilter' => $activityFilter,
             'activities' => $activities,
         );
     }
