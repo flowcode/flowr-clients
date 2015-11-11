@@ -252,9 +252,9 @@
     <script type="text/javascript">
         jQuery(document).ready(function($) {
             $field = $('#filter_start_date');
-            $field.datetimepicker({"formatter":"js","format":"dd\/mm\/yyyy  hh:ii","autoclose":true,"todayBtn":true,"todayHighlight":true,"keyboardNavigation":true});
+            $field.datetimepicker({"formatter":"js","format":"dd\/mm\/yy  hh:ii","autoclose":true,"todayBtn":true,"todayHighlight":true,"keyboardNavigation":true});
             $field = $('#filter_end_date');
-            $field.datetimepicker({"formatter":"js","format":"dd\/mm\/yyyy  hh:ii","autoclose":true,"todayBtn":true,"todayHighlight":true,"keyboardNavigation":true});  
+            $field.datetimepicker({"formatter":"js","format":"dd\/mm\/yy  hh:ii","autoclose":true,"todayBtn":true,"todayHighlight":true,"keyboardNavigation":true});  
         });
         function selectAll(parent){
             $(".bulk input.bulk-check").attr("checked",parent.checked);
