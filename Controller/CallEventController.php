@@ -43,6 +43,7 @@ class CallEventController extends BaseController
         $filters = array(
             'statusFilter' => "s.id",
             'assigneeFilter' => "u.id",
+            'accountAssigneeFilter' => "a.assignee",
             'accountFilter' => "a.id",
             'startDateFilter' => array("field"=> "ce.date", "type" => "date", "format" => $dateformat, "operation" => ">"),
             'endDateFilter' => array("field"=> "ce.date", "type" => "date","format" => $dateformat , "operation" => "<="),
@@ -55,14 +56,15 @@ class CallEventController extends BaseController
         $this->saveFilters($request, $filters, 'callevent','callevent');
         $paginator = $this->filter($qb,'callevent',$request);
 
-        $statuses = $em->getRepository('FlowerModelBundle:Clients\CallEventStatus')->findAll();
-        $users = $em->getRepository('FlowerModelBundle:User\User')->findAll();
-        $accounts = $em->getRepository('FlowerModelBundle:Clients\Account')->findAll();
+        $statuses = $em->getRepository('FlowerModelBundle:Clients\CallEventStatus')->findBy(array(),array("name" => "ASC"));
+        $users = $em->getRepository('FlowerModelBundle:User\User')->findBy(array(),array("username" => "ASC"));
+        $accounts = $em->getRepository('FlowerModelBundle:Clients\Account')->findBy(array(),array("name" => "ASC"));
         $filters = $this->getFilters('callevent');
         return array(
             'startDateFilter' => isset($filters['startDateFilter'])?$filters['startDateFilter']["value"] : null,
             'endDateFilter' => isset($filters['endDateFilter'])?$filters['endDateFilter']["value"] : null,
             'assigneeFilter' => isset($filters['assigneeFilter'])?$filters['assigneeFilter']["value"] : null,
+            'accountAssigneeFilter' => isset($filters['accountAssigneeFilter'])?$filters['accountAssigneeFilter']["value"] : null,
             'statusFilter' => isset($filters['statusFilter'])?$filters['statusFilter']["value"] : null,
             'users' => $users,
             'accountFilter' => isset($filters['accountFilter'])?$filters['accountFilter']["value"] : null,
@@ -107,9 +109,9 @@ class CallEventController extends BaseController
         $pagesInRange = range(1, $pageCount);
 
         $accountsfilterd = $em->getRepository('FlowerModelBundle:Clients\CallEvent')->getPlannerAccounts($filters,$order,$limit,$offset);
-        $statuses = $em->getRepository('FlowerModelBundle:Clients\CallEventStatus')->findAll();
-        $accounts = $em->getRepository('FlowerModelBundle:Clients\Account')->findAll();
-        $users = $em->getRepository('FlowerModelBundle:User\User')->findAll();
+        $statuses = $em->getRepository('FlowerModelBundle:Clients\CallEventStatus')->findBy(array(),array("name" => "ASC"));
+        $accounts = $em->getRepository('FlowerModelBundle:Clients\Account')->findBy(array(),array("name" => "ASC"));
+        $users = $em->getRepository('FlowerModelBundle:User\User')->findBy(array(),array("username" => "ASC"));
         $penddingStatus = $em->getRepository('FlowerModelBundle:Clients\CallEventStatus')->findBy(array("finished" => 0));
         $penddingStatusId = 0;
         if(count($penddingStatus)>0){
@@ -157,6 +159,7 @@ class CallEventController extends BaseController
 
         $data = $this->get("client.service.callevent")->callEventDataExport($callevents);
         $this->get("client.service.excelexport")->exportData($data,"Llamadas","Mi descripcion");
+        die();
         return $this->redirectToRoute("callevent");
     }
     /**
@@ -301,7 +304,9 @@ class CallEventController extends BaseController
             $em->persist($callEvent);
             $em->flush();
             $nextAction = $form->get('saveAndAdd')->isClicked() ? 'callevent_new' : 'callevent';
-
+            if($callEvent->getAccount()){
+                return $this->redirectToRoute("callevent_new_account", array("account" => $callEvent->getAccount()->getId()));
+            }
             return $this->redirectToRoute($nextAction, array("id" => $callEvent->getId()));
         }
 
@@ -337,6 +342,32 @@ class CallEventController extends BaseController
         );
     }
 
+    /**
+     * Displays a form to create a new CallEvent entity.
+     *
+     * @Route("/duplicate/{call}", name="callevent_duplicate")
+     * @Method("GET")
+     * @Template("FlowerClientsBundle:CallEvent:new.html.twig")
+     */
+    public function duplicateAction(CallEvent $call)
+    {
+        $callEvent = new CallEvent();
+        $callEvent->setAccount($call->getAccount());
+        $callEvent->setSubject($call->getSubject());
+        $callEvent->setDate(new \DateTime());
+        $callEvent->setAssignee($this->getUser());
+        $em = $this->getDoctrine()->getManager();
+        $statueses = $em->getRepository('FlowerModelBundle:Clients\CallEventStatus')->findBy(array("finished" => 0));
+        if(count($statueses) > 0){
+            $callEvent->setStatus($statueses[0]);
+        }
+        $form = $this->createForm($this->get(CallEventController::formName), $callEvent);
+
+        return array(
+            'callevent' => $callEvent,
+            'form' => $form->createView(),
+        );
+    }
 
     /**
      * Displays a form to edit an existing CallEvent entity.
@@ -375,8 +406,13 @@ class CallEventController extends BaseController
         ));
         if ($editForm->handleRequest($request)->isValid()) {
             $this->getDoctrine()->getManager()->flush();
+            $nextAction = $editForm->get('saveAndAdd')->isClicked() ? 'callevent_new' : 'callevent_show';
+            if($callEvent->getAccount() && $editForm->get('saveAndAdd')->isClicked()){
+                return $this->redirectToRoute("callevent_new_account", array("account" => $callEvent->getAccount()->getId()));
+            }
+            return $this->redirectToRoute($nextAction, array("id" => $callEvent->getId()));
 
-            return $this->redirect($this->generateUrl('callevent_show', array('id' => $callEvent->getId())));
+            //return $this->redirect($this->generateUrl('callevent_show', array('id' => $callEvent->getId())));
         }
         $deleteForm = $this->createDeleteForm($callEvent->getId(), 'callevent_delete');
 

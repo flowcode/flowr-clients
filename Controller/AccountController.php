@@ -82,6 +82,7 @@ class AccountController extends BaseController
         
         $data = $this->get("client.service.account")->accountDataExport($accounts);
         $this->get("client.service.excelexport")->exportData($data,"Cuentas","Mi descripcion");
+        die();
         return $this->redirectToRoute("account");
     }
 

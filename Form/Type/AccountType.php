@@ -5,6 +5,7 @@ namespace Flower\ClientsBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Doctrine\ORM\EntityRepository;
 
 class AccountType extends AbstractType
 {
@@ -20,7 +21,10 @@ class AccountType extends AbstractType
                 ->add('address', null, array('required' => false))
                 ->add('activity')
                 ->add('cuit', null, array('required' => false,"label" => "CUIT/CUIL/DNI"))
-                ->add('assignee')
+                ->add('assignee',null, array('query_builder' => function (EntityRepository $er) {
+                            return $er->createQueryBuilder('u')
+                                ->orderBy('u.username', 'ASC');
+                        },))
         ;
     }
 

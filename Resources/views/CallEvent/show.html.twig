@@ -105,7 +105,9 @@
                 <div class="col-md-6">
                     <div class="box">
                         <div class="box-header">
+                            <a href="{{path('callevent_show',{id:callevent.account.id})}}">
                                 <h4>{{ callevent.account.name |capitalize}}</h4>
+                            </a>
                         </div>
                         <div class="box-body">
                             <table class="table table-hover record_properties">
@@ -131,8 +133,6 @@
 
                         </div>
                     </div>
-                </div>
-                <div class="col-md-6">
                     <div class="box">
                         <div class="box-header">
                             <h3 class="box-title">{{ 'contacts'|trans|capitalize }}</h3>
@@ -165,6 +165,33 @@
                                     {% endfor %}
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">{{ 'calls'|trans|capitalize }}</h3>
+                            <div class="box-tools">
+
+                                <a class="btn btn-link" href="{{ path('callevent') }}?accountFilter%5B%5D={{account.id}}">
+                                    <i class="fa fa-plus"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <ul class="products-list product-list-in-box">
+                                {% for call in callevent.account.calls %}
+                                    <li class="item cursor-pointer" ng-repeat="item in notes.notes">
+                                        <a class="product-title" href="{{path('callevent_show',{id:call.id})}}">
+                                                {{call.subject}} <small class="text-muted pull-right"><i class="fa fa-calendar"></i> {{call.date| date("m/d")}}</small>
+                                        </a>
+                                        <span class="product-description">
+                                            {{call.status}}
+                                        </span>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <div class="box-footer">
                         </div>
                     </div>
                 </div>

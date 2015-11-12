@@ -127,34 +127,42 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-2 control-label " for="accountFilter">{{'Account' | trans}}</label>
-
+                                <label class="col-sm-2 control-label " for="accountAssigneeFilter">{{'Account Assignee' | trans}}</label>
                                 <div class="col-sm-8">
                                     {% set multiple = "" %}
                                     {% set icon = "ion-plus-circled" %}
-                                    {% if accountFilter |length > 1 %}
+                                    {% if accountAssigneeFilter |length > 1 %}
                                         {% set  multiple = "multiple='true'" %}
                                         {% set icon = "ion-ios-minus-outline" %}
                                     {% endif %}
-                                    <select id="accountFilter" name="accountFilter[]" {{multiple}} class="form-control">
+                                    <select id="accountAssigneeFilter" name="accountAssigneeFilter[]" {{multiple}} class="form-control">
                                         <option value=""></option>
                                         {% set  selected = "" %}
-                                        {% if "-1" in accountFilter %}
+                                        {% if "-1" in accountAssigneeFilter %}
                                             {% set  selected = "selected" %}
                                         {% endif %}
                                         <option value="-1" {{selected}}> {{'Not Assignee' | trans}}</option>
-                                        {% for account in accounts %}
+                                        {% for user in users %}
                                             {% set  selected = "" %}
-                                            {% if account.id in accountFilter %}
+                                            {% if user.id in accountAssigneeFilter %}
                                                 {% set  selected = "selected" %}
                                             {% endif %}
-                                            <option value="{{account.id}}" {{selected}}>{{account.name}}</option>
+                                            <option value="{{user.id}}" {{selected}}>{{user.happyname}}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
                                 
                                 <div class="col-sm-1">
-                                    <span class="cursor-pointer text-left  ionicons {{icon}}" style="margin-top: 8px;" onclick="toogleSelect(accountFilter,this)"></span>
+                                    <span class="cursor-pointer text-left  ionicons {{icon}}" style="margin-top: 8px;" onclick="toogleSelect(accountAssigneeFilter,this)"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label" for="statusFilter">{{'Between Dates' | trans}}</label>
+                                <div class="col-sm-4" class="input-group">
+                                   <input value="{{startDateFilter}}" placeholder="{{'start' | trans}}" type="text" id="filter_start_date" name="startDateFilter" class="form-control">
+                                </div>
+                                <div class="col-sm-4" class="input-group">
+                                   <input value="{{endDateFilter}}" placeholder="{{'end' | trans}}" type="text" id="filter_end_date" name="endDateFilter" class="form-control">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -195,14 +203,37 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-3 control-label" for="statusFilter">{{'Between Dates' | trans}}</label>
-                                <div class="col-sm-4" class="input-group">
-                                   <input value="{{startDateFilter}}" placeholder="{{'start' | trans}}" type="text" id="filter_start_date" name="startDateFilter" class="form-control">
+                                <label class="col-sm-2 control-label " for="accountFilter">{{'Account' | trans}}</label>
+
+                                <div class="col-sm-8">
+                                    {% set multiple = "" %}
+                                    {% set icon = "ion-plus-circled" %}
+                                    {% if accountFilter |length > 1 %}
+                                        {% set  multiple = "multiple='true'" %}
+                                        {% set icon = "ion-ios-minus-outline" %}
+                                    {% endif %}
+                                    <select id="accountFilter" name="accountFilter[]" {{multiple}} class="form-control">
+                                        <option value=""></option>
+                                        {% set  selected = "" %}
+                                        {% if "-1" in accountFilter %}
+                                            {% set  selected = "selected" %}
+                                        {% endif %}
+                                        <option value="-1" {{selected}}> {{'Not Assignee' | trans}}</option>
+                                        {% for account in accounts %}
+                                            {% set  selected = "" %}
+                                            {% if account.id in accountFilter %}
+                                                {% set  selected = "selected" %}
+                                            {% endif %}
+                                            <option value="{{account.id}}" {{selected}}>{{account.name}}</option>
+                                        {% endfor %}
+                                    </select>
                                 </div>
-                                <div class="col-sm-4" class="input-group">
-                                   <input value="{{endDateFilter}}" placeholder="{{'end' | trans}}" type="text" id="filter_end_date" name="endDateFilter" class="form-control">
+                                
+                                <div class="col-sm-1">
+                                    <span class="cursor-pointer text-left  ionicons {{icon}}" style="margin-top: 8px;" onclick="toogleSelect(accountFilter,this)"></span>
                                 </div>
                             </div>
+                            
                         </div>
                     </form>
                 </div>
@@ -212,26 +243,28 @@
                     <thead>
                         <tr>
                             <th scope="col"><input type="checkbox"  onclick="selectAll(this)" class="" ></th>
-                            <th scope="col">{{ thead('callevent', 'subject', 'subject') }}</th>
-                            <th scope="col">{{ thead('callevent', 's.name', 'status') }}</th>
                             <th scope="col">{{ thead('callevent', 'a.name', 'account') }}</th>
+                            <th scope="col">{{ thead('callevent', 's.name', 'status') }}</th>
+                            <th scope="col">{{ thead('callevent', 'subject', 'subject') }}</th>
                             <th scope="col">{{ thead('callevent', 'u.username', 'assignee') }}</th>
                             <th scope="col">{{ thead('callevent', 'date', 'date') }}</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for callevent in paginator %}
                             <tr class="bulk">
                                 <td><input type="checkbox" value="{{callevent.id}}" name="callevent[]" class="bulk-check" ></td>
+                                <td><a href="{{ path('callevent_show', {id: callevent.id}) }}">{{ callevent.account }}</a></td>
                                 <td><a href="{{ path('callevent_show', {id: callevent.id}) }}">{{ callevent.subject }}</a></td>
                                 <td>{{ callevent.status }}</td>
-                                <td>{{ callevent.account }}</td>
                                 <td>
                                     {% if callevent.assignee %}
                                         {{ callevent.assignee.happyName }}
                                     {% endif %}
                                 </td>
                                 <td>{{ callevent.date | date('d/m/y H:i') }}</td>
+                                <td><a href="{{path('callevent_duplicate',{call:callevent.id})}}">{{'duplicate'| trans}}</a></td>
                             </tr>
                         {% endfor %}
                     </tbody>

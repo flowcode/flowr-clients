@@ -31,6 +31,8 @@ class ExcelExportService
     public function exportData($data,$title, $description = null)
     {
     	// Create new PHPExcel object
+    	echo "llega";
+    	die();
 		$objPHPExcel = new PHPExcel();
 		// Set document properties
 		$objPHPExcel->getProperties()->setCreator("Flower")
@@ -41,6 +43,7 @@ class ExcelExportService
 		}
 		//setCellValueByColumnAndRow (columna, fila, valor)
 		$row = 1;
+		$column = 0;
 		foreach ($data as $rowData) {
 			$column = 0;
 			foreach ($rowData as $item) {
@@ -56,7 +59,10 @@ class ExcelExportService
 			$objPHPExcel->getActiveSheet()->getColumnDimension( \PHPExcel_Cell::stringFromColumnIndex($i))->setAutoSize(true);
 		}
 		
-
+		if($row == 1){
+			$objPHPExcel->setActiveSheetIndex(0)
+						->setCellValueByColumnAndRow(0, 1, "no hay datos");
+		}
 		// Rename worksheet
 		$objPHPExcel->getActiveSheet()->setTitle('Simple');
 		// Set active sheet index to the first sheet, so Excel opens this as the first sheet

@@ -17,6 +17,7 @@ description: Descripción
 status: estado
 'this procedure is irreversible': 'esta accion será irreversible'
 Account: Cuenta
+account: cuenta
 diffDates: '#días'
 Status: Estado
 LastDate: Última llamada
@@ -37,3 +38,8 @@ no: no
 create call: crear llamado
 'This %entity%': 'Página actual'
 'All %entity%': 'Todo'
+
+
+
+Recovery strategy: Estrategia de recuperación
+recoveryStrategy: Estrategia de recuperación
