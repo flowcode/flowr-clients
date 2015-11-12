@@ -146,7 +146,7 @@ class CallEventController extends BaseController
         $qb->leftJoin("ce.account","a");
         $qb->leftJoin("ce.assignee","u");
 
-        //$qb->orderBy("a.id");
+        $qb->orderBy("a.id");
 
         //Cantidad de paginado
         $limit = 20;

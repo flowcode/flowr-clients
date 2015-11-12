@@ -31,8 +31,6 @@ class ExcelExportService
     public function exportData($data,$title, $description = null)
     {
     	// Create new PHPExcel object
-    	echo "llega";
-    	die();
 		$objPHPExcel = new PHPExcel();
 		// Set document properties
 		$objPHPExcel->getProperties()->setCreator("Flower")

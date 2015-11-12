@@ -31,14 +31,36 @@ class CallEventService
         $index = 0;
         $oldAccount = "";
         foreach ($callevents as $callevent) {
+            if($index){
+                $data[$index++] = array(
+                            "Id" => " ",
+                            "Name" => "Name",
+                            "Actividad" => "Actividad",
+                            "Cuit/Cuil" => "Cuit",
+                            "Dirección" => "Dirección",
+                            "Teléfono" => "Teléfono",
+                            "Responsable" => "Responsable",
+                            );
+            }
             if($callevent->getAccount()){
                 $newAccount = $callevent->getAccount()->getId();
                 if($newAccount != $oldAccount){
                 	//Primera fila Nombre del Account
                    $data[$index++] = array();
-                    $data[$index++] = array(
+                   $account = $callevent->getAccount();
+                   $assigne = " ";
+                   if($account->getAssignee()){
+                    $assigne = $account->getAssignee();
+                   }
+                   $data[$index++] = array(
                         "Id" => "Cuenta:",
-                        "Name" => $callevent->getAccount()->getName());
+                        "Name" => $account->getName(),
+                        "Actividad" => $account->getActivity(),
+                        "Cuit/Cuil" => $account->getCuit(),
+                        "Dirección" => $account->getAddress(),
+                        "Teléfono" => $account->getPhone(),
+                        "Responsable" => $assigne,
+                        );
                     $data[$index++] = array( 
                      " ","Subject",
                     "Nombre de Usuario", "Nombre de Contacto",
@@ -58,7 +80,7 @@ class CallEventService
             $assignee = $callevent->getAssignee()? : " ";
             $contactname = $callevent->getContactName()? : " ";
             $status = $callevent->getStatus()? : " ";
-            $date = $callevent->getDate()? : " ";
+            $date = $callevent->getDate()? $callevent->getDate()->format("d/m/y H:i"): " ";
             $data[$index++] = array(
                 " ",
                 $subject ,
