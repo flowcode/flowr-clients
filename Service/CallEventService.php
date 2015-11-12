@@ -31,7 +31,7 @@ class CallEventService
         $index = 0;
         $oldAccount = "";
         foreach ($callevents as $callevent) {
-            if($index){
+            if($index == 0){
                 $data[$index++] = array(
                             "Id" => " ",
                             "Name" => "Name",
