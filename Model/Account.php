@@ -39,6 +39,14 @@ abstract class Account
      * @Groups({"search", "public_api"})
      */
     protected $name;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="businessName", type="string", length=255)
+     * @Groups({"search", "public_api"})
+     */
+    protected $businessName;
     /**
      * @var string
      *
@@ -46,6 +54,12 @@ abstract class Account
      * @Groups({"search", "public_api"})
      */
     protected $phone;
+    
+    /**
+     * @ManyToOne(targetEntity="\Flower\ModelBundle\Entity\Clients\BillingType")
+     * @JoinColumn(name="billingtype_id", referencedColumnName="id")
+     * */
+    protected $billingType;
 
     /**
      * @var string
@@ -152,7 +166,24 @@ abstract class Account
     {
         return $this->name;
     }
-
+    /**
+    * Get businessName
+    * @return  
+    */
+    public function getBusinessName()
+    {
+        return $this->businessName;
+    }
+    
+    /**
+    * Set businessName
+    * @return  
+    */
+    public function setBusinessName($businessName)
+    {
+        $this->businessName = $businessName;
+        return $this;
+    }
     /**
      * Set phone
      *
@@ -452,5 +483,24 @@ abstract class Account
     public function getCalls()
     {
         return $this->calls;
+    }
+
+    /**
+    * Get billingType
+    * @return  
+    */
+    public function getBillingType()
+    {
+        return $this->billingType;
+    }
+    
+    /**
+    * Set billingType
+    * @return  
+    */
+    public function setBillingType($billingType)
+    {
+        $this->billingType = $billingType;
+        return $this;
     }
 }

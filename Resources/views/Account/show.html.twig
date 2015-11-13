@@ -53,6 +53,10 @@
                         <table class="table table-hover record_properties">
                             <tbody>
                                 <tr>
+                                    <th scope="row">{{'Business name'|trans({}, 'Account')}}</th>
+                                    <td>{{ account.businessName }}</td>
+                                </tr>
+                                <tr>
                                     <th scope="row">{{'Phone'|trans({}, 'Account')}}</th>
                                     <td>{{ account.phone }}</td>
                                 </tr>
@@ -67,6 +71,10 @@
                                 <tr>
                                     <th scope="row">{{'Activity'|trans({}, 'Account')}}</th>
                                     <td>{{ account.activity |capitalize}}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">{{'Billing type'|trans({}, 'Account')}}</th>
+                                    <td>{{ account.billingType |capitalize}}</td>
                                 </tr>
                             </tbody>
                         </table>

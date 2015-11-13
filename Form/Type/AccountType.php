@@ -17,9 +17,11 @@ class AccountType extends AbstractType
     {
         $builder
                 ->add('name')
+                ->add('businessName', null, array('required' => false))
                 ->add('phone', null, array('required' => false))
                 ->add('address', null, array('required' => false))
                 ->add('activity')
+                ->add('billingType', null, array('required' => false))
                 ->add('cuit', null, array('required' => false,"label" => "CUIT/CUIL/DNI"))
                 ->add('assignee',null, array('query_builder' => function (EntityRepository $er) {
                             return $er->createQueryBuilder('u')

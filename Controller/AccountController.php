@@ -6,7 +6,6 @@ use PHPExcel;
 use PHPExcel_IOFactory;
 
 use Doctrine\ORM\QueryBuilder;
-use Flower\ClientsBundle\Form\Type\AccountType;
 use Flower\ModelBundle\Entity\Clients\Account;
 use Flower\ModelBundle\Entity\Board\TaskStatus;
 use Flower\ModelBundle\Entity\Board\Board;
@@ -111,7 +110,7 @@ class AccountController extends BaseController
         $paginator = $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), 20);
 
         $accauntcalls = $em->getRepository('FlowerModelBundle:Clients\CallEvent')->findBy(array("account" => $account),array("date" => "DESC"),10);
-        $editForm = $this->createForm(new AccountType(), $account, array(
+        $editForm = $this->createForm($this->get("form.type.account"), $account, array(
             'action' => $this->generateUrl('account_update', array('id' => $account->getid())),
             'method' => 'PUT',
         ));
@@ -139,7 +138,7 @@ class AccountController extends BaseController
     public function newAction()
     {
         $account = new Account();
-        $form = $this->createForm(new AccountType(), $account);
+        $form = $this->createForm($this->get("form.type.account"), $account);
 
         return array(
             'account' => $account,
@@ -157,7 +156,7 @@ class AccountController extends BaseController
     public function createAction(Request $request)
     {
         $account = new Account();
-        $form = $this->createForm(new AccountType(), $account);
+        $form = $this->createForm($this->get("form.type.account"), $account);
         if ($form->handleRequest($request)->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($account);
@@ -181,7 +180,7 @@ class AccountController extends BaseController
      */
     public function editAction(Account $account)
     {
-        $editForm = $this->createForm(new AccountType(), $account, array(
+        $editForm = $this->createForm($this->get("form.type.account"), $account, array(
             'action' => $this->generateUrl('account_update', array('id' => $account->getid())),
             'method' => 'PUT',
         ));
@@ -203,7 +202,7 @@ class AccountController extends BaseController
      */
     public function updateAction(Account $account, Request $request)
     {
-        $editForm = $this->createForm(new AccountType(), $account, array(
+        $editForm = $this->createForm($this->get("form.type.account"), $account, array(
             'action' => $this->generateUrl('account_update', array('id' => $account->getid())),
             'method' => 'PUT',
         ));
