@@ -60,6 +60,12 @@ abstract class Account
      * @JoinColumn(name="billingtype_id", referencedColumnName="id")
      * */
     protected $billingType;
+    
+    /**
+     * @ManyToOne(targetEntity="\Flower\ModelBundle\Entity\Clients\AccountStatus")
+     * @JoinColumn(name="accountstatus_id", referencedColumnName="id")
+     * */
+    protected $status;
 
     /**
      * @var string
@@ -501,6 +507,25 @@ abstract class Account
     public function setBillingType($billingType)
     {
         $this->billingType = $billingType;
+        return $this;
+    }
+
+    /**
+    * Get status
+    * @return  
+    */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+    
+    /**
+    * Set status
+    * @return  
+    */
+    public function setStatus($status)
+    {
+        $this->status = $status;
         return $this;
     }
 }

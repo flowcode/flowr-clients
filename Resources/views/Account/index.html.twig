@@ -109,18 +109,24 @@
                 <table class="table table-condensed">
                     <thead>
                         <tr>
+                            <th scope="col">{{ thead('account', 'id', 'id') }}</th>
                             <th scope="col">{{ thead('account', 'name', 'Name') }}</th>
+                            <th scope="col">{{ thead('account', 'businessName', 'Business name') }}</th>
                             <th scope="col">{{ thead('account', 'phone', 'Phone') }}</th>
                             <th scope="col">{{ thead('account', 'address', 'Address') }}</th>
+                            <th scope="col">{{ thead('account', 'cuit', 'cuit') }}</th>
                             <th scope="col">{{ thead('account', 'ac.name', 'Activity') }}</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for account in paginator %}
                             <tr>
+                                <td><a href="{{ path('account_show', {id: account.id}) }}">{{ account.id }}</a></td>
                                 <td><a href="{{ path('account_show', {id: account.id}) }}">{{ account.name }}</a></td>
+                                <td>{{ account.businessName }}</td>
                                 <td>{{ account.phone }}</td>
                                 <td>{{ account.address }}</td>
+                                <td>{{ account.cuit }}</td>
                                 <td>{{ account.activity | capitalize}}</td>
                             </tr>
                         {% endfor %}

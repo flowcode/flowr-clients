@@ -158,7 +158,12 @@
                             <tr class="bulk">
                                 <td><input type="checkbox" value="{{callevent["account"].id}}" name="callevent[]" class="bulk-check" ></td>
                                 <td>
-                                    <a href="{{ path('account_show', {id: callevent["account"].id}) }}">{{ callevent["account"].name }}</a>
+                                    <a href="{{ path('account_show', {id: callevent["account"].id}) }}">
+                                        {% if callevent["account"] %}
+                                            {{ callevent["account"].id }} -
+                                        {% endif %}
+                                        {{ callevent["account"].name }}
+                                    </a>
                                 </td>
                                 <td>
                                     {% if not callevent["diffDates"] %}

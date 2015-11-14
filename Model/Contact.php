@@ -48,7 +48,7 @@ abstract class Contact
     /**
      * @var string
      *
-     * @ORM\Column(name="email", type="string", length=255)
+     * @ORM\Column(name="email", type="string", length=255, nullable=true)
      * @Groups({"search"})
      */
     protected $email;

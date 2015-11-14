@@ -244,8 +244,8 @@
                         <tr>
                             <th scope="col"><input type="checkbox"  onclick="selectAll(this)" class="" ></th>
                             <th scope="col">{{ thead('callevent', 'a.name', 'account') }}</th>
-                            <th scope="col">{{ thead('callevent', 's.name', 'status') }}</th>
                             <th scope="col">{{ thead('callevent', 'subject', 'subject') }}</th>
+                            <th scope="col">{{ thead('callevent', 's.name', 'status') }}</th>
                             <th scope="col">{{ thead('callevent', 'u.username', 'assignee') }}</th>
                             <th scope="col">{{ thead('callevent', 'date', 'date') }}</th>
                             <th></th>
@@ -255,7 +255,11 @@
                         {% for callevent in paginator %}
                             <tr class="bulk">
                                 <td><input type="checkbox" value="{{callevent.id}}" name="callevent[]" class="bulk-check" ></td>
-                                <td><a href="{{ path('callevent_show', {id: callevent.id}) }}">{{ callevent.account }}</a></td>
+                                <td><a href="{{ path('callevent_show', {id: callevent.id}) }}">
+                                    {% if callevent.account %}
+                                        {{ callevent.account.id }} -
+                                    {% endif %}
+                                    {{ callevent.account }}</a></td>
                                 <td><a href="{{ path('callevent_show', {id: callevent.id}) }}">{{ callevent.subject }}</a></td>
                                 <td>{{ callevent.status }}</td>
                                 <td>

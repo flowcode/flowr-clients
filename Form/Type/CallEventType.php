@@ -16,7 +16,11 @@ class CallEventType extends AbstractType
     {
         $builder
                 ->add('subject')
-                ->add('account')
+                ->add('account', 'genemu_jqueryselect2_entity', array(
+                    'class' => 'Flower\ModelBundle\Entity\Clients\Account',
+                    'property' => 'name',
+                    'multiple' => false,
+                ))
                 ->add('contactName',null, array( 'required' => false))
                 ->add('date','collot_datetime', array( 'required' => true,'pickerOptions' =>
                                                 array('format' => 'dd/mm/yyyy  hh:ii',
@@ -27,7 +31,11 @@ class CallEventType extends AbstractType
                                                     'language' => 'en',
                                                     )))
                 ->add('status')
-                ->add('assignee')
+                ->add('assignee', 'genemu_jqueryselect2_entity', array(
+                    'class' => 'Flower\ModelBundle\Entity\User\User',
+                    'property' => 'name',
+                    'multiple' => false,
+                ))
                 ->add("description", 'textarea', array(
                         'required' => false,
                         'attr' => array('rows' => '10'),

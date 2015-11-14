@@ -304,7 +304,7 @@ class CallEventController extends BaseController
             $em->persist($callEvent);
             $em->flush();
             $nextAction = $form->get('saveAndAdd')->isClicked() ? 'callevent_new' : 'callevent';
-            if($callEvent->getAccount()){
+            if($form->get('saveAndAdd')->isClicked() && $callEvent->getAccount()){
                 return $this->redirectToRoute("callevent_new_account", array("account" => $callEvent->getAccount()->getId()));
             }
             return $this->redirectToRoute($nextAction, array("id" => $callEvent->getId()));
