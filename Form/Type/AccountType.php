@@ -17,7 +17,7 @@ class AccountType extends AbstractType
     {
         $builder
                 ->add('name')
-                ->add('businessName', null, array('required' => false))
+                ->add('businessName', null, array('required' => true))
                 ->add('phone', null, array('required' => false))
                 ->add('address', null, array('required' => false))
                 ->add('activity')

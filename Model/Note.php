@@ -60,6 +60,10 @@ abstract  class Note
      * @ORM\Column(name="updated", type="datetime")
      */
     protected $updated;
+
+    function __construct(){
+        $this->body = " ";
+    }
     /**
      * Get id
      *
