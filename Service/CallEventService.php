@@ -31,13 +31,21 @@ class CallEventService
         $data = array();
         $index = 0;
         $oldAccount = "";
-        foreach ($callevents as $callevent) {
-            if($index == 0){
-                $data[$index++] = 
-                 array("values" => 
-                        array(
+        $subHeader = array("values" => 
+                                array( 
+                                    " ","Fecha de llamado", "Subject",
+                                    "Nombre de Usuario", "Nombre de Contacto",
+                                    "Estado llamado", "Descripción"),
+                            "styles" =>  array(
+                                'fill' => array(
+                                    'type' => PHPExcel_Style_Fill::FILL_SOLID,
+                                    'color' => array('rgb' => '929292')
+                                )
+                            ));
+        $header = array("values" => 
+                        array(                    
                             "Id" => " ",
-                            "Name" => "Name",
+                            "Name" => "Nombre",
                             "Actividad" => "Actividad",
                             "Cuit/Cuil" => "Cuit",
                             "Dirección" => "Dirección",
@@ -45,11 +53,14 @@ class CallEventService
                             "Responsable" => "Responsable",
                             ),
                         "styles" =>  array(
-                            'fill' => array(
-                                'type' => PHPExcel_Style_Fill::FILL_SOLID,
-                                'color' => array('rgb' => 'ca3e44')
-                            )
-                        ));
+                                'fill' => array(
+                                    'type' => PHPExcel_Style_Fill::FILL_SOLID,
+                                    'color' => array('rgb' => 'd22729')
+                                )
+                            ));
+        foreach ($callevents as $callevent) {
+            if($index == 0){
+                $data[$index++] = $header;
             }
             if($callevent->getAccount()){
                 $newAccount = $callevent->getAccount()->getId();
@@ -61,34 +72,34 @@ class CallEventService
                    if($account->getAssignee()){
                     $assigne = $account->getAssignee();
                    }
-                   $data[$index++] = 
-                   array("values" => 
-                               array(
-                                    "Id" => "Cuenta:",
-                                    "Name" => $account->getName(),
-                                    "Actividad" => $account->getActivity(),
-                                    "Cuit/Cuil" => $account->getCuit(),
-                                    "Dirección" => $account->getAddress(),
-                                    "Teléfono" => $account->getPhone(),
-                                    "Responsable" => $assigne,
-                                    ));
-                    $data[$index++] = 
-                    array("values" => 
-                        array( 
-                         " ","Subject",
-                        "Nombre de Usuario", "Nombre de Contacto",
-                        "Estado llamado","Fecha"));
+                    $name = $account->getName() ? : " ";
+                    $activity = $account->getActivity() ? : " ";
+                    $cuit = $account->getCuit() ? : " ";
+                    $address = $account->getAddress() ? : " ";
+                    $phone = $account->getPhone() ? : " ";
+                     
+                   $data[$index++] = array("values" => 
+                                            array(
+                                                "Id" => "Cuenta:",
+                                                "Name" => $name,
+                                                "Actividad" => $activity,
+                                                "Cuit/Cuil" => $cuit,
+                                                "Dirección" => $address,
+                                                "Teléfono" => $phone,
+                                                "Responsable" => $assigne,
+                                                ),
+                        "styles" =>  array(
+                                'fill' => array(
+                                    'type' => PHPExcel_Style_Fill::FILL_SOLID,
+                                    'color' => array('rgb' => 'd22729')
+                                )
+                            ));
+                    $data[$index++] = $subHeader;
                 }
                 $oldAccount = $callevent->getAccount()->getId();
             }else{
                 if($oldAccount == "" ){
-    		        $data[$index++] = 
-                    array("values" => 
-                        array( 
-        		            " ","Fecha de llamado", "Subject",
-        		            "Nombre de Usuario", "Nombre de Contacto",
-        		            "Estado llamado",
-                            "Descripción"));
+    		        $data[$index++] = $subHeader;
                 }
                 $oldAccount = "done";
             }
@@ -98,18 +109,18 @@ class CallEventService
             $contactname = $callevent->getContactName()? : " ";
             $status = $callevent->getStatus()? : " ";
             $description = $callevent->getDescription()? : " ";
+
             $date = $callevent->getDate()? $callevent->getDate()->format("d/m/y H:i"): " ";
-            $data[$index++] = 
-            array("values" => 
-                    array(
-                        " ",
-                        $date,
-                        $subject ,
-                        $assignee ,
-                        $contactname ,
-                        $status ,
-                        $description
-                         ));
+            $data[$index++] = array("values" => 
+                                        array(
+                                            " ",
+                                            $date,
+                                            $subject ,
+                                            $assignee ,
+                                            $contactname ,
+                                            $status ,
+                                            $description
+                                             ));
             
         }
         return $data;
