@@ -321,7 +321,7 @@ class CallEventController extends BaseController
      *
      * @Route("/new/{account}", name="callevent_new_account")
      * @Method("GET")
-     * @Template("FlowerClientsBundle:CallEvent:new.html.twig")
+     * @Template("FlowerClientsBundle:CallEvent:show.html.twig")
      */
     public function newForAccountAction(Account $account)
     {
@@ -338,7 +338,7 @@ class CallEventController extends BaseController
 
         return array(
             'callevent' => $callEvent,
-            'form' => $form->createView(),
+            'edit_form' => $form->createView(),
         );
     }
 
