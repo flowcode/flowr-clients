@@ -34,6 +34,8 @@ class AccountService
                  array( 
                     "id",
                     "Nombre",
+                    "Razón Social"
+                    "ciut/cuil",
                     "Teléfono", "Dirección",
                     "Actividad"),
             "styles" =>  array(
@@ -46,6 +48,8 @@ class AccountService
         foreach ($accounts as $account) {
             $id = $account->getId()? : " ";
             $name = $account->getName()? : " ";
+            $businessName = $account->getBusinessName()? : " ";
+            $cuit = $account->getCuit()? : " ";
             $phone = $account->getPhone()? : " ";
             $address = $account->getAddress()? : " ";
             $activity = $account->getActivity()? : " ";
@@ -54,6 +58,8 @@ class AccountService
                 array(
                     $id,
                     $name ,
+                    $businessName,
+                    $cuit,
                     $phone ,
                     $address ,
                     $activity ));
