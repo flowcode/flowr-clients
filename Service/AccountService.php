@@ -34,7 +34,7 @@ class AccountService
                  array( 
                     "id",
                     "Nombre",
-                    "Razón Social"
+                    "Razón Social",
                     "ciut/cuil",
                     "Teléfono", "Dirección",
                     "Actividad"),
