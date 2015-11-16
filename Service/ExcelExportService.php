@@ -66,14 +66,13 @@ class ExcelExportService
 		// Set active sheet index to the first sheet, so Excel opens this as the first sheet
 		$objPHPExcel->setActiveSheetIndex(0);
 		// Save Excel 2007 file
-		$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+		$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
 		//TODO: Acomodar RUTA
 		$webdir = $this->container->getParameter('kernel.root_dir') . "/../web";
-		$completeFileName = $webdir.'/account.xlsx';
 
 		// Redirect output to a client’s web browser (Excel2007)
 		header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-		header('Content-Disposition: attachment;filename="'.$title.'.xlsx"');
+		header('Content-Disposition: attachment;filename="'.$title.'.xls"');
 		header('Cache-Control: max-age=0');
 		header('Cache-Control: max-age=1');
 		header ('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
