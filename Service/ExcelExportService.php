@@ -4,6 +4,7 @@ namespace Flower\ClientsBundle\Service;
 
 use PHPExcel;
 use PHPExcel_IOFactory;
+use PHPExcel_Cell;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
@@ -31,7 +32,7 @@ class ExcelExportService
     public function exportData($data,$title, $description = null)
     {
     	// Create new PHPExcel object
-		$objPHPExcel = new PHPExcel();
+		$objPHPExcel = $this->container->get('phpexcel')->createPHPExcelObject();
 		// Set document properties
 		$objPHPExcel->getProperties()->setCreator("Flower")
 									 ->setTitle($title)
@@ -44,17 +45,27 @@ class ExcelExportService
 		$column = 0;
 		foreach ($data as $rowData) {
 			$column = 0;
-			foreach ($rowData as $item) {
-				if($item){
-					$objPHPExcel->setActiveSheetIndex(0)
-								->setCellValueByColumnAndRow($column, $row, $item);
-					$column++;
+			if($rowData && is_array($rowData) && array_key_exists("values" ,$rowData)){
+				
+				foreach ($rowData["values"] as  $item) {
+					if($item){
+						$objPHPExcel->setActiveSheetIndex(0)
+									->setCellValueByColumnAndRow($column, $row, $item);
+						$columnName = PHPExcel_Cell::stringFromColumnIndex($column);
+						if(array_key_exists("styles" ,$rowData) && is_array($rowData["styles"])){
+							$objPHPExcel->setActiveSheetIndex(0)->getStyle("$columnName$row")->applyFromArray(
+							    $rowData["styles"]
+							);
+						}
+
+						$column++;
+					}
 				}
 			}
 			$row++;
 		}
 		for ($i=0; $i < $column; $i++) { 
-			$objPHPExcel->getActiveSheet()->getColumnDimension( \PHPExcel_Cell::stringFromColumnIndex($i))->setAutoSize(true);
+			$objPHPExcel->getActiveSheet()->getColumnDimension( PHPExcel_Cell::stringFromColumnIndex($i))->setAutoSize(true);
 		}
 		
 		if($row == 1){

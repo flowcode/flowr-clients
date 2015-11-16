@@ -3,6 +3,7 @@
 namespace Flower\ClientsBundle\Service;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use PHPExcel_Style_Fill;
 /**
  * Description of AccountService
  *
@@ -28,21 +29,34 @@ class AccountService
     public function accountDataExport($accounts)
     {
         $data = array();
-        $data["header"] = array( 
-            "Nombre",
-            "Teléfono", "Dirección",
-            "Actividad");
+        $data["header"] =
+        array("values" => 
+                 array( 
+                    "id",
+                    "Nombre",
+                    "Teléfono", "Dirección",
+                    "Actividad"),
+            "styles" =>  array(
+                                'fill' => array(
+                                    'type' => PHPExcel_Style_Fill::FILL_SOLID,
+                                    'color' => array('rgb' => 'd22729')
+                                )
+                            ));
         $index = 1;
         foreach ($accounts as $account) {
+            $id = $account->getId()? : " ";
             $name = $account->getName()? : " ";
             $phone = $account->getPhone()? : " ";
             $address = $account->getAddress()? : " ";
             $activity = $account->getActivity()? : " ";
-            $data[$index] = array(
-                $name ,
-                $phone ,
-                $address ,
-                $activity );
+            $data[$index] = 
+            array("values" => 
+                array(
+                    $id,
+                    $name ,
+                    $phone ,
+                    $address ,
+                    $activity ));
             $index++;
         }
         return $data;
