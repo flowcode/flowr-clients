@@ -37,8 +37,8 @@ class AccountController extends BaseController
         $em = $this->getDoctrine()->getManager();        
         $qb = $em->getRepository('FlowerModelBundle:Clients\Account')->createQueryBuilder('a');
         $qb->leftJoin("a.activity","ac");
-                
-        $filters = array('activityFilter' => "ac.id");
+
+        $filters = array('activityFilter' => "ac.id",'accountAssigneeFilter' => "a.assignee",);
 
         if($request->query->has('reset')) {
             $request->getSession()->set('filter.account', null);
@@ -49,12 +49,16 @@ class AccountController extends BaseController
         $paginator = $this->filter($qb,'account',$request);
         $activities = $em->getRepository('FlowerModelBundle:Clients\Activity')->findAll();
         $activityFilter = $request->query->get("activityFilter");
+        $users = $em->getRepository('FlowerModelBundle:User\User')->findBy(array(),array("username" => "ASC"));
         $filters = $this->getFilters('account');
         if(!$activityFilter && $filters['activityFilter'] && $filters['activityFilter']["value"]){
             $activityFilter = $filters['activityFilter']["value"];
         }
+        $filters = $this->getFilters('account');
         return array(
             'paginator' => $paginator,
+            'accountAssigneeFilter' => isset($filters['accountAssigneeFilter'])?$filters['accountAssigneeFilter']["value"] : null,
+            'users' => $users,
             'activityFilter' => $activityFilter,
             'activities' => $activities,
         );

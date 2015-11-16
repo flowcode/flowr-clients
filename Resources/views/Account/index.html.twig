@@ -102,6 +102,38 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label " for="accountAssigneeFilter">{{'Assignee' | trans}}</label>
+                                <div class="col-sm-8">
+                                    {% set multiple = "" %}
+                                    {% set icon = "ion-plus-circled" %}
+                                    {% if accountAssigneeFilter |length > 1 %}
+                                        {% set  multiple = "multiple='true'" %}
+                                        {% set icon = "ion-ios-minus-outline" %}
+                                    {% endif %}
+                                    <select id="accountAssigneeFilter" name="accountAssigneeFilter[]" {{multiple}} class="form-control">
+                                        <option value=""></option>
+                                        {% set  selected = "" %}
+                                        {% if "-1" in accountAssigneeFilter %}
+                                            {% set  selected = "selected" %}
+                                        {% endif %}
+                                        <option value="-1" {{selected}}> {{'Not Assignee' | trans}}</option>
+                                        {% for user in users %}
+                                            {% set  selected = "" %}
+                                            {% if user.id in accountAssigneeFilter %}
+                                                {% set  selected = "selected" %}
+                                            {% endif %}
+                                            <option value="{{user.id}}" {{selected}}>{{user.happyname}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                
+                                <div class="col-sm-1">
+                                    <span class="cursor-pointer text-left  ionicons {{icon}}" style="margin-top: 8px;" onclick="toogleSelect(accountAssigneeFilter,this)"></span>
+                                </div>
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>
