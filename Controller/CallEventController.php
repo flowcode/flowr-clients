@@ -334,8 +334,10 @@ class CallEventController extends BaseController
         if(count($statueses) > 0){
             $callEvent->setStatus($statueses[0]);
         }
-        $form = $this->createForm($this->get(CallEventController::formName), $callEvent);
-
+        $form = $this->createForm($this->get(CallEventController::formName), $callEvent, array(
+            'action' => $this->generateUrl('callevent_create'),
+            'method' => 'POST',
+        ));
         return array(
             'callevent' => $callEvent,
             'edit_form' => $form->createView(),
@@ -347,7 +349,7 @@ class CallEventController extends BaseController
      *
      * @Route("/duplicate/{call}", name="callevent_duplicate")
      * @Method("GET")
-     * @Template("FlowerClientsBundle:CallEvent:new.html.twig")
+     * @Template("FlowerClientsBundle:CallEvent:show.html.twig")
      */
     public function duplicateAction(CallEvent $call)
     {
@@ -361,11 +363,13 @@ class CallEventController extends BaseController
         if(count($statueses) > 0){
             $callEvent->setStatus($statueses[0]);
         }
-        $form = $this->createForm($this->get(CallEventController::formName), $callEvent);
-
+        $form = $this->createForm($this->get(CallEventController::formName), $callEvent, array(
+            'action' => $this->generateUrl('callevent_create'),
+            'method' => 'POST',
+        ));
         return array(
             'callevent' => $callEvent,
-            'form' => $form->createView(),
+            'edit_form' => $form->createView(),
         );
     }
 
