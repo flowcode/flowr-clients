@@ -303,7 +303,7 @@ class CallEventController extends BaseController
             $em = $this->getDoctrine()->getManager();
             $em->persist($callEvent);
             $em->flush();
-            $nextAction = $form->get('saveAndAdd')->isClicked() ? 'callevent_new' : 'callevent';
+            $nextAction = $form->get('saveAndAdd')->isClicked() ? 'callevent_new' : 'callevent_show';
             if($form->get('saveAndAdd')->isClicked() && $callEvent->getAccount()){
                 return $this->redirectToRoute("callevent_new_account", array("account" => $callEvent->getAccount()->getId()));
             }
