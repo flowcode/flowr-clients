@@ -15,6 +15,9 @@
             <div class="col-sm-8">
                 <div class="box" id="showAccount">
                     <div class="box-header">
+                        {% if account.status.closed  %}
+                            <h1>{{'Status'|trans({}, 'Account')}}: {{account.status}}</h1>
+                        {% endif %}
                         <div class="box-tools">
                             {{ form_start(delete_form) }}
                             {{ form_widget(delete_form) }}
@@ -61,6 +64,22 @@
                                     <td>{{ account.businessName }}</td>
                                 </tr>
                                 <tr>
+                                    <th scope="row">{{'CUIT/CUIL/DNI'|trans({}, 'Account')}}</th>
+                                    <td>{{ account.cuit }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">{{'Billing type'|trans({}, 'Account')}}</th>
+                                    <td>{{ account.billingType |capitalize}}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">{{'Activity'|trans({}, 'Account')}}</th>
+                                    <td>{{ account.activity |capitalize}}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">{{'Assignee'|trans({}, 'Account')}}</th>
+                                    <td>{{ account.assignee |capitalize}}</td>
+                                </tr>
+                                <tr>
                                     <th scope="row">{{'Phone'|trans({}, 'Account')}}</th>
                                     <td>{{ account.phone }}</td>
                                 </tr>
@@ -69,16 +88,12 @@
                                     <td>{{ account.address }}</td>
                                 </tr>
                                 <tr>
-                                    <th scope="row">{{'CUIT/CUIL/DNI'|trans({}, 'Account')}}</th>
-                                    <td>{{ account.cuit }}</td>
+                                    <th scope="row">{{'Status'|trans({}, 'Account')}}</th>
+                                    <td>{{ account.status |capitalize}}</td>
                                 </tr>
                                 <tr>
-                                    <th scope="row">{{'Activity'|trans({}, 'Account')}}</th>
-                                    <td>{{ account.activity |capitalize}}</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">{{'Billing type'|trans({}, 'Account')}}</th>
-                                    <td>{{ account.billingType |capitalize}}</td>
+                                    <th scope="row">{{'Created'|trans({}, 'Account')}}</th>
+                                    <td>{{ account.created | date("smallDate" | trans) |capitalize}}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -149,10 +164,10 @@
             <div class="col-sm-4">
                 <div class="box">
                     <div class="box-header">
-                        <h3 class="box-title">{{ 'calls'|trans|capitalize }}</h3>
+                         <a class="btn btn-link" style="padding-left: 0px;" href="{{ path('callevent') }}?accountFilter%5B%5D={{account.id}}"><h3 class="box-title">{{ 'calls'|trans|capitalize }}</h3></a>
                         <div class="box-tools">
 
-                            <a class="btn btn-link" href="{{ path('callevent') }}?accountFilter%5B%5D={{account.id}}">
+                            <a class="btn btn-link" href="{{ path('callevent_new_account',{account:account.id}) }}">
                                 <i class="fa fa-plus"></i>
                             </a>
                         </div>
