@@ -21,15 +21,16 @@
                     <div class="box-header">
                         <h4>{{ callevent.subject |capitalize}}</h4>
                         <div class="box-tools">
+                            {% if delete_form  is defined %}
                             {{ form_start(delete_form) }}
                             {{ form_widget(delete_form) }}
 
                             <div class="btn-group record_actions">
-                                <button class="btn btn-link btn-sm" type="submit">{{ 'Delete'|trans({}, 'CallEvent') }}</button>
 
                                 <a class="btn btn-link  btn-sm" onclick="showEdit(true)">
                                     {{ 'Edit'|trans({}, 'Account') }}
                                 </a>
+                                <button class="btn btn-link btn-sm" type="submit">{{ 'Delete'|trans({}, 'CallEvent') }}</button>
 
                             </div>
 
@@ -54,27 +55,37 @@
                                     </div>
                                 </div>
                             </div>
+                            {% else %}
+                                <div class="btn-group record_actions">
+                                    <a class="btn btn-link  btn-sm" onclick="showEdit(true)">
+                                        {{ 'Edit'|trans({}, 'Account') }}
+                                    </a>
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
                     <div class="box-body">
                         <table class="table table-hover record_properties">
                             <tbody>
                                 <tr>
-                                    <th scope="row">{{'contactName'|trans({}, 'CallEvent')}}</th>
-                                    <td>{{ callevent.contactName }}</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">{{'status'|trans({}, 'CallEvent')}}</th>
+                                    <th scope="row">{{'status'|trans({}, 'CallEvent') | capitalize}}</th>
                                     <td>{{ callevent.status }}</td>
                                 </tr>
                                 <tr>
-                                    <th scope="row">{{'description'|trans({}, 'CallEvent')}}</th>
-                                    <td>{{ callevent.description }}</td>
+                                    <th scope="row">{{'assignee'|trans({}, 'CallEvent') | capitalize}}</th>
+                                    <td>{{ callevent.assignee }}</td>
                                 </tr>
-
                                 <tr>
-                                    <th scope="row">{{'date'|trans({}, 'CallEvent')}}</th>
+                                    <th scope="row">{{'date'|trans({}, 'CallEvent') | capitalize}}</th>
                                     <td>{{ callevent.date | date ('y-m-d H:i')}}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">{{'contactName'|trans({}, 'CallEvent') | capitalize}}</th>
+                                    <td>{{ callevent.contactName }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">{{'description'|trans({}, 'CallEvent') | capitalize}}</th>
+                                    <td>{{ callevent.description }}</td>
                                 </tr>
                                 
                             </tbody>
@@ -105,7 +116,7 @@
                 <div class="col-md-6">
                     <div class="box">
                         <div class="box-header">
-                            <a href="{{path('callevent_show',{id:callevent.account.id})}}">
+                            <a href="{{path('account_show',{id:callevent.account.id})}}">
                                 <h4>{{ callevent.account.name |capitalize}}</h4>
                             </a>
                         </div>
@@ -167,27 +178,38 @@
                             </table>
                         </div>
                     </div>
-                    <div class="box">
+                     <div class="box collapsed-box" >
                         <div class="box-header">
-                            <h3 class="box-title">{{ 'calls'|trans|capitalize }}</h3>
+                            <h3 class="box-title">{{ 'calls history'|trans|capitalize }}</h3>
                             <div class="box-tools">
-
-                                <a class="btn btn-link" href="{{ path('callevent') }}?accountFilter%5B%5D={{account.id}}">
-                                    <i class="fa fa-plus"></i>
-                                </a>
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i>
+                                </button>
                             </div>
                         </div>
                         <div class="box-body">
                             <ul class="products-list product-list-in-box">
                                 {% for call in callevent.account.calls %}
-                                    <li class="item cursor-pointer" ng-repeat="item in notes.notes">
-                                        <a class="product-title" href="{{path('callevent_show',{id:call.id})}}">
-                                                {{call.subject}} <small class="text-muted pull-right"><i class="fa fa-calendar"></i> {{call.date| date("m/d")}}</small>
-                                        </a>
-                                        <span class="product-description">
-                                            {{call.status}}
-                                        </span>
-                                    </li>
+                                    {% if  call.id !=  callevent.id and ( not call.status or (call.status and call.status.finished == 1 ) ) %}
+                                        <li class="item cursor-pointer" id="_calls" ng-repeat="item in notes.notes">
+                                            <a onclick="toggleMoreDate('more_data-{{call.id}}')">
+                                                {{call.subject}} 
+                                            </a>
+                                            
+                                            <small class="text-muted pull-right"><i class="fa fa-calendar"></i> {{call.date| date("smallDate" | trans)}}</small>
+                                            
+                                            <span class="product-description">
+                                                {{call.status}}
+                                            </span>
+                                            <div id="more_data-{{call.id}}" style="display: none;">
+                                                <p>{{call.description}}</p>
+                                                <div class="pull-right">
+                                                    <a class="product-title" href="{{path('callevent_show',{id:call.id})}}">
+                                                        <small class="text-muted pull-right">{{'show complete' | trans({}, 'Account')}}</small>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    {% endif %}
                                 {% endfor %}
                             </ul>
                         </div>
@@ -205,6 +227,9 @@
 {% block javascripts %}
     {{ parent() }}
     <script type="text/javascript">
+        function toggleMoreDate(element){
+            $("#"+element).toggle();
+        }
         function showEdit(show){
             if(show){
                 $("#showCallEvent").hide();
