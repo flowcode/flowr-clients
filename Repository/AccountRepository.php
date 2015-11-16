@@ -16,14 +16,25 @@ class AccountRepository extends EntityRepository
     public function search($completeText, $texts, $limit = 10)
     {
         $qb = $this->createQueryBuilder("a");
+
+        $qb->orWhere("a.id = :text")
+                ->setParameter("text", $completeText);
+        $qb->setMaxResults($limit);
+        $result = $qb->getQuery()->getResult();
         $qb->orWhere("a.name like :text")
+              ->orWhere("a.businessName like :text")
+              ->orWhere("a.id like :text")
+              ->orWhere("a.cuit like :text")
               ->orWhere("a.phone like :text")
               ->setParameter("text", "%".$completeText."%");
         $qb->setMaxResults($limit);
-        $result = $qb->getQuery()->getResult();
+        $result = array_merge($result,$qb->getQuery()->getResult());
+
         $count = 0;
         foreach ($texts as $text) {
             $qb->orWhere("a.name like :text_".$count)
+                ->orWhere("a.businessName like :text_".$count)
+                ->orWhere("a.cuit like :text_".$count)
                 ->orWhere("a.phone like :text_".$count)
                 ->setParameter("text_".$count, "%".$text."%");
             $qb->setMaxResults($limit);
