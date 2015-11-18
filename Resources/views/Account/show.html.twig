@@ -15,7 +15,7 @@
             <div class="col-sm-8">
                 <div class="box" id="showAccount">
                     <div class="box-header">
-                        {% if account.status.closed  %}
+                        {% if account.status and account.status.closed  %}
                             <h1>{{'Status'|trans({}, 'Account')}}: {{account.status}}</h1>
                         {% endif %}
                         <div class="box-tools">
