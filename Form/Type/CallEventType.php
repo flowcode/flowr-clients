@@ -33,7 +33,7 @@ class CallEventType extends AbstractType
                 ->add('status')
                 ->add('assignee', 'genemu_jqueryselect2_entity', array(
                     'class' => 'Flower\ModelBundle\Entity\User\User',
-                    'property' => 'name',
+                    'property' => 'username',
                     'multiple' => false,
                 ))
                 ->add("description", 'textarea', array(

@@ -5,6 +5,8 @@ namespace Flower\ClientsBundle\Model;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\JoinColumn;
+use Symfony\Component\Validator\Constraints as Assert;
+
 /**
  * 
  */
@@ -23,6 +25,7 @@ abstract class CallEvent
      * @var \DateTime
      *
      * @ORM\Column(name="date", type="datetime")
+     * @Assert\NotBlank()
      */
     protected $date;
 
@@ -51,6 +54,7 @@ abstract class CallEvent
      * @var string
      *
      * @ORM\Column(name="subject", type="string", length=255)
+     * @Assert\NotBlank()
      */
     protected $subject;
 

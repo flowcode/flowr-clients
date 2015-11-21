@@ -31,17 +31,17 @@
                 <div class="box-tools pull-right">
                     <div class="btn-group">
                         <button class="btn btn-link btn-sm dropdown-toggle" data-toggle="dropdown" type="button">
-                            <i class="fa fa-download"></i> {{ '%entity%'|trans({'%entity%': 'Export'}, 'CallEvent') }}
+                            <i class="fa fa-download"></i> {{ 'Export'|trans({}, 'CallEvent') }}
                         </button>
                         <ul class="dropdown-menu" style="min-width: inherit;">
                             <li>
                                 <a class="btn btn-link btn-sm" href={{ path('callevent_export' , {'page':paginator.currentPageNumber})}} style="color:#CC3E32;">
-                                    {{ 'This %entity%'|trans({'%entity%': 'Page'}, 'CallEvent') }}
+                                    {{ 'This Page'|trans({}, 'CallEvent') }}
                                 </a>
                             </li>
                             <li>
                                 <a class="btn btn-link btn-sm" href={{ path('callevent_export') }} style="color:#CC3E32;">
-                                    {{ 'All %entity%'|trans({'%entity%': 'Pages'}, 'CallEvent') }}
+                                    {{ 'All Pages'|trans({}, 'CallEvent') }}
                                 </a>
                             </li> 
                         </ul>

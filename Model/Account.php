@@ -14,7 +14,8 @@ use Doctrine\ORM\Mapping\OneToMany;
 use Gedmo\Mapping\Annotation as Gedmo;
 use JMS\Serializer\Annotation\Groups;
 use Flower\ModelBundle\Entity\User\User;
-
+use Symfony\Component\Validator\Constraints as Assert;
+     
 /**
  * Account
  *
@@ -37,6 +38,7 @@ abstract class Account
      *
      * @ORM\Column(name="name", type="string", length=255)
      * @Groups({"search", "public_api"})
+     * @Assert\NotBlank()
      */
     protected $name;
 
@@ -45,6 +47,7 @@ abstract class Account
      *
      * @ORM\Column(name="businessName", type="string", length=255)
      * @Groups({"search", "public_api"})
+     * @Assert\NotBlank()
      */
     protected $businessName;
     /**
