@@ -20,13 +20,8 @@
 
 
 {% block body %}
-    <section class="content-header">
-        <h1>
-            {{ 'contacts'|trans|capitalize }}
-        </h1>
-
-    </section>
     <section class="content">
+        {{ include("FlowerClientsBundle::appnav.html.twig", { 'app_contact': true }) }} 
         <div class="box box-solid">
             <div class="box-header">
                 <h3 class="box-title"></h3>

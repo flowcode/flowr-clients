@@ -3,14 +3,8 @@
 {% block title %}{{ '%entity% edit'|trans({'%entity%': 'Account'}, 'Account') }} - {{ parent() }}{% endblock %}
 
 {% block body %}
-    <section class="content-header">
-        <h1>
-            <a href="{{ path('account') }}"> {{ 'accounts'|trans|capitalize }}</a>
-            /
-                <a href="{{ path('account_show', {id: account.id}) }}"> {{ account|capitalize }}</a>
-        </h1>
-    </section> 
     <section class="content">
+        {{ include("FlowerClientsBundle::appnav.html.twig", { 'app_account': true }) }} 
         <div class="box">
             <div class="box-header">
             </div>
@@ -19,7 +13,7 @@
             {{ form_start(edit_form) }}
                 {{ form_widget(edit_form) }}
                 <p>
-                    <button class="btn btn-primary" type="submit"><i class="fa fa-edit"></i> {{ 'Save'|trans({}, 'Account') }}</button>
+                    <button class="btn btn-default" type="submit"><i class="fa fa-edit"></i> {{ 'Save'|trans({}, 'Account') }}</button>
                 </p>
             {{ form_end(edit_form) }}
             </div>

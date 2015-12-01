@@ -2,15 +2,9 @@
 
 {% block title %}{{ '%entity% creation'|trans({'%entity%': 'Contact'}, 'Contact') }} - {{ parent() }}{% endblock %}
 
-{% block body %}
-    <section class="content-header">
-        <h1>
-            <a href="{{ path('contact') }}"> {{ 'contacts'|trans({}, 'Contact') | capitalize}}</a>
-            /
-            {{ 'New Contact' | trans({}, 'Contact')}}
-        </h1>
-    </section>        
+{% block body %}      
     <section class="content">
+        {{ include("FlowerClientsBundle::appnav.html.twig", { 'app_contact': true }) }} 
         <div class="box">
             <div class="box-header">
             </div>
@@ -18,7 +12,7 @@
                 {{ form_start(form, {action: path('contact_create')}) }}
                     {{ form_widget(form) }}
                     <p>
-                        <button class="btn btn-primary" type="submit">{{ 'Create'|trans({}, 'Contact') }}</button>
+                        <button class="btn btn-default" type="submit">{{ 'save'|trans | capitalize }}</button>
                     </p>
                 {{ form_end(form) }}
             </div>

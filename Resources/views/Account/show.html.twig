@@ -3,18 +3,13 @@
 {% block title %}{{ '%entity% edit'|trans({'%entity%': 'Account'}, 'Account') }} - {{ parent() }}{% endblock %}
 
 {% block body %}
-    <section class="content-header">
-        <h1>
-            <a href="{{ path('account') }}"> {{ 'accounts'|trans|capitalize }}</a>
-            /
-                {{ account.name|capitalize }}
-        </h1>
-    </section>
     <section class="content">
         <div class="row">
             <div class="col-sm-8">
+                {{ include("FlowerClientsBundle::appnav.html.twig", { 'app_account': true }) }} 
                 <div class="box" id="showAccount">
                     <div class="box-header">
+                        <h3 class="box-title">#{{ account.id }} {{ account.name|capitalize }}</h3>
                         {% if account.status and account.status.closed  %}
                             <h1>{{'Status'|trans({}, 'Account')}}: {{account.status}}</h1>
                         {% endif %}
@@ -26,12 +21,9 @@
                                 <a class="btn btn-link  btn-sm" onclick="showEdit(true)">
                                     {{ 'Edit'|trans({}, 'Account') }}
                                 </a>
-
                             </div>
-
                             <input name="modal" type="hidden" value="0">
                             {{ form_end(delete_form) }}
-
                             <div id="delete_confirm" class="modal fade">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
@@ -55,10 +47,6 @@
                     <div class="box-body">
                         <table class="table table-hover record_properties">
                             <tbody>
-                                <tr>
-                                    <th scope="row">{{'Id'|trans({}, 'Account')}}</th>
-                                    <td>{{ account.id }}</td>
-                                </tr>
                                 <tr>
                                     <th scope="row">{{'Business name'|trans({}, 'Account')}}</th>
                                     <td>{{ account.businessName }}</td>

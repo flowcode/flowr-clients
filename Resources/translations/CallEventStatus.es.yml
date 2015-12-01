@@ -6,7 +6,7 @@ Actions: Acciones
 CallEventStatus: Estado de llamados
 'Confirm delete': 'Confirmar borrado'
 Create: Crear
-'Create a new %entity%': 'Crear nuevo estado de llamados'
+'Create a new %entity%': 'Crear estado de llamados'
 Delete: Borrar
 'Do you want to proceed?': '¿Desea continuar de todos modos?'
 edit: editar

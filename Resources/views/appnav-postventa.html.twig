@@ -1,0 +1,16 @@
+		<div class="nav-app">
+            <ul class="nav nav-tabs ">
+                <li role="presentation" class="app-icon bg-light-blue">
+                    <i class="fa fa-phone"></i>
+                </li>
+                <li role="presentation" 
+                {% if app_calls is defined %}class="active"{% endif %}
+                >
+                    <a href="{{ path('callevent') }}">{{ '%entity% list'|trans({'%entity%': 'CallEvent'}, 'CallEvent') }}</a>
+                </li>
+                <li role="presentation" {% if app_call_planner is defined %}class="active"{% endif %}
+                >
+                    <a href="{{ path('callevent_planner') }}">{{ 'calls planner'|trans({}, 'CallEvent') }}</a>
+                </li>
+            </ul>
+        </div>

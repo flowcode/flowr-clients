@@ -1,0 +1,22 @@
+		<div class="nav-app">
+            <ul class="nav nav-tabs ">
+                <li role="presentation" class="app-icon bg-maroon">
+                    <i class="fa fa-briefcase"></i>
+                </li>
+                <li role="presentation" 
+                {% if app_account is defined %}class="active"{% endif %}
+                >
+                    <a href="{{ path('account') }}">{{ '%entity% list'|trans({'%entity%': 'Account'}, 'Account') }}</a>
+                </li>
+                <li role="presentation" {% if app_contact is defined %}class="active"{% endif %}
+                >
+                    <a href="{{ path('contact') }}">{{ '%entity% list'|trans({'%entity%': 'Contact'}, 'Contact') }}</a>
+                </li>
+                {% if is_granted('ROLE_OPORTUNITIES') %}
+                    <li role="presentation" {% if app_opportunity is defined %}class="active"{% endif %}
+                    >
+                        <a href="{{ path('opportunity') }}">{{ '%entity% list'|trans({'%entity%': 'Opportunity'}, 'Opportunity') }}</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>

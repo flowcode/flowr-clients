@@ -3,53 +3,28 @@
 {% block title %}{{ '%entity% edit'|trans({'%entity%': 'Opportunity'}, 'Opportunity') }} - {{ parent() }}{% endblock %}
 
 {% block body %}
-<section class="content-header">
-    <h1>
-        <a href="{{ path('opportunity') }}">{{ 'Opportunities' | trans({}, 'Opportunity')}}</a>
-        /
-            {{ opportunity.name | capitalize}}
-    </h1>
-</section>
 <section class="content">
     <div class="row">
         <div class="col-sm-8">
-            <div class="box">
+            {{ include("FlowerClientsBundle::appnav.html.twig", { 'app_opportunity': true }) }} 
+            <div class="box" id="showOpportunity">
                 <div class="box-header">
-                    <h3 class="box-title"></h3>
+                    <h3 class="box-title">{{ opportunity.name | capitalize}}</h3>
                     <div class="box-tools">
                         {{ form_start(delete_form) }}
-                        {{ form_widget(delete_form) }}
+                            {{ form_widget(delete_form) }}
 
-                        <div class="btn-group record_actions">
+                            <div class="btn-group record_actions">
 
-                            <a class="btn btn-link btn-xs" href="{{ path('opportunity_edit', {id: opportunity.id}) }}">
-                                {{ 'Edit'|trans({}, 'Opportunity') }}
-                            </a>
-                            <button class="btn btn-link btn-xs" type="submit"> {{ 'Delete'|trans({}, 'Opportunity') }}</button>
+                                <button class="btn btn-link btn-sm" type="submit">{{ 'Delete'|trans({}, 'Contact') }}</button>
+                                <a class="btn btn-link  btn-sm" onclick="showEdit(true)">
+                                    {{ 'Edit'|trans({}, 'Account') }}
+                                </a>
 
-                        </div>
-
-                        <input name="modal" type="hidden" value="0">
-                        {{ form_end(delete_form) }}
-
-                        <div id="delete_confirm" class="modal fade">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                        <h3>{{ 'Confirm delete'|trans({}, 'Opportunity') }}</h3>
-                                    </div>
-                                    <div class="modal-body">
-                                        <p>{{ 'You are about to delete an item'|trans({}, 'Opportunity') }}, {{ 'this procedure is irreversible'|trans({}, 'Opportunity') }}.</p>
-                                        <p>{{ 'Do you want to proceed?'|trans({}, 'Opportunity') }}</p>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button class="btn btn-danger">{{ 'Yes'|trans({}, 'Opportunity') }}</button>
-                                        <button class="btn btn-default" data-dismiss="modal">{{ 'No'|trans({}, 'Opportunity') }}</button>
-                                    </div>
-                                </div>
                             </div>
-                        </div>
+
+                            <input name="modal" type="hidden" value="0">
+                            {{ form_end(delete_form) }}
                     </div>
                 </div>
                 <div class="box-body">
@@ -82,6 +57,28 @@
 
                 </div>
             </div>
+            
+            <div  class="box"  id="editFormOpportunity" style="display: none;">
+                <div class="box-body">
+                    <div class="box-header">
+                        <div class="box-tools">
+                            <div class="btn-group record_actions">
+                                <a class="btn btn-link  btn-sm" onclick="showEdit(false)">
+                                {{ 'Cancel'|trans({}, 'Account') }}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-body">
+                        {{ form_start(edit_form) }}
+                            {{ form_widget(edit_form) }}
+                            <p>
+                                <button class="btn btn-default" type="submit"> {{ 'save'|trans() |capitalize}}</button>
+                            </p>
+                        {{ form_end(edit_form) }}
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="col-sm-4">
             <div class="box">
@@ -110,7 +107,41 @@
         </div>
     </div>
 
+<div id="delete_confirm" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3>{{ 'Confirm delete'|trans({}, 'Opportunity') }}</h3>
+            </div>
+            <div class="modal-body">
+                <p>{{ 'You are about to delete an item'|trans({}, 'Opportunity') }}, {{ 'this procedure is irreversible'|trans({}, 'Opportunity') }}.</p>
+                <p>{{ 'Do you want to proceed?'|trans({}, 'Opportunity') }}</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger">{{ 'Yes'|trans({}, 'Opportunity') }}</button>
+                <button class="btn btn-default" data-dismiss="modal">{{ 'No'|trans({}, 'Opportunity') }}</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 </section>
 
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        function showEdit(show){
+            if(show){
+                $("#showOpportunity").hide();
+                $("#editFormOpportunity").show();
+            }else{
+                $("#showOpportunity").show();
+                $("#editFormOpportunity").hide();
+            }
+        }
+        
+    </script>
 {% endblock %}

@@ -3,20 +3,10 @@
 {% block title %}{{ '%entity% edit'|trans({'%entity%': 'CallEvent'}, 'CallEvent') }} - {{ parent() }}{% endblock %}
 
 {% block body %}
-    <section class="content-header">
-        <h1>
-            <a href="{{ path('callevent') }}"> {{ 'calls'|trans|capitalize }}</a>
-            {% if callevent.account %}
-            /
-            <a href="{{ path('account_show',{id: callevent.account.id}) }}"> {{ callevent.account|trans|capitalize }}</a>
-            {% endif %}
-            /
-                {{ callevent.subject|capitalize }}
-        </h1>
-    </section>
     <section class="content">
         <div class="row">
             <div class="col-md-6">
+                {{ include("FlowerClientsBundle::appnav-postventa.html.twig", { }) }} 
                 <div class="box" id="showCallEvent">
                     <div class="box-header">
                         <h4>{{ callevent.subject |capitalize}}</h4>
@@ -26,35 +16,19 @@
                             {{ form_widget(delete_form) }}
 
                             <div class="btn-group record_actions">
+                                <a class="btn btn-link  btn-sm"  href="{{path('callevent_duplicate',{call:callevent.id})}}">{{'duplicate'| trans | capitalize}}</a>
+                                <button class="btn btn-link btn-sm" type="submit">{{ 'Delete'|trans({}, 'CallEvent') }}</button>
 
                                 <a id="edutbuttom" href="#" class="btn btn-link  btn-sm" onclick="showEdit(true)">
                                     {{ 'Edit'|trans({}, 'Account') }}
                                 </a>
-                                <button class="btn btn-link btn-sm" type="submit">{{ 'Delete'|trans({}, 'CallEvent') }}</button>
 
                             </div>
 
                             <input name="modal" type="hidden" value="0">
                             {{ form_end(delete_form) }}
 
-                            <div id="delete_confirm" class="modal fade">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                            <h3>{{ 'Confirm delete'|trans({}, 'CallEvent') }}</h3>
-                                        </div>
-                                        <div class="modal-body">
-                                            <p>{{ 'You are about to delete an item'|trans({}, 'CallEvent') }}, {{ 'this procedure is irreversible'|trans({}, 'CallEvent') }}.</p>
-                                            <p>{{ 'Do you want to proceed?'|trans({}, 'CallEvent') }}</p>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button class="btn btn-danger">{{ 'Yes'|trans({}, 'CallEvent') }}</button>
-                                            <button class="btn btn-default" data-dismiss="modal">{{ 'No'|trans({}, 'CallEvent') }}</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+
                             {% else %}
                                 <div class="btn-group record_actions">
                                     <a class="btn btn-link  btn-sm" onclick="showEdit(true)">
@@ -219,7 +193,24 @@
                 </div>
         {% endif %}
         </div>
-
+        <div id="delete_confirm" class="modal fade">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h3>{{ 'Confirm delete'|trans({}, 'CallEvent') }}</h3>
+                    </div>
+                    <div class="modal-body">
+                        <p>{{ 'You are about to delete an item'|trans({}, 'CallEvent') }}, {{ 'this procedure is irreversible'|trans({}, 'CallEvent') }}.</p>
+                        <p>{{ 'Do you want to proceed?'|trans({}, 'CallEvent') }}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-danger">{{ 'Yes'|trans({}, 'CallEvent') }}</button>
+                        <button class="btn btn-default" data-dismiss="modal">{{ 'No'|trans({}, 'CallEvent') }}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     </section>
 

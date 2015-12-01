@@ -51,8 +51,12 @@ class OpportunityController extends Controller
 
         $em = $this->getDoctrine()->getManager();
         $opportunityBoards = $opportunity->getBoards();
-
+        $editForm = $this->createForm(new OpportunityType(), $opportunity, array(
+            'action' => $this->generateUrl('opportunity_update', array('id' => $opportunity->getid())),
+            'method' => 'PUT',
+        ));
         return array(
+            'edit_form'   => $editForm->createView(),
             'opportunity' => $opportunity,
             'opportunityBoards' => $opportunityBoards,
             'delete_form' => $deleteForm->createView(),

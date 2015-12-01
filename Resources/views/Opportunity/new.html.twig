@@ -3,15 +3,8 @@
 {% block title %}{{ '%entity% creation'|trans({'%entity%': 'Opportunity'}, 'Opportunity') }} - {{ parent() }}{% endblock %}
 
 {% block body %}
-    <section class="content-header">
-        <h1>
-            <a href="{{ path('opportunity') }}">{{ 'Opportunities' | trans({}, 'Opportunity')}}</a>
-            /
-            {{ 'New Opportunity' | trans({}, 'Opportunity')}}
-            
-        </h1>
-    </section>        
     <section class="content">
+        {{ include("FlowerClientsBundle::appnav.html.twig", { 'app_opportunity': true }) }} 
         <div class="box">
             <div class="box-header">
             </div>
@@ -19,17 +12,13 @@
                 {{ form_start(form, {action: path('opportunity_create')}) }}
                     {{ form_widget(form) }}
                     <p>
-                        <button class="btn btn-primary" type="submit">{{ 'Create'|trans({}, 'Opportunity') }}</button>
+                        <button class="btn btn-default" type="submit">{{ 'save'|trans | capitalize }}</button>
                     </p>
                 {{ form_end(form) }}
             </div>
-            <div class="box-footer">
-                        
-        <div class="btn-group record_actions">
-
-
-        </div>
-
+            <div class="box-footer">                
+                <div class="btn-group record_actions">
+                </div>
             </div>
         </div>
     </section>

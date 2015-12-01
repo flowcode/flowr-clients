@@ -3,24 +3,13 @@
 {% block title %}{{ '%entity% edit'|trans({'%entity%': 'Contact'}, 'Contact') }} - {{ parent() }}{% endblock %}
 
 {% block body %}
-    <section class="content-header">
-        <h1>
-            <a href="{{ path('contact') }}">{{ 'contacts'|trans|capitalize }}</a>
-            /
-            {% if contact.accounts | length > 0 %}
-                <a href="{{ path('account_show',{id:contact.accounts[0].id }) }}">{{ contact.accounts[0].name|capitalize }}</a>
-                /    
-            {% endif %}
-            {{ contact.happyname }}
-        </h1>
-
-    </section>
-
-
     <section class="content">    
+        {{ include("FlowerClientsBundle::appnav.html.twig", { 'app_contact': true }) }} 
         <div class="box" id="showContact">
             <div class="box-header">
-                <h3 class="box-title"></h3>
+                <h3 class="box-title">
+                    {{ contact.happyname | trans({}, 'Contact')}}
+                </h3>
                 <div class="box-tools">
                     {{ form_start(delete_form) }}
                     {{ form_widget(delete_form) }}
@@ -29,8 +18,8 @@
 
                         <button class="btn btn-link btn-sm" type="submit">{{ 'Delete'|trans({}, 'Contact') }}</button>
                         <a class="btn btn-link  btn-sm" onclick="showEdit(true)">
-                                    {{ 'Edit'|trans({}, 'Account') }}
-                                </a>
+                            {{ 'Edit'|trans({}, 'Account') }}
+                        </a>
 
                     </div>
 
@@ -114,7 +103,7 @@
                     {{ form_start(edit_form) }}
                         {{ form_widget(edit_form) }}
                         <p>
-                            <button class="btn btn-primary" type="submit"><i class="fa fa-edit"></i> {{ 'Edit'|trans({}, 'Contact') }}</button>
+                            <button class="btn btn-default" type="submit"> {{ 'save'|trans() |capitalize}}</button>
                         </p>
                     {{ form_end(edit_form) }}
                 </div>
