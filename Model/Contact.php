@@ -91,10 +91,18 @@ abstract class Contact
     protected $observations;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="email_grade", type="string", length=255, nullable=true)
+     */
+    protected $emailGrade;
+
+    /**
      * @ManyToOne(targetEntity="\Flower\ModelBundle\Entity\User\User")
      * @JoinColumn(name="user_id", referencedColumnName="id")
      * */
     protected $assignee;
+
     /**
      * @var DateTime
      * @Gedmo\Timestampable(on="create")
@@ -357,22 +365,42 @@ abstract class Contact
     {
         return $this->accounts;
     }
+
     /**
     * Get observations
-    * @return String 
+    * @return String
     */
     public function getObservations()
     {
         return $this->observations;
     }
-    
+
     /**
     * Set observations
-    * @return String 
+    * @return String
     */
     public function setObservations($observations)
     {
         $this->observations = $observations;
+        return $this;
+    }
+
+    /**
+    * Get emailGrade
+    * @return string
+    */
+    public function getEmailGrade()
+    {
+        return $this->emailGrade;
+    }
+
+    /**
+    * Set emailGrade
+    * @return string
+    */
+    public function setEmailGrade($emailGrade)
+    {
+        $this->emailGrade = $emailGrade;
         return $this;
     }
 }
