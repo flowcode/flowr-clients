@@ -56,11 +56,12 @@ class ContactRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder("c");
         $qb->select("DISTINCT c.email");
-        $qb->join("FlowerModelBundle:Marketing\ContactList", "cl");
-        $qb->where("cl.id IN (:contact_list_id)");
-        $qb->andWhere("c.email != ''");
+        $qb->join("FlowerModelBundle:Marketing\ContactList", "cl", "WITH", "1=1");
+        $qb->join("cl.contacts", "c2");
+        $qb->where("cl.id IN (:contact_list_ids)");
+        $qb->andWhere("c2.id = c.id");
         $qb->andWhere("c.allowCampaignMail = :allowCampaignMail")->setParameter("allowCampaignMail", true);
-        $qb->setParameter("contact_list_id", $contactsLists);
+        $qb->setParameter("contact_list_ids", $contactsLists);
 
         $qb->setFirstResult($offset * $limit);
         $qb->setMaxResults($limit);
@@ -170,6 +171,24 @@ class ContactRepository extends EntityRepository
     public function getPageCountByContactsLists($contactsLists, $pageSize)
     {
         $count = $this->getCountByContactsLists($contactsLists);
+        return ceil($count / $pageSize);
+    }
+
+    /**
+     * Excludin duplicates
+     */
+    public function getDistinctPageCountByContactsLists($contactsLists, $pageSize)
+    {
+        $qb = $this->createQueryBuilder("c");
+        $qb->select("COUNT(distinct c.email)");
+        $qb->join("FlowerModelBundle:Marketing\ContactList", "cl", "WITH", "1=1");
+        $qb->join("cl.contacts", "c2");
+        $qb->where("cl.id IN (:contact_list_ids)");
+        $qb->andWhere("c2.id = c.id");
+        $qb->andWhere("c.allowCampaignMail = :allowCampaignMail")->setParameter("allowCampaignMail", true);
+        $qb->setParameter("contact_list_ids", $contactsLists);
+
+        $count = $qb->getQuery()->getSingleScalarResult();
         return ceil($count / $pageSize);
     }
 
