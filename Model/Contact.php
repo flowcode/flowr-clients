@@ -13,12 +13,12 @@ use Doctrine\ORM\Mapping\ManyToOne;
 use Gedmo\Mapping\Annotation as Gedmo;
 use JMS\Serializer\Annotation\Groups;
 use Flower\ModelBundle\Entity\User\User;
+
 /**
  * Contact
  */
 abstract class Contact
 {
-
     /**
      * @var integer
      *
@@ -373,6 +373,15 @@ abstract class Contact
     public function getObservations()
     {
         return $this->observations;
+    }
+
+    /**
+    * Set observations
+    * @return boolean
+    */
+    public function setAllowCampaignMail($allowCampaignMail)
+    {
+        $this->allowCampaignMail = $allowCampaignMail;
     }
 
     /**
