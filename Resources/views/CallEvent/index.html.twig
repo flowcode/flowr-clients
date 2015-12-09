@@ -187,7 +187,7 @@
                                             {% if status.id in statusFilter %}
                                                 {% set  selected = "selected" %}
                                             {% endif %}
-                                            <option value="{{status.id}}" {{selected}}>{{status.name}}</option>
+                                            <option value="{{status.id}}" {{selected}}>{{status}}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -217,7 +217,7 @@
                                             {% if account.id in accountFilter %}
                                                 {% set  selected = "selected" %}
                                             {% endif %}
-                                            <option value="{{account.id}}" {{selected}}>{{account.name}}</option>
+                                            <option value="{{account.id}}" {{selected}}>{{account}}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -249,9 +249,6 @@
                             <tr class="bulk">
                                 <td><input type="checkbox" value="{{callevent.id}}" name="callevent[]" class="bulk-check" ></td>
                                 <td><a href="{{ path('callevent_show', {id: callevent.id}) }}">
-                                    {% if callevent.account %}
-                                        {{ callevent.account.id }} -
-                                    {% endif %}
                                     {{ callevent.account }}</a></td>
                                 <td><a href="{{ path('callevent_show', {id: callevent.id}) }}">{{ callevent.subject }}</a></td>
                                 <td>{{ callevent.status }}</td>
@@ -260,7 +257,7 @@
                                         {{ callevent.assignee.happyName }}
                                     {% endif %}
                                 </td>
-                                <td>{{ callevent.date | date('d/m/y H:i') }}</td>
+                                <td>{{ callevent.date | date('fullDateTime'|trans) }}</td>
                                 <td><a href="{{path('callevent_duplicate',{call:callevent.id})}}">{{'duplicate'| trans}}</a></td>
                             </tr>
                         {% endfor %}

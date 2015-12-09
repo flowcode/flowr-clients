@@ -75,11 +75,11 @@
                         </tr>
                         <tr>
                             <th scope="row">{{'Created'|trans({}, 'Contact')}}</th>
-                            <td>{{ contact.created|date('Y-m-d H:i:s') }}</td>
+                            <td>{{ contact.created|date('fullDateTime'|trans) }}</td>
                         </tr>
                         <tr>
                             <th scope="row">{{'Updated'|trans({}, 'Contact')}}</th>
-                            <td>{{ contact.updated|date('Y-m-d H:i:s') }}</td>
+                            <td>{{ contact.updated|date('fullDateTime'|trans) }}</td>
                         </tr>
                     </tbody>
                 </table>

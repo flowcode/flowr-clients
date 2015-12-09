@@ -44,11 +44,11 @@
                             </tr>
                             <tr>
                                 <th scope="row">{{'Created'|trans({}, 'Opportunity')}}</th>
-                                <td>{{ opportunity.created|date('Y-m-d H:i:s') }}</td>
+                                <td>{{ opportunity.created|date('fullDateTime'|trans) }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">{{'Updated'|trans({}, 'Opportunity')}}</th>
-                                <td>{{ opportunity.updated|date('Y-m-d H:i:s') }}</td>
+                                <td>{{ opportunity.updated|date('fullDateTime'|trans) }}</td>
                             </tr>
                         </tbody>
                     </table>

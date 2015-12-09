@@ -72,7 +72,7 @@ class CallEventService
                    if($account->getAssignee()){
                     $assigne = $account->getAssignee();
                    }
-                    $name = $account->getName() ? : " ";
+                    $name = $account->getName() ? "#".$account->getId()." ".$account->getName(): " ";
                     $activity = $account->getActivity() ? : " ";
                     $cuit = $account->getCuit() ? : " ";
                     $address = $account->getAddress() ? : " ";
