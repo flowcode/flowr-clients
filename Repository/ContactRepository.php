@@ -36,6 +36,19 @@ class ContactRepository extends EntityRepository
         return $qb;
     }
 
+    public function getCountByContactList($contactListId)
+    {
+        $qb = $this->createQueryBuilder("c");
+        $qb->select("COUNT(c)");
+        $qb->join("FlowerModelBundle:Marketing\ContactList", "cl", "WITH", "1=1");
+        $qb->join("cl.contacts", "c2");
+        $qb->where("cl.id = :contact_list_id");
+        $qb->andWhere("c2.id = c.id");
+        $qb->setParameter("contact_list_id", $contactListId);
+
+        return $qb->getQuery()->getSingleScalarResult();
+    }
+
     public function getByContactList($contactListId, $offset, $limit)
     {
         $qb = $this->createQueryBuilder("c");
@@ -55,12 +68,13 @@ class ContactRepository extends EntityRepository
     public function getDistinctEmailsByContactsLists($contactsLists, $offset, $limit)
     {
         $qb = $this->createQueryBuilder("c");
-        $qb->select("DISTINCT c.email");
+        $qb->select("DISTINCT c.email, c.id");
         $qb->join("FlowerModelBundle:Marketing\ContactList", "cl", "WITH", "1=1");
         $qb->join("cl.contacts", "c2");
         $qb->where("cl.id IN (:contact_list_ids)");
         $qb->andWhere("c2.id = c.id");
         $qb->andWhere("c.allowCampaignMail = :allowCampaignMail")->setParameter("allowCampaignMail", true);
+        $qb->andWhere("c.emailGrade != :emailgrade_can_be_send")->setParameter("emailgrade_can_be_send", EmailGrade::grade_d);
         $qb->setParameter("contact_list_ids", $contactsLists);
 
         $qb->setFirstResult($offset * $limit);
@@ -140,11 +154,14 @@ class ContactRepository extends EntityRepository
     public function getCountByContactsLists($contactsLists)
     {
         $qb = $this->createQueryBuilder("c");
-        $qb->select("COUNT(distinct c.email)");
-        $qb->join("FlowerModelBundle:Marketing\ContactList", "cl");
-        $qb->where("cl.id IN (:contacts_lists)");
+        $qb->select("COUNT(DISTINCT c.email)");
+        $qb->join("FlowerModelBundle:Marketing\ContactList", "cl", "WITH", "1=1");
+        $qb->join("cl.contacts", "c2");
+        $qb->where("cl.id IN (:contact_list_ids)");
+        $qb->andWhere("c2.id = c.id");
+        $qb->andWhere("c.allowCampaignMail = :allowCampaignMail")->setParameter("allowCampaignMail", true);
         $qb->andWhere("c.emailGrade != :emailgrade_can_be_send")->setParameter("emailgrade_can_be_send", EmailGrade::grade_d);
-        $qb->setParameter("contacts_lists", $contactsLists);
+        $qb->setParameter("contact_list_ids", $contactsLists);
 
         $count = $qb->getQuery()->getSingleScalarResult();
         return $count;
@@ -186,6 +203,7 @@ class ContactRepository extends EntityRepository
         $qb->where("cl.id IN (:contact_list_ids)");
         $qb->andWhere("c2.id = c.id");
         $qb->andWhere("c.allowCampaignMail = :allowCampaignMail")->setParameter("allowCampaignMail", true);
+        $qb->andWhere("c.emailGrade != :emailgrade_can_be_send")->setParameter("emailgrade_can_be_send", EmailGrade::grade_d);
         $qb->setParameter("contact_list_ids", $contactsLists);
 
         $count = $qb->getQuery()->getSingleScalarResult();
