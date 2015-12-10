@@ -25,7 +25,7 @@ abstract class Contact
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"search"})
+     * @Groups({"search", "public_api"})
      */
     protected $id;
 
@@ -33,7 +33,7 @@ abstract class Contact
      * @var string
      *
      * @ORM\Column(name="firstname", type="string", length=255, nullable=true)
-     * @Groups({"search"})
+     * @Groups({"search", "public_api"})
      */
     protected $firstname;
 
@@ -41,7 +41,7 @@ abstract class Contact
      * @var string
      *
      * @ORM\Column(name="lastname", type="string", length=255, nullable=true)
-     * @Groups({"search"})
+     * @Groups({"search", "public_api"})
      */
     protected $lastname;
 
@@ -49,7 +49,7 @@ abstract class Contact
      * @var string
      *
      * @ORM\Column(name="email", type="string", length=255, nullable=true)
-     * @Groups({"search"})
+     * @Groups({"search", "public_api"})
      */
     protected $email;
 
