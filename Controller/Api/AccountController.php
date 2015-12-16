@@ -15,9 +15,9 @@ class AccountController extends FOSRestController
     public function getAllAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $projects = $em->getRepository('FlowerModelBundle:Clients\Account')->findAll();
+        $accounts = $em->getRepository('FlowerModelBundle:Clients\Account')->findAll();
 
-        $view = FOSView::create($projects, Codes::HTTP_OK)->setFormat('json');
+        $view = FOSView::create($accounts, Codes::HTTP_OK)->setFormat('json');
         $view->getSerializationContext()->setGroups(array('public_api'));
         return $this->handleView($view);
     }
@@ -25,9 +25,28 @@ class AccountController extends FOSRestController
     public function getByIdAction(Request $request, $id)
     {
         $em = $this->getDoctrine()->getManager();
-        $project = $em->getRepository('FlowerModelBundle:Clients\Account')->find($id);
+        $account = $em->getRepository('FlowerModelBundle:Clients\Account')->find($id);
 
-        $view = FOSView::create($project, Codes::HTTP_OK)->setFormat('json');
+        $view = FOSView::create($account, Codes::HTTP_OK)->setFormat('json');
+        $view->getSerializationContext()->setGroups(array('public_api'));
+        return $this->handleView($view);
+    }
+
+    public function getAllWithActivityAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $accounts = $em->getRepository('FlowerModelBundle:Clients\Account')->findAll();
+
+        $reponse = array();
+        foreach ($accounts as $account) {
+            $reponse = array(
+                'account' => $account,
+                'activityId' => $account->getActivity()->getId(),
+                'activityName' => $account->getActivity()->getName()
+            );
+        }
+
+        $view = FOSView::create($accounts, Codes::HTTP_OK)->setFormat('json');
         $view->getSerializationContext()->setGroups(array('public_api'));
         return $this->handleView($view);
     }
