@@ -9,16 +9,16 @@ use Symfony\Component\HttpFoundation\Request;
 use Flower\ClientsBundle\Form\Type\ContactType;
 
 /**
- * Project controller.
+ * contact controller.
  */
 class ContactController extends FOSRestController
 {
     public function getAllAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $projects = $em->getRepository('FlowerModelBundle:Clients\Contact')->findBy(array(), array(), 20);
+        $contacts = $em->getRepository('FlowerModelBundle:Clients\Contact')->findBy(array(), array(), 20);
 
-        $view = FOSView::create($projects, Codes::HTTP_OK)->setFormat('json');
+        $view = FOSView::create($contacts, Codes::HTTP_OK)->setFormat('json');
         $view->getSerializationContext()->setGroups(array('public_api'));
         return $this->handleView($view);
     }
@@ -26,9 +26,9 @@ class ContactController extends FOSRestController
     public function getByIdAction(Request $request, $id)
     {
         $em = $this->getDoctrine()->getManager();
-        $project = $em->getRepository('FlowerModelBundle:Clients\Contact')->find($id);
+        $contact = $em->getRepository('FlowerModelBundle:Clients\Contact')->find($id);
 
-        $view = FOSView::create($project, Codes::HTTP_OK)->setFormat('json');
+        $view = FOSView::create($contact, Codes::HTTP_OK)->setFormat('json');
         $view->getSerializationContext()->setGroups(array('public_api'));
         return $this->handleView($view);
     }
@@ -36,9 +36,9 @@ class ContactController extends FOSRestController
     public function getByAccountAction(Request $request, $accountId)
     {
         $em = $this->getDoctrine()->getManager();
-        $project = $em->getRepository('FlowerModelBundle:Clients\Contact')->findBy(array("account" => $accountId));
+        $contacts = $em->getRepository('FlowerModelBundle:Clients\Contact')->getByAccountQuery($accountId)->getQuery()->getResult();
 
-        $view = FOSView::create($project, Codes::HTTP_OK)->setFormat('json');
+        $view = FOSView::create($contacts, Codes::HTTP_OK)->setFormat('json');
         $view->getSerializationContext()->setGroups(array('public_api'));
         return $this->handleView($view);
     }

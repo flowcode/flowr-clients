@@ -29,7 +29,7 @@ abstract class Account
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"search", "public_api"})
+     * @Groups({"search", "public_api", "api"})
      */
     protected $id;
 
@@ -37,7 +37,7 @@ abstract class Account
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
-     * @Groups({"search", "public_api"})
+     * @Groups({"search", "public_api", "api"})
      * @Assert\NotBlank()
      */
     protected $name;
@@ -46,7 +46,7 @@ abstract class Account
      * @var string
      *
      * @ORM\Column(name="businessName", type="string", length=255)
-     * @Groups({"search", "public_api"})
+     * @Groups({"search", "public_api", "api"})
      * @Assert\NotBlank()
      */
     protected $businessName;
@@ -54,7 +54,7 @@ abstract class Account
      * @var string
      *
      * @ORM\Column(name="phone", type="string", length=255, nullable=true)
-     * @Groups({"search", "public_api"})
+     * @Groups({"search", "public_api", "api"})
      */
     protected $phone;
     
@@ -74,7 +74,7 @@ abstract class Account
      * @var string
      *
      * @ORM\Column(name="address", type="string", length=255, nullable=true)
-     * @Groups({"search", "public_api"})
+     * @Groups({"search", "public_api", "api"})
      */
     protected $address;
 
@@ -82,7 +82,7 @@ abstract class Account
      * @var string
      *
      * @ORM\Column(name="cuit", type="string", length=255, nullable=true)
-     * @Groups({"search", "public_api"})
+     * @Groups({"search", "public_api", "api"})
      */
     protected $cuit;
 
@@ -100,6 +100,7 @@ abstract class Account
     /**
      * @ManyToOne(targetEntity="\Flower\ModelBundle\Entity\Clients\Activity")
      * @JoinColumn(name="activity_id", referencedColumnName="id")
+     * @Groups({"api"})
      * */
     protected $activity;
     

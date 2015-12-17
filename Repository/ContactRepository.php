@@ -19,7 +19,7 @@ class ContactRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder("c");
         $qb->select("c");
-        $qb->join("c.accounts", "a", Join::WITH, "a.id = :account_id");
+        $qb->join("c.accounts", "a");
         $qb->where("a.id = :account_id");
         $qb->setParameter("account_id", $accountId);
 

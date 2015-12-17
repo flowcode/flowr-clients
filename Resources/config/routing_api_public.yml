@@ -1,11 +1,11 @@
 flower_api_public_clients_account_show:
     path:     /accounts/{id}
-    defaults: { _controller: FlowerClientsBundle:Api\Account:getById }
+    defaults: { _controller: FlowerClientsBundle:Api\Account:publicGetById }
     methods: [GET]
 
 flower_api_public_clients_account_findall:
     path:     /accounts
-    defaults: { _controller: FlowerClientsBundle:Api\Account:getAll }
+    defaults: { _controller: FlowerClientsBundle:Api\Account:publicGetAll }
     methods: [GET]
 
 flower_api_public_clients_contact_show:

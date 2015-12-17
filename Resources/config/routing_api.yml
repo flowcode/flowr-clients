@@ -7,3 +7,17 @@ flower_api_clients_account_findall:
     path:     /accounts
     defaults: { _controller: FlowerClientsBundle:Api\Account:getAll }
     methods: [GET]
+
+flower_api_clients_contact_show:
+    path:     /contacts/{id}
+    defaults: { _controller: FlowerClientsBundle:Api\Contact:getById }
+    methods: [GET]
+
+flower_api_clients_contact_findall:
+    path:     /contacts
+    defaults: { _controller: FlowerClientsBundle:Api\Contact:getAll }
+    methods: [GET]
+flower_api_clients_contact_findallbyaccount:
+    path:     /contacts/account/{accountId}
+    defaults: { _controller: FlowerClientsBundle:Api\Contact:getByAccount }
+    methods: [GET]

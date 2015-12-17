@@ -6,7 +6,7 @@ use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
-
+use JMS\Serializer\Annotation\Groups;
 /**
  * Activity
  */
@@ -19,6 +19,7 @@ abstract class Activity
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Groups({"api"})
      */
     protected $id;
 
@@ -26,6 +27,7 @@ abstract class Activity
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
+     * @Groups({"api"})
      */
     protected $name;
 

@@ -18,7 +18,7 @@ class AccountController extends FOSRestController
         $accounts = $em->getRepository('FlowerModelBundle:Clients\Account')->findAll();
 
         $view = FOSView::create($accounts, Codes::HTTP_OK)->setFormat('json');
-        $view->getSerializationContext()->setGroups(array('public_api'));
+        $view->getSerializationContext()->setGroups(array('api'));
         return $this->handleView($view);
     }
 
@@ -28,25 +28,25 @@ class AccountController extends FOSRestController
         $account = $em->getRepository('FlowerModelBundle:Clients\Account')->find($id);
 
         $view = FOSView::create($account, Codes::HTTP_OK)->setFormat('json');
-        $view->getSerializationContext()->setGroups(array('public_api'));
+        $view->getSerializationContext()->setGroups(array('api'));
         return $this->handleView($view);
     }
-
-    public function getAllWithActivityAction(Request $request)
+    public function publicGetAllAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
         $accounts = $em->getRepository('FlowerModelBundle:Clients\Account')->findAll();
 
-        $reponse = array();
-        foreach ($accounts as $account) {
-            $reponse = array(
-                'account' => $account,
-                'activityId' => $account->getActivity()->getId(),
-                'activityName' => $account->getActivity()->getName()
-            );
-        }
-
         $view = FOSView::create($accounts, Codes::HTTP_OK)->setFormat('json');
+        $view->getSerializationContext()->setGroups(array('public_api'));
+        return $this->handleView($view);
+    }
+
+    public function publicGetByIdAction(Request $request, $id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $account = $em->getRepository('FlowerModelBundle:Clients\Account')->find($id);
+
+        $view = FOSView::create($account, Codes::HTTP_OK)->setFormat('json');
         $view->getSerializationContext()->setGroups(array('public_api'));
         return $this->handleView($view);
     }

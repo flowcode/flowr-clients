@@ -50,4 +50,5 @@ class AccountRepository extends EntityRepository
         $querry = $qb->getQuery();
         return $querry->getOneOrNullResult();
     }
+
 }
