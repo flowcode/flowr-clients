@@ -100,7 +100,7 @@ abstract class Account
     /**
      * @ManyToOne(targetEntity="\Flower\ModelBundle\Entity\Clients\Activity")
      * @JoinColumn(name="activity_id", referencedColumnName="id")
-     * @Groups({"api"})
+     * @Groups({"api","public_api"})
      * */
     protected $activity;
     

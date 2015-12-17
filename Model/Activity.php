@@ -27,7 +27,7 @@ abstract class Activity
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
-     * @Groups({"api"})
+     * @Groups({"api","public_api"})
      */
     protected $name;
 
