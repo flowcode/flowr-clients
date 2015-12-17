@@ -6,8 +6,8 @@ use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Util\Codes;
 use FOS\RestBundle\View\View as FOSView;
 use Symfony\Component\HttpFoundation\Request;
-use Flower\ClientsBundle\Form\Type\ContactType;
-
+use Flower\ClientsBundle\Form\Type\Api\ContactType;
+use Flower\ModelBundle\Entity\Clients\Contact;
 /**
  * contact controller.
  */
@@ -45,13 +45,13 @@ class ContactController extends FOSRestController
 
     //
      // parameters={
-     //      {"name"="account_id", "dataType"="int", "required"=true, "description"="The account id"},
-     //      {"name"="firstname", "dataType"="string", "required"=false, "description"="The contact firstname"},
-     //      {"name"="lastname", "dataType"="string", "required"=false, "description"="The contact lastname"}
-     //      {"name"="email", "dataType"="string", "required"=true, "description"="The contact email"},
-     //      {"name"="address", "dataType"="string", "required"=false, "description"="The contact address"},
-     //      {"name"="phone", "dataType"="string", "required"=false, "description"="The contact phone"},
-     //      {"name"="observations", "dataType"="string", "required"=false, "description"="The contact observations"},
+     //      {"name"="accounts=asdasd, "dataType"="int", "required"=true, "description"="The account id"},
+     //      {"name"="firstname=asdasd, "dataType"="string", "required"=false, "description"="The contact firstname"},
+     //      {"name"="lastname=asdasd, "dataType"="string", "required"=false, "description"="The contact lastname"}
+     //      {"name"="email=asdasd, "dataType"="string", "required"=true, "description"="The contact email"},
+     //      {"name"="address=asdasd, "dataType"="string", "required"=false, "description"="The contact address"},
+     //      {"name"="phone=asdasd, "dataType"="string", "required"=false, "description"="The contact phone"},
+     //      {"name"="observations=asdasd, "dataType"="string", "required"=false, "description"="The contact observations"},
      // },
      //  statusCodes={
      //         200="Returned when successful",
@@ -62,17 +62,17 @@ class ContactController extends FOSRestController
     public function createAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $account = $this->getByAccountAction($request->get('account_id')); //se puede llamar asi a getByAccountAction?????
+//        $account = $em->getRepository('FlowerModelBundle:Clients\Account')->find($account_id);
 
         $contact = new Contact();
-        $form = $this->createForm($this->get('form.type.contact'), $contact);
+        $form = $this->createForm($this->get('form.api.type.contact'), $contact);
 
         $form->submit($request);
-        if ($account && $form->isValid()) {            
+        if ($form->isValid()) {            
             $em->persist($contact);
             $em->flush();
 
-            $response = array("success" => true, "message" => "Contact created" );
+            $response = array("success" => true, "message" => "Contact created", "entity" =>$contact );
             return $this->handleView(FOSView::create($response, Codes::HTTP_OK)->setFormat("json"));
         }
 

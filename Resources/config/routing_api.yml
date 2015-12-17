@@ -12,6 +12,10 @@ flower_api_clients_contact_show:
     path:     /contacts/{id}
     defaults: { _controller: FlowerClientsBundle:Api\Contact:getById }
     methods: [GET]
+flower_api_clients_contact_create:
+    path:     /contacts/new
+    defaults: { _controller: FlowerClientsBundle:Api\Contact:create }
+    methods: [POST]
 
 flower_api_clients_contact_findall:
     path:     /contacts
