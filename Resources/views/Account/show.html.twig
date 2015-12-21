@@ -165,7 +165,7 @@
                             {% for call in accauntcalls %}
                                 <li class="item cursor-pointer" ng-repeat="item in notes.notes">
                                     <a class="product-title" href="{{path('callevent_show',{id:call.id})}}">
-                                            {{call.subject}} <small class="text-muted pull-right"><i class="fa fa-calendar"></i> {{call.date| date("m/d")}}</small>
+                                            {{call.subject}} <small class="text-muted pull-right"><i class="fa fa-calendar"></i> {{call.date| date("m/d/y")}}</small>
                                     </a>
                                     <span class="product-description">
                                         {{call.status}}
