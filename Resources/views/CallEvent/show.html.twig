@@ -51,7 +51,7 @@
                                 </tr>
                                 <tr>
                                     <th scope="row">{{'date'|trans({}, 'CallEvent') | capitalize}}</th>
-                                    <td>{{ callevent.date | date ('y-m-d H:i')}}</td>
+                                    <td>{{ callevent.date | date ('fullDateTime' | trans)}}</td>
                                 </tr>
                                 <tr>
                                     <th scope="row">{{'contactName'|trans({}, 'CallEvent') | capitalize}}</th>
