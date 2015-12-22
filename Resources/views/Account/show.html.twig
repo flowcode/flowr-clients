@@ -150,6 +150,7 @@
                 </div>
             </div>
             <div class="col-sm-4">
+                {% if is_granted('ROLE_CALL') %}
                 <div class="box">
                     <div class="box-header">
                          <a class="btn btn-link" style="padding-left: 0px;" href="{{ path('callevent') }}?accountFilter%5B%5D={{account.id}}"><h3 class="box-title">{{ 'calls'|trans|capitalize }}</h3></a>
@@ -165,7 +166,7 @@
                             {% for call in accauntcalls %}
                                 <li class="item cursor-pointer" ng-repeat="item in notes.notes">
                                     <a class="product-title" href="{{path('callevent_show',{id:call.id})}}">
-                                            {{call.subject}} <small class="text-muted pull-right"><i class="fa fa-calendar"></i> {{call.date| date("smallDate"| trans)}}</small>
+                                            {{call.subject}} <small class="text-muted pull-right"><i class="fa fa-calendar"></i> {{call.date| date("smallDate" | trans)}}</small>
                                     </a>
                                     <span class="product-description">
                                         {{call.status}}
@@ -177,6 +178,8 @@
                     <div class="box-footer">
                     </div>
                 </div>
+                {% endif %}
+                {% if is_granted('ROLE_BOARD') %} 
                 <div class="box">
                     <div class="box-header">
                         <h3 class="box-title">{{ 'boards'|trans|capitalize }}</h3>
@@ -200,11 +203,13 @@
                     <div class="box-footer">
                     </div>
                 </div>
+                {% endif %}
                 <div class="box" multi-app="flowerNotes">
                     <div ng-view>
 
                     </div>
                 </div>
+                {% if is_granted('ROLE_PROJECT') %}   
                 <div class="box box-solid">
                     <div class="box-header">
                         <h3 class="box-title">{{ 'current projects'|trans|capitalize }}</h3>
@@ -219,8 +224,8 @@
                                         {{ project.name|capitalize }}
                                     </a>
                                     <span class="product-description">
-                    				  	{{ project.description }}
-                    				</span>
+                                        {{ project.description }}
+                                    </span>
                                 </li>
                             {% endfor %}
                         </ul>
@@ -228,6 +233,7 @@
                     <div class="box-footer">
                     </div>
                 </div>
+                {% endif %}
             </div>
         </div>
 
