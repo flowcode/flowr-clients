@@ -8,6 +8,16 @@ flower_api_clients_account_findall:
     defaults: { _controller: FlowerClientsBundle:Api\Account:getAll }
     methods: [GET]
 
+flower_api_clients_account_create:
+    path:     /accounts/new
+    defaults: { _controller: FlowerClientsBundle:Api\Account:create }
+    methods: [POST]
+
+flower_api_clients_activity_findall:
+    path:     /activity
+    defaults: { _controller: FlowerClientsBundle:Api\Activity:getAll }
+    methods: [GET]
+
 flower_api_clients_contact_show:
     path:     /contacts/{id}
     defaults: { _controller: FlowerClientsBundle:Api\Contact:getById }

@@ -6,6 +6,8 @@ use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Util\Codes;
 use FOS\RestBundle\View\View as FOSView;
 use Symfony\Component\HttpFoundation\Request;
+use Flower\ClientsBundle\Form\Type\Api\AccountType;
+use Flower\ModelBundle\Entity\Clients\Account;
 
 /**
  * Project controller.
@@ -49,5 +51,23 @@ class AccountController extends FOSRestController
         $view = FOSView::create($account, Codes::HTTP_OK)->setFormat('json');
         $view->getSerializationContext()->setGroups(array('public_api'));
         return $this->handleView($view);
+    }
+     public function createAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $account = new Account();
+        $form = $this->createForm(new AccountType(), $account);
+
+        $form->submit($request);
+        if ($form->isValid()) {            
+            $em->persist($account);
+            $em->flush();
+
+            $response = array("success" => true, "message" => "Account created", "entity" =>$account );
+            return $this->handleView(FOSView::create($response, Codes::HTTP_OK)->setFormat("json"));
+        }
+
+        $response= array('success' => false, 'errors' => $form->getErrors());
+        return $this->handleView(FOSView::create($response, Codes::HTTP_NOT_FOUND)->setFormat("json"));
     }
 }
