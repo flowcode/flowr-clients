@@ -1,0 +1,24 @@
+'%entity% List': 'Lista de sucursales' #titulo
+'%entity% creation': 'Crear sucursal'
+'%entity% edit': 'Editar Sucursal'
+'%entity% list': 'Lista de sucursales' #title
+New Subsidiary: Nueva sucursal
+City: Ciudad
+'Confirm delete': 'confirmación de borrado'
+Delete: Borrar
+Departament: Departamento
+'Do you want to proceed?': '¿Desea continuar de todos modos?'
+Edit: Editar
+Locality: Localidad
+Name: Nombre
+'No': 'No'
+Street: Calle
+Streetnumber: Numero de calle
+Subsidiary: Sucursal
+Subsidiaries: Sucursales
+'Subsidiary list': 'Lista de sucursales'
+'Yes': 'Si'
+'You are about to delete an item': 'Usted esta por borrar un elemento'
+Zipcode: Código Postal
+'this procedure is irreversible': 'esta accion será irreversible'
+

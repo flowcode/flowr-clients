@@ -18,6 +18,11 @@ flower_api_clients_activity_findall:
     defaults: { _controller: FlowerClientsBundle:Api\Activity:getAll }
     methods: [GET]
 
+flower_api_clients_subsidiary_findall:
+    path:     /subsidiaries/{account}
+    defaults: { _controller: FlowerClientsBundle:Api\Subsidiary:getAll }
+    methods: [GET]
+
 flower_api_clients_contact_show:
     path:     /contacts/{id}
     defaults: { _controller: FlowerClientsBundle:Api\Contact:getById }

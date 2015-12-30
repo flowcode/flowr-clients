@@ -1,22 +1,19 @@
 Account: Cuenta
+'Account Assignee': 'Cuenta asignada'
 Action: Acción
 Activity: Actividad
 Assignee: Asignado
 'Between Dates': 'Entre las fechas'
-Contacts: Contactos
 'Not Assignee': 'No asignado'
-accounts: cuentas
 'assignee to': 'asignado a'
 boards: tableros
-callevents: llamadas
-calls: post venta
+calls: 'post venta'
 'change status': 'cambiar estado'
 contacts: contactos
 'current projects': 'proyectos actuales'
+duplicate: duplicar
 email: email
 end: fin
 name: nombre
 phone: teléfono
 start: inicio
-Account Assignee: Cuenta asignada
-duplicate: duplicar

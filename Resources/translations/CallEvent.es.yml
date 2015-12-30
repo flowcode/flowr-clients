@@ -1,45 +1,28 @@
 '%entity% creation': 'Creación de Llamado'
 '%entity% edit': 'Edición de Llamado'
-'%entity% list': 'Llamados'
+'%entity% list': Llamados
+'All Pages': Todo
 'Confirm delete': 'Confirmar borrado'
 'Create a new %entity%': 'Crear llamado'
+'Creating massives calls': 'Creando llamadas de forma masiva'
 Delete: Borrar
 'Do you want to proceed?': '¿Desea continuar de todos modos?'
-'New CallEvent': 'Nuevo llamado'
+Export: Exportar
 'No': 'No'
 Save: Guardar
 'Save and add': 'Guardar y crear otro'
+'This Page': 'Página actual'
 'Yes': Si
 'You are about to delete an item': 'Usted esta por borrar un elemento'
+assignee: 'asignado a'
+'calls planner': 'Planificador de llamadas'
 contactName: 'atendió (nombre)'
+'create call': 'crear llamado'
+'create calls': 'crear llamados'
 date: fecha
 description: Descripción
+'no': 'no'
 status: estado
-'this procedure is irreversible': 'esta accion será irreversible'
-Account: Cuenta
-account: cuenta
-diffDates: '#días'
-Status: Estado
-LastDate: Última llamada
-Has penddings: Tiene pendientes
-calls planner: Planificador de llamadas
 subject: tema
-date: fecha
-assignee: asignado a
-Subject: Tema
-Contact name: Nombre del contacto
-Date: Fecha
-Assignee: Asignado a
-Description: Descripción
-Creating massives calls: Creando llamadas de forma masiva
-create calls: crear llamados
-yes: si
-no: no
-create call: crear llamado
-'This Page': 'Página actual'
-'All Pages': 'Todo'
-
-
-
-Recovery strategy: Estrategia de recuperación
-recoveryStrategy: Estrategia de recuperación
+'this procedure is irreversible': 'esta accion será irreversible'
+'yes': si

@@ -1,18 +1,17 @@
-'%entity% creation': 'Crear de  Oportunidad'
-'%entity% edit': 'Edición de Oportunidad'
-'%entity% list': 'Oportunidades'
+'%entity% creation': 'Crear de  Oportunidad' #title
+'%entity% edit': 'Edición de Oportunidad' #tilte
+'%entity% list': Oportunidades # titulo
+Account: Cuenta
 'Confirm delete': 'Confirmar borrado'
-Create: Crear
+Contact: Contacto
 'Create a new %entity%': 'Crear Oportunidad'
 Created: Creado
 Delete: Borrar
 Description: Descripción
 'Do you want to proceed?': '¿Desea continuar de todos modos?'
 Edit: Editar
-'New Opportunity': 'Nueva Oportunidad'
 'No': 'No'
 Opportunities: Oportunidades
-Opportunity: Oportunidad
 Price: Precio
 Status: Estado
 Updated: Actualizado
@@ -22,7 +21,3 @@ lost: perdido
 pending: pendiente
 'this procedure is irreversible': 'esta accion será irreversible'
 won: ganado
-Account: Cuenta
-Contact: Contacto
-Name: Nombre
-Assignee: Asignado a

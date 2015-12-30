@@ -1,20 +1,20 @@
 '%entity% List': 'Lista de estado de llamados'
 '%entity% creation': 'Creación de estado de llamado'
 '%entity% edit': 'Edición de estado de llamado'
-'%entity% List': 'Lista de estados de llamados'
+'%entity% list': 'Lista de llamados'
 Actions: Acciones
-CallEventStatus: Estado de llamados
+CallEventStatus: 'Estado de llamados'
 'Confirm delete': 'Confirmar borrado'
 Create: Crear
 'Create a new %entity%': 'Crear estado de llamados'
 Delete: Borrar
 'Do you want to proceed?': '¿Desea continuar de todos modos?'
-edit: editar
+Edit: Editar
 Finished: Finalizado
 Id: Id
 Name: Nombre
 'No': 'No'
-'Yes': 'Si'
+'Yes': Si
 'You are about to delete an item': 'Usted esta por borrar un elemento'
 edit: editar
 show: ver
