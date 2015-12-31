@@ -12,4 +12,16 @@ use Doctrine\ORM\EntityRepository;
  */
 class SubsidiaryRepository extends EntityRepository
 {
+
+    public function getByAccountQuery($accountId)
+    {
+        $qb = $this->createQueryBuilder("s");
+        $qb->select("s");
+        $qb->join("s.account", "a");
+        $qb->where("a.id = :account_id");
+        $qb->orderBy("s.name");
+        $qb->setParameter("account_id", $accountId);
+        return $qb;
+    }
+
 }

@@ -12,6 +12,18 @@ use Doctrine\ORM\EntityRepository;
  */
 class CallEventRepository extends EntityRepository
 {	
+
+    public function getByAccountQuery($accountId)
+    {
+        $qb = $this->createQueryBuilder("ce");
+        $qb->select("ce");
+        $qb->join("ce.account", "a");
+        $qb->where("a.id = :account_id");
+        $qb->orderBy("ce.date","DESC");
+        $qb->setParameter("account_id", $accountId);
+        return $qb;
+    }
+
 	function countPlannerQuery($filters){
 		$qb = $this->createQueryBuilder("ce");
 		$em = $this->getEntityManager();

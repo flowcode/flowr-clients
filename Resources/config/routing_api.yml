@@ -23,6 +23,11 @@ flower_api_clients_subsidiary_findall:
     defaults: { _controller: FlowerClientsBundle:Api\Subsidiary:getAll }
     methods: [GET]
 
+flower_api_clients_subsidiary_create:
+    path:     /subsidiaries/new
+    defaults: { _controller: FlowerClientsBundle:Api\Subsidiary:create }
+    methods: [POST]
+    
 flower_api_clients_contact_show:
     path:     /contacts/{id}
     defaults: { _controller: FlowerClientsBundle:Api\Contact:getById }
