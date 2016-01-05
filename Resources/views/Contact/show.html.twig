@@ -6,6 +6,12 @@
     <section class="content">    
         {{ include("FlowerClientsBundle::appnav.html.twig", { 'app_contact': true }) }} 
         <div class="box" id="showContact">
+            {% if contact.accounts | length > 0  %}
+                <div class="box-small-nav">
+                    >
+                    <a href="{{ path('account_show',{id:contact.accounts[0].id}) }}"> {{ contact.accounts[0]}}</a>
+                </div>
+            {% endif %}
             <div class="box-header">
                 <h3 class="box-title">
                     {{ contact.happyname | trans({}, 'Contact')}}

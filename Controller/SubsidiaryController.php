@@ -211,6 +211,7 @@ class SubsidiaryController extends Controller
      */
     public function deleteAction(Subsidiary $subsidiary, Request $request)
     {
+        $account = $subsidiary->getAccount();
         $form = $this->createDeleteForm($subsidiary->getId(), 'subsidiary_delete');
         if ($form->handleRequest($request)->isValid()) {
             $em = $this->getDoctrine()->getManager();
@@ -218,7 +219,7 @@ class SubsidiaryController extends Controller
             $em->flush();
         }
 
-        return $this->redirect($this->generateUrl('subsidiary'));
+        return $this->redirect($this->generateUrl('account_show',array("id" => $account->getId())));
     }
 
     /**
