@@ -1,0 +1,28 @@
+{% extends "FlowerCoreBundle::layout.html.twig" %}
+
+{% block title %}{{ '%entity% creation'|trans({'%entity%': 'Subsidiary'}, 'Subsidiary') }} - {{ parent() }}{% endblock %}
+
+{% block body %}
+    <section class="content">
+        {{ include("FlowerClientsBundle::appnav.html.twig", { }) }} 
+        <div class="box">
+            <div class="box-small-nav" style="margin-left: 60px;">
+                >
+                <a href="{{ path('account_show',{id:account.id}) }}"> {{ account}}</a>
+            </div>
+            <div class="box-body">
+                {{ form_start(form, {action: path('subsidiary_create',{account:account.id})}) }}
+                    {{ form_widget(form) }}
+                    <p>
+                        <button class="btn-default btn" type="submit">{{ 'save'|trans | capitalize}}</button>
+                    </p>
+                {{ form_end(form) }}
+            </div>
+            <div class="box-footer">
+                        
+        <div class="btn-group record_actions"></div>
+
+            </div>
+        </div>
+    </section>
+{% endblock %}

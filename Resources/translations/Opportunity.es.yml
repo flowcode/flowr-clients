@@ -1,6 +1,6 @@
-'%entity% creation': 'Crear de  Oportunidad'
-'%entity% edit': 'Edición de Oportunidad'
-'%entity% list': Oportunidades
+'%entity% creation': 'Crear de  Oportunidad' #title
+'%entity% edit': 'Edición de Oportunidad' #tilte
+'%entity% list': Oportunidades # titulo
 Account: Cuenta
 'Confirm delete': 'Confirmar borrado'
 Contact: Contacto

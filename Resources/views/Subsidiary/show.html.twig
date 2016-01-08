@@ -1,0 +1,130 @@
+{% extends "FlowerCoreBundle::layout.html.twig" %}
+
+{% block title %}{{'Subsidiary' | trans({},'Subsidiary')}} {{ subsidiary.name}} - {{ parent() }}{% endblock %}
+
+{% block body %}
+    <section class="content">    
+        {{ include("FlowerClientsBundle::appnav.html.twig", { }) }} 
+        <div class="box"  id='showSubsidiary'>
+            <div class="box-small-nav">
+                >
+                <a href="{{ path('account_show',{id:subsidiary.account.id}) }}"> {{ subsidiary.account}}</a>
+                <div class="box-tools  pull-right">
+                    {{ form_start(delete_form) }}
+                    {{ form_widget(delete_form) }}
+
+                    <div class="btn-group record_actions">
+                        <button class="btn btn-link btn-sm" type="submit"> {{ 'Delete'|trans({}, 'Subsidiary') }}</button>
+                        <input name="modal" type="hidden" value="0">
+                            <a class="btn btn-link  btn-sm" onclick="showEdit(true)">
+                                {{ 'Edit'|trans({}, 'Subsidiary') }}
+                            </a>
+                    </div>
+                    <input name="modal" type="hidden" value="0">
+                    {{ form_end(delete_form) }}
+                </div>
+            </div>
+            <div class="box-header">
+                <h3 class="box-title">{{ subsidiary.name}}</h3>
+                
+            </div>
+            <div class="box-body">
+                <table class="table table-hover record_properties">
+                    <tbody>
+                        <tr>
+                            <th scope="row">{{'Street'|trans({}, 'Subsidiary')}}</th>
+                            <td>{{ subsidiary.street }}</td>
+                        </tr>                            
+                        <tr>
+                            <th scope="row">{{'Streetnumber'|trans({}, 'Subsidiary')}}</th>
+                            <td>{{ subsidiary.streetNumber }}</td>
+                        </tr>                            
+                        <tr>
+                            <th scope="row">{{'Departament'|trans({}, 'Subsidiary')}}</th>
+                            <td>{{ subsidiary.department }}</td>
+                        </tr>                            
+                        <tr>
+                            <th scope="row">{{'Locality'|trans({}, 'Subsidiary')}}</th>
+                            <td>{{ subsidiary.locality }}</td>
+                        </tr>                            
+                        <tr>
+                            <th scope="row">{{'Zipcode'|trans({}, 'Subsidiary')}}</th>
+                            <td>{{ subsidiary.zipCode }}</td>
+                        </tr>                            
+                        <tr>
+                            <th scope="row">{{'City'|trans({}, 'Subsidiary')}}</th>
+                            <td>{{ subsidiary.city }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="box-footer">
+            
+            </div>
+        </div>
+        <div class="box" id='editFormSubsidiary'  style="display: none;">
+            <div class="box-header">
+                <div class="box-tools">
+                    {{ form_start(delete_form) }}
+                    {{ form_widget(delete_form) }}
+                    <div class="btn-group record_actions">
+                        <button class="btn btn-link btn-sm" type="submit"> {{ 'Delete'|trans({}, 'Subsidiary') }}</button>
+                        <a class="btn btn-link  btn-sm" onclick="showEdit(false)">
+                        {{ 'Cancel'|trans({}, 'Account') }}
+                        </a>
+                    </div>
+                    <input name="modal" type="hidden" value="0">
+                    {{ form_end(delete_form) }}
+                </div>
+            </div>
+            <div class="box-body">
+
+            {{ form_start(edit_form) }}
+                {{ form_widget(edit_form) }}
+                <p>
+                    <button class="btn-default btn" type="submit">{{ 'save'|trans | capitalize}}</button>
+                </p>
+            {{ form_end(edit_form) }}
+            </div>
+            <div class="box-footer">
+            </div>
+        </div>
+    </section>
+
+        <div class="btn-group record_actions"></div>
+
+        <div id="delete_confirm" class="modal fade">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h3>{{ 'Confirm delete'|trans({}, 'Subsidiary') }}</h3>
+                    </div>
+                    <div class="modal-body">
+                        <p>{{ 'You are about to delete an item'|trans({}, 'Subsidiary') }}, {{ 'this procedure is irreversible'|trans({}, 'Subsidiary') }}.</p>
+                        <p>{{ 'Do you want to proceed?'|trans({}, 'Subsidiary') }}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-danger">{{ 'Yes'|trans({}, 'Subsidiary') }}</button>
+                        <button class="btn btn-default" data-dismiss="modal">{{ 'No'|trans({}, 'Subsidiary') }}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock %}
+{% block javascripts %}
+
+    {{ parent() }}
+    <script type="text/javascript">
+        function showEdit(show){
+            if(show){
+                $('#showSubsidiary').hide();
+                $('#editFormSubsidiary').show();
+            }else{
+                $('#showSubsidiary').show();
+                $('#editFormSubsidiary').hide();
+            }
+        }
+        
+    </script>
+{% endblock %}

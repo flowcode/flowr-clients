@@ -21,8 +21,8 @@ class ContactRepository extends EntityRepository
         $qb->select("c");
         $qb->join("c.accounts", "a");
         $qb->where("a.id = :account_id");
+        $qb->orderBy("c.firstname");
         $qb->setParameter("account_id", $accountId);
-
         return $qb;
     }
 

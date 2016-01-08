@@ -93,6 +93,11 @@ abstract class Account
     protected $contacts;
 
     /**
+     * @ORM\OneToMany(targetEntity="\Flower\ModelBundle\Entity\Clients\Subsidiary", mappedBy="account")
+     */
+    protected $subsidiaries;
+
+    /**
      * @ManyToOne(targetEntity="\Flower\ModelBundle\Entity\User\User")
      * @JoinColumn(name="user_id", referencedColumnName="id")
      * */
@@ -532,5 +537,38 @@ abstract class Account
     {
         $this->status = $status;
         return $this;
+    }
+
+    /**
+     * Add subsidiaries
+     *
+     * @param \Flower\ModelBundle\Entity\Clients\Subsidiary $subsidiaries
+     * @return Account
+     */
+    public function addSubsidiary(\Flower\ModelBundle\Entity\Clients\Subsidiary $subsidiaries)
+    {
+        $this->subsidiaries[] = $subsidiaries;
+
+        return $this;
+    }
+
+    /**
+     * Remove subsidiaries
+     *
+     * @param \Flower\ModelBundle\Entity\Clients\Subsidiary $subsidiaries
+     */
+    public function removeSubsidiary(\Flower\ModelBundle\Entity\Clients\Subsidiary $subsidiaries)
+    {
+        $this->subsidiaries->removeElement($subsidiaries);
+    }
+
+    /**
+     * Get subsidiaries
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getSubsidiaries()
+    {
+        return $this->subsidiaries;
     }
 }

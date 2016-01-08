@@ -1,7 +1,8 @@
-'%entity%': '%entity%'   # FIXME
+'%entity%': 'Cuenta'
 '%entity% creation': 'Creación de Cuenta'
 '%entity% edit': 'Edición de Cuenta'
 '%entity% list': Cuentas
+Account %name%: Cuenta %name%
 Activity: Actividad
 Address: Dirección
 'All %entity%': Todo

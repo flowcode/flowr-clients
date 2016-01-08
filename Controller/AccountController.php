@@ -103,31 +103,30 @@ class AccountController extends BaseController
         $em = $this->getDoctrine()->getManager();
 
         $todoStatus = $em->getRepository("FlowerModelBundle:Board\TaskStatus")->findOneBy(array("name" => TaskStatus::STATUS_TODO));
-       // $nextBugs = $em->getRepository("FlowerModelBundle:Task")->findByStatusAndType(TaskType::TYPE_BUG, $todoStatus->getId(), $account->getId(), null, null, 10);
-
-        //$todoTasks = $em->getRepository("FlowerModelBundle:Task")->findByStatusAndType(TaskType::TYPE_TASK, $todoStatus->getId(), $account->getId(), null, null, 10);
         $accountBoards = $account->getBoards();
 
         $currentProjects = $em->getRepository("FlowerModelBundle:Project\Project")->findBy(array("account" => $account));
 
         $qb = $em->getRepository('FlowerModelBundle:Clients\Contact')->getByAccountQuery($account->getId());
-        $paginator = $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), 20);
+        $contacts = $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), 5);
 
-        $accauntcalls = $em->getRepository('FlowerModelBundle:Clients\CallEvent')->findBy(array("account" => $account),array("date" => "DESC"),10);
+        $qb = $em->getRepository('FlowerModelBundle:Clients\CallEvent')->getByAccountQuery($account->getId());
+        $accauntcalls = $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), 5);
+
         $editForm = $this->createForm($this->get("form.type.account"), $account, array(
             'action' => $this->generateUrl('account_update', array('id' => $account->getid())),
             'method' => 'PUT',
         ));
-
+        $qb = $em->getRepository('FlowerModelBundle:Clients\Subsidiary')->getByAccountQuery($account->getId());
+        $subsidiaries = $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), 5);
         return array(
             'edit_form' => $editForm->createView(),
             'accauntcalls' => $accauntcalls,
             'account' => $account,
-           // 'nextBugs' => $nextBugs,
-            //'todoTasks' => $todoTasks,
+            'subsidiaries' => $subsidiaries,
             'accountBoards' => $accountBoards,
             'currentProjects' => $currentProjects,
-            'paginator' => $paginator,
+            'contacts' => $contacts,
             'delete_form' => $deleteForm->createView(),
         );
     }
