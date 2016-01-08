@@ -1,32 +1,31 @@
+'%entity%': '%entity%'   # FIXME
 '%entity% creation': 'Creación de Cuenta'
 '%entity% edit': 'Edición de Cuenta'
-'%entity% list': 'Cuentas'
+'%entity% list': Cuentas
 Activity: Actividad
 Address: Dirección
+'All %entity%': Todo
+Assignee: Responsable
+'Billing type': 'Tipo de facturación'
+'Business name': 'Razón Social'
 CUIT/CUIL/DNI: CUIT/CUIL/DNI
 Cancel: Cancelar
 'Confirm delete': 'Confirmar borrado'
 Create: Crear
 'Create a new %entity%': 'Crear Cuenta'
+Created: Agregado
 Delete: Borrar
 'Do you want to proceed?': '¿Desea continuar de todos modos?'
 Edit: Editar
-'New Account': 'Nueva Cuenta'
 'No': 'No'
 Phone: Teléfono
 Save: Guardar
+Status: Estado
+'This %entity%': 'Página actual'
 'Yes': Si
 'You are about to delete an item': 'Usted esta por borrar un elemento'
 address: Dirección
 cuit: cuit
 phone: teléfono
+'show complete': 'ver completo'
 'this procedure is irreversible': 'esta accion será irreversible'
-Filter: Filtrar
-'This %entity%': 'Página actual'
-'All %entity%': 'Todo'
-Billing type: Tipo de facturación
-Business name: Razón Social
-Assignee: Responsable
-Status: Estado
-Created: Agregado
-show complete: ver completo

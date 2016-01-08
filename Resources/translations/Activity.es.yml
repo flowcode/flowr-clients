@@ -1,0 +1,15 @@
+'%entity% creation': 'Crear Actividad'
+'%entity% list': 'Lista de actividades'
+Activity: Actividad
+'Activity list': 'Lista de actividades'
+'Confirm delete': 'Confirmar borrado'
+'Create a new %entity%': 'Crear una nueva actividad'
+Delete: Borrar
+'Do you want to proceed?': '¿Desea continuar de todos modos?'
+Edit: Editar
+Name: Nombre
+'No': 'No'
+'Yes': 'Sí'
+'You are about to delete an item': 'Usted esta por borrar un elemento'
+'this procedure is irreversible': 'esta accion será irreversible'
+

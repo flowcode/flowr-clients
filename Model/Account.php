@@ -15,10 +15,11 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use JMS\Serializer\Annotation\Groups;
 use Flower\ModelBundle\Entity\User\User;
 use Symfony\Component\Validator\Constraints as Assert;
-     
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;   
 /**
  * Account
  *
+ * @UniqueEntity(fields={"cuit"})
  */
 abstract class Account
 {
