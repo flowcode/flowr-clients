@@ -17,3 +17,4 @@ end: fin
 name: nombre
 phone: teléfono
 start: inicio
+error.delete.activity: La activitdad no puede ser eliminada ya que contiene cuentas relacionadas.

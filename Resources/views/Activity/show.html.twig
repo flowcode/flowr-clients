@@ -3,6 +3,15 @@
 {% block title %}Activity - {{ parent() }}{% endblock %}
 
 {% block body %}
+    {% for type, messages in app.session.flashbag.all() %}
+        {% for key, message in messages %}
+            <div class="alert alert-{{ type }}" role="alert">
+              <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+              <span class="sr-only">Error:</span>
+                {{ message|trans({}, 'FOSUserBundle') }}
+            </div>
+        {% endfor %}
+    {% endfor %}
     <section class="content-header">
         {% include 'FlowerCoreBundle:Default:admin_nav.html.twig' %}
         <h1>

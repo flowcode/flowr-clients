@@ -186,6 +186,15 @@ class ActivityController extends Controller
     public function deleteAction(Activity $activity, Request $request)
     {
         $form = $this->createDeleteForm($activity->getId(), 'admin_clients_activity_delete');
+        $em = $this->getDoctrine()->getManager();
+        $accounts = $em->getRepository("FlowerModelBundle:Clients\Account")->findBy(array("activity" => $activity->getId()));
+        if(count($accounts) > 0){
+            $this->addFlash(
+                    'danger',
+                     $this->get('translator')->trans('error.delete.activity')
+                );
+            return $this->redirect($this->generateUrl('admin_clients_activity_show',array("id" => $activity->getId())));
+        }
         if ($form->handleRequest($request)->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->remove($activity);
