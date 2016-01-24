@@ -4,6 +4,7 @@ namespace Flower\ClientsBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
+
 /**
  * AccountRepository
  *
@@ -12,40 +13,48 @@ use Doctrine\ORM\Query\Expr\Join;
  */
 class AccountRepository extends EntityRepository
 {
-    
+
     public function search($completeText, $texts, $limit = 10)
     {
         $qb = $this->createQueryBuilder("a");
 
         $qb->orWhere("a.id = :text")
-                ->setParameter("text", $completeText);
+            ->setParameter("text", $completeText);
         $qb->setMaxResults($limit);
         $result = $qb->getQuery()->getResult();
         $qb->orWhere("a.name like :text")
-              ->orWhere("a.businessName like :text")
-              ->orWhere("a.id like :text")
-              ->orWhere("a.cuit like :text")
-              ->orWhere("a.phone like :text")
-              ->setParameter("text", "%".$completeText."%");
+            ->orWhere("a.businessName like :text")
+            ->orWhere("a.id like :text")
+            ->orWhere("a.cuit like :text")
+            ->orWhere("a.phone like :text")
+            ->setParameter("text", "%" . $completeText . "%");
         $qb->setMaxResults($limit);
-        $result = array_merge($result,$qb->getQuery()->getResult());
+        $result = array_merge($result, $qb->getQuery()->getResult());
 
         $count = 0;
         foreach ($texts as $text) {
-            $qb->orWhere("a.name like :text_".$count)
-                ->orWhere("a.businessName like :text_".$count)
-                ->orWhere("a.cuit like :text_".$count)
-                ->orWhere("a.phone like :text_".$count)
-                ->setParameter("text_".$count, "%".$text."%");
+            $qb->orWhere("a.name like :text_" . $count)
+                ->orWhere("a.businessName like :text_" . $count)
+                ->orWhere("a.cuit like :text_" . $count)
+                ->orWhere("a.phone like :text_" . $count)
+                ->setParameter("text_" . $count, "%" . $text . "%");
             $qb->setMaxResults($limit);
-            $count ++;
+            $count++;
         }
-        $result = array_merge($result,$qb->getQuery()->getResult());
+        $result = array_merge($result, $qb->getQuery()->getResult());
         return array_unique($result, SORT_REGULAR);
     }
-    public function findByBoard($board){
+
+    public function getFindAllQueryBuilder($alias = "a"){
+        $qb = $this->createQueryBuilder($alias);
+
+        return $qb;
+    }
+
+    public function findByBoard($board)
+    {
         $qb = $this->createQueryBuilder("a");
-        $qb->join("a.boards","b");
+        $qb->join("a.boards", "b");
         $qb->where("b.id = :board")->setParameter("board", $board->getId());
         $querry = $qb->getQuery();
         return $querry->getOneOrNullResult();

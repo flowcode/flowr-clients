@@ -130,7 +130,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for contact in paginator %}
+                                {% for contact in contacts %}
                                     <tr>
                                         <td>
                                             <a href="{{ path('contact_show', {id: contact.id}) }}">{{ contact.happyname }} </a>

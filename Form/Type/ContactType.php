@@ -12,10 +12,12 @@ class ContactType extends AbstractType
 {
 
     private $securityContext;
+    private $accountService;
 
-    public function __construct(SecurityContext $securityContext)
+    public function __construct(SecurityContext $securityContext, $accountService)
     {
         $this->securityContext = $securityContext;
+        $this->accountService = $accountService;
     }
 
     /**
@@ -33,6 +35,7 @@ class ContactType extends AbstractType
                 ->add('observations', null, array('required' => false))
                 ->add('accounts', 'entity', array(
                     'class' => 'FlowerModelBundle:Clients\Account',
+                    'choices' => $this->accountService->findAll(),
                     'multiple'    => true,
                     'required' => false
                 ))

@@ -23,6 +23,23 @@ class AccountService
     }
 
     /**
+     * Fin all accounts for authenticated user.
+     *
+     * @param bool $enabledOnly
+     * @return mixed
+     */
+    public function findAll($enabledOnly = true){
+        $alias = 'a';
+        $qb = $this->em->getRepository('FlowerModelBundle:Clients\Account')->getFindAllQueryBuilder($alias);
+        //$qb->andWhere($alias.".enabled = :enabled")->setParameter('enabled', $enabledOnly);
+
+        $user = $this->container->get('security.context')->getToken()->getUser();
+        $qb = $this->container->get('user.service.orgposition')->addPositionFilter($qb, $user, $alias);
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
      * AccountDataExport() genera el contenido a ser exportado segun vista.
      *
      */

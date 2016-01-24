@@ -2,9 +2,10 @@ services:
 #    flower_core.example:
 #        class: Flower\CoreBundle\Example
 #        arguments: [@service_id, "plain_value", %parameter%]
+
     form.type.contact:
         class: Flower\ClientsBundle\Form\Type\ContactType
-        arguments: ["@security.context"]
+        arguments: ["@security.context", '@client.service.account']
         tags:
             - { name: form.type, alias: contact_type }
     form.api.type.contact:
@@ -22,12 +23,15 @@ services:
         arguments: ["@security.context"]
         tags:
             - { name: form.type, alias: contact_type }
+
     client.service.excelexport:
         class: Flower\ClientsBundle\Service\ExcelExportService
         arguments: ['@service_container']
+
     client.service.account:
         class: Flower\ClientsBundle\Service\AccountService
         arguments: ['@service_container']
+
     client.service.callevent:
         class: Flower\ClientsBundle\Service\CallEventService
         arguments: ['@service_container']
