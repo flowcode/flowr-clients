@@ -14,10 +14,9 @@ use Doctrine\ORM\Query\Expr\Join;
 class AccountRepository extends EntityRepository
 {
 
-    public function search($completeText, $texts, $limit = 10)
+    public function search($qbOriginal, $completeText, $texts, $limit = 10)
     {
-        $qb = $this->createQueryBuilder("a");
-
+        $qb = $qbOriginal;
         $qb->orWhere("a.id = :text")
             ->setParameter("text", $completeText);
         $qb->setMaxResults($limit);
@@ -30,7 +29,7 @@ class AccountRepository extends EntityRepository
             ->setParameter("text", "%" . $completeText . "%");
         $qb->setMaxResults($limit);
         $result = array_merge($result, $qb->getQuery()->getResult());
-
+        $qb = $qbOriginal;
         $count = 0;
         foreach ($texts as $text) {
             $qb->orWhere("a.name like :text_" . $count)

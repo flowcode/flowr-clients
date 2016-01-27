@@ -84,8 +84,7 @@ class CallEventRepository extends EntityRepository
         }
         return array("params" => $arrayFiltes, "query" => $filterString);
 	}
-	function getPlannerAccounts($filters, $order, $limit = 20,$offset = 0){
-		$qb = $this->createQueryBuilder("ce");
+	function getPlannerAccounts($filters, $order, $limit = 20,$offset = 0, $extraWhere = ""){
 		$em = $this->getEntityManager();
 		$orderString = "diffDates";
 		if (is_array($order)) {
@@ -94,7 +93,9 @@ class CallEventRepository extends EntityRepository
         $filters = $this->getFilterForPlannerQuery($filters);
         $arrayFiltes = $filters["params"];
         $filterString = $filters["query"];
-
+        if($extraWhere != ""){
+            $filterString .= " and ".$extraWhere;
+        }
 		$orderString = "order by $orderString";
 		$queryString = 
 			"SELECT a as account,ces.name AS status, ce.date AS lastDate , date_diff(ce.date,CURRENT_DATE()) as diffDates, count(cepending.id) as penddings ".

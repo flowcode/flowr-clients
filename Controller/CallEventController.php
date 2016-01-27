@@ -38,6 +38,11 @@ class CallEventController extends BaseController
         $qb->leftJoin("ce.status","s");
         $qb->leftJoin("ce.account","a");
         $qb->leftJoin("ce.assignee","u");
+        /* filter by org position */
+        $orgPositionSrv = $this->get('user.service.orgposition');
+        $qb = $orgPositionSrv->addPositionFilter($qb, $this->getUser(), "a");
+
+
         $translator = $this->get('translator');
         $dateformat = $translator->trans('fullDateTime');
         $filters = array(
@@ -58,7 +63,13 @@ class CallEventController extends BaseController
 
         $statuses = $em->getRepository('FlowerModelBundle:Clients\CallEventStatus')->findBy(array(),array("name" => "ASC"));
         $users = $em->getRepository('FlowerModelBundle:User\User')->findBy(array(),array("username" => "ASC"));
-        $accounts = $em->getRepository('FlowerModelBundle:Clients\Account')->findBy(array(),array("name" => "ASC"));
+        
+        $accountAlias = "ac";
+        $qb = $em->getRepository('FlowerModelBundle:Clients\Account')->createQueryBuilder($accountAlias);
+        $qb = $orgPositionSrv->addPositionFilter($qb, $this->getUser(), $accountAlias);
+        $accounts = $qb->getQuery()->getResult();
+
+
         $filters = $this->getFilters('callevent');
         return array(
             'startDateFilter' => isset($filters['startDateFilter'])?$filters['startDateFilter']["value"] : null,
@@ -108,7 +119,18 @@ class CallEventController extends BaseController
         $pageCount = ceil($count /$limit );
         $pagesInRange = range(1, $pageCount);
 
-        $accountsfilterd = $em->getRepository('FlowerModelBundle:Clients\CallEvent')->getPlannerAccounts($filters,$order,$limit,$offset);
+        $orgPositionSrv = $this->get('user.service.orgposition');
+        $lowerUsers = $orgPositionSrv->getLowerPositionUsers($this->getUser());
+        $lowerPositionUsers = array();
+        $where = " a.assignee in (";
+        foreach ($lowerUsers as $lowerUser) {
+             $lowerPositionUsers[] = $lowerUser->getId();
+        }
+        $where .= implode(",", $lowerPositionUsers).")";
+
+        $accountsfilterd = $em->getRepository('FlowerModelBundle:Clients\CallEvent')->getPlannerAccounts($filters,$order,$limit,$offset,$where);
+
+        
         $statuses = $em->getRepository('FlowerModelBundle:Clients\CallEventStatus')->findBy(array(),array("name" => "ASC"));
         $accounts = $em->getRepository('FlowerModelBundle:Clients\Account')->findBy(array(),array("name" => "ASC"));
         $users = $em->getRepository('FlowerModelBundle:User\User')->findBy(array(),array("username" => "ASC"));

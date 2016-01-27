@@ -30,7 +30,13 @@ class ContactController extends Controller
     public function indexAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $qb = $em->getRepository('FlowerModelBundle:Clients\Contact')->createQueryBuilder('c');        
+        $accountAlias = 'c';
+        $qb = $em->getRepository('FlowerModelBundle:Clients\Contact')->createQueryBuilder($accountAlias);
+        $qb->join("c.accounts",'a');
+        /* filter by org position */
+        $orgPositionSrv = $this->get('user.service.orgposition');
+        $qb = $orgPositionSrv->addPositionFilter($qb, $this->getUser(), 'a');
+
         $this->addQueryBuilderSort($qb, 'contact');
         $paginator = $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), 20);
 

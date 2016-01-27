@@ -17,7 +17,13 @@ class AccountController extends FOSRestController
     public function getAllAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $accounts = $em->getRepository('FlowerModelBundle:Clients\Account')->findAll();
+        $accountAlias = "ac";
+        $qb = $em->getRepository('FlowerModelBundle:Clients\Account')->createQueryBuilder($accountAlias);
+                /* filter by org position */
+        $orgPositionSrv = $this->get('user.service.orgposition');
+        $qb = $orgPositionSrv->addPositionFilter($qb, $this->getUser(), $accountAlias);
+        
+        $accounts = $qb->getQuery()->getResult();
 
         $view = FOSView::create($accounts, Codes::HTTP_OK)->setFormat('json');
         $view->getSerializationContext()->setGroups(array('api'));

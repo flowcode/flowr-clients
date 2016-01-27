@@ -76,9 +76,13 @@ class AccountController extends BaseController
      */
     public function exportViewAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();        
-        $qb = $em->getRepository('FlowerModelBundle:Clients\Account')->createQueryBuilder('a');
+        $em = $this->getDoctrine()->getManager();
+        $accountAlias = 'a';
+        $qb = $em->getRepository('FlowerModelBundle:Clients\Account')->createQueryBuilder($accountAlias);
         $qb->leftJoin("a.activity","ac");
+        /* filter by org position */
+        $orgPositionSrv = $this->get('user.service.orgposition');
+        $qb = $orgPositionSrv->addPositionFilter($qb, $this->getUser(), $accountAlias);
 
         $limit = 20;
         $currPage = $request->query->get('page');
