@@ -83,6 +83,12 @@
                                     <th scope="row">{{'Created'|trans({}, 'Account')}}</th>
                                     <td>{{ account.created | date("smallDate" | trans) |capitalize}}</td>
                                 </tr>
+                                {% if is_granted("ROLE_ADMIN") %}
+                                <tr>
+                                    <th scope="row">{{'SecurityGroups'|trans({}, 'User')}}</th>
+                                    <td>{{ account.securityGroups|join(",") }}</td>
+                                </tr>
+                                {% endif %}
                             </tbody>
                         </table>
                     </div>

@@ -40,8 +40,10 @@ class AccountController extends BaseController
         $qb->leftJoin("a.activity","ac");
 
         /* filter by org position */
-        $orgPositionSrv = $this->get('user.service.orgposition');
-        $qb = $orgPositionSrv->addPositionFilter($qb, $this->getUser(), $accountAlias);
+        if (!$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+            $secGroupSrv = $this->get('user.service.securitygroup');
+            $qb = $secGroupSrv->addSecurityGroupFilter($qb, $this->getUser(), $accountAlias);
+        }
 
         $filters = array('activityFilter' => "ac.id",'accountAssigneeFilter' => "a.assignee",);
 
@@ -167,8 +169,17 @@ class AccountController extends BaseController
         $form = $this->createForm($this->get("form.type.account"), $account);
         if ($form->handleRequest($request)->isValid()) {
             $em = $this->getDoctrine()->getManager();
+
+            /* add default security groups */
+            $parentGroups = $this->get("user.service.securitygroup")->getParentsGroups($this->getUser());
+            foreach($parentGroups as $securityGroup){
+                $account->addSecurityGroup($securityGroup);
+            }
+
             $em->persist($account);
             $em->flush();
+
+
 
             return $this->redirect($this->generateUrl('account_show', array('id' => $account->getId())));
         }

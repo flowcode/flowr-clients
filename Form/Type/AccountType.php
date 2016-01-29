@@ -6,9 +6,17 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Doctrine\ORM\EntityRepository;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class AccountType extends AbstractType
 {
+
+    private $authorizationChecker;
+
+    public function __construct(AuthorizationCheckerInterface $authorizationChecker)
+    {
+        $this->authorizationChecker = $authorizationChecker;
+    }
 
     /**
      * {@inheritdoc}
@@ -29,6 +37,16 @@ class AccountType extends AbstractType
                                 ->orderBy('u.username', 'ASC');
                         },))
         ;
+
+        if($this->authorizationChecker->isGranted("ROLE_ADMIN")){
+            $builder->add('securityGroups', 'entity', array(
+                        'class' => 'FlowerModelBundle:User\SecurityGroup',
+                        'property' => 'name',
+                        'required' => false,
+                        'multiple' => true,
+                    ));
+        }
+
     }
 
     /**

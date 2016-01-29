@@ -13,14 +13,16 @@ services:
         arguments: ["@security.context"]
         tags:
             - { name: form.type, alias: contact_type }
+
     form.type.callevent:
         class: Flower\ClientsBundle\Form\Type\CallEventType
         arguments: ["@security.context"]
         tags:
             - { name: form.type, alias: contact_type }
+
     form.type.account:
         class: Flower\ClientsBundle\Form\Type\AccountType
-        arguments: ["@security.context"]
+        arguments: ["@security.authorization_checker"]
         tags:
             - { name: form.type, alias: contact_type }
 
