@@ -175,7 +175,9 @@ class AccountController extends BaseController
             $em = $this->getDoctrine()->getManager();
 
             /* add default security groups */
-            $parentGroups = $this->get("user.service.securitygroup")->getParentsGroups($this->getUser());
+            $assigneeGroup = $this->get("user.service.securitygroup")->getDefaultForUser($account->getAssignee());
+            $account->addSecurityGroup($assigneeGroup);
+            $parentGroups = $this->get("user.service.securitygroup")->getParentsGroups($account->getAssignee());
             foreach($parentGroups as $securityGroup){
                 $account->addSecurityGroup($securityGroup);
             }
