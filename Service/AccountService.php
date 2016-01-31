@@ -33,8 +33,12 @@ class AccountService
         $qb = $this->em->getRepository('FlowerModelBundle:Clients\Account')->getFindAllQueryBuilder($alias);
         //$qb->andWhere($alias.".enabled = :enabled")->setParameter('enabled', $enabledOnly);
 
-        $user = $this->container->get('security.context')->getToken()->getUser();
-        $qb = $this->container->get('user.service.orgposition')->addPositionFilter($qb, $user, $alias);
+        /* filter by org security groups */
+        if (!$this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+            $user = $this->container->get('security.context')->getToken()->getUser();
+            $secGroupSrv = $this->container->get('user.service.securitygroup');
+            $qb = $secGroupSrv->addSecurityGroupFilter($qb, $user, $alias);
+        }
 
         return $qb->getQuery()->getResult();
     }

@@ -39,7 +39,7 @@ class AccountController extends BaseController
         $qb = $em->getRepository('FlowerModelBundle:Clients\Account')->createQueryBuilder($accountAlias);
         $qb->leftJoin("a.activity","ac");
 
-        /* filter by org position */
+        /* filter by org security groups */
         if (!$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             $secGroupSrv = $this->get('user.service.securitygroup');
             $qb = $secGroupSrv->addSecurityGroupFilter($qb, $this->getUser(), $accountAlias);
@@ -179,7 +179,9 @@ class AccountController extends BaseController
             $account->addSecurityGroup($assigneeGroup);
             $parentGroups = $this->get("user.service.securitygroup")->getParentsGroups($account->getAssignee());
             foreach($parentGroups as $securityGroup){
-                $account->addSecurityGroup($securityGroup);
+                if(!$account->getSecurityGroups()->contains($securityGroup)){
+                    $account->addSecurityGroup($securityGroup);
+                }
             }
 
             $em->persist($account);

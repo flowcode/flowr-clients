@@ -343,7 +343,7 @@ class CallEventController extends BaseController
      *
      * @Route("/new/{account}", name="callevent_new_account")
      * @Method("GET")
-     * @Template("FlowerClientsBundle:CallEvent:show.html.twig")
+     * @Template("FlowerClientsBundle:CallEvent:publicProfile.html.twig")
      */
     public function newForAccountAction(Account $account)
     {
@@ -371,7 +371,7 @@ class CallEventController extends BaseController
      *
      * @Route("/duplicate/{call}", name="callevent_duplicate")
      * @Method("GET")
-     * @Template("FlowerClientsBundle:CallEvent:show.html.twig")
+     * @Template("FlowerClientsBundle:CallEvent:publicProfile.html.twig")
      */
     public function duplicateAction(CallEvent $call)
     {

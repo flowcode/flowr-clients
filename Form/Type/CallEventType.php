@@ -9,41 +9,49 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 class CallEventType extends AbstractType
 {
 
+    private $accountService;
+
+    public function __construct($accountService)
+    {
+        $this->accountService = $accountService;
+    }
+
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-                ->add('subject')
-                ->add('account', 'genemu_jqueryselect2_entity', array(
-                    'class' => 'Flower\ModelBundle\Entity\Clients\Account',
-                    'property' => 'name',
-                    'multiple' => false,
-                ))
-                ->add('contactName',null, array( 'required' => false))
-                ->add('date','collot_datetime', array( 'required' => true,'pickerOptions' =>
-                                                array('format' => 'dd/mm/yyyy  hh:ii',
-                                                    'autoclose' => true,
-                                                    'todayBtn' => true,
-                                                    'todayHighlight' => true,
-                                                    'keyboardNavigation' => true,
-                                                    'language' => 'en',
-                                                    )))
-                ->add('status')
-                ->add('assignee', 'genemu_jqueryselect2_entity', array(
-                    'class' => 'Flower\ModelBundle\Entity\User\User',
-                    'property' => 'username',
-                    'multiple' => false,
-                ))
-                ->add("description", 'textarea', array(
-                        'required' => false,
-                        'attr' => array('rows' => '10'),
-                    ))
-                ->add('save', 'submit', array('label' => 'Save'))
-                ->add('saveAndAdd', 'submit', array('label' => 'Save and add'))
-        ;
+            ->add('subject')
+            ->add('account', 'genemu_jqueryselect2_entity', array(
+                'class' => 'Flower\ModelBundle\Entity\Clients\Account',
+                'choices' => $this->accountService->findAll(),
+                'property' => 'name',
+                'multiple' => false,
+            ))
+            ->add('contactName', null, array('required' => false))
+            ->add('date', 'collot_datetime', array('required' => true, 'pickerOptions' =>
+                array('format' => 'dd/mm/yyyy  hh:ii',
+                    'autoclose' => true,
+                    'todayBtn' => true,
+                    'todayHighlight' => true,
+                    'keyboardNavigation' => true,
+                    'language' => 'en',
+                )))
+            ->add('status')
+            ->add('assignee', 'genemu_jqueryselect2_entity', array(
+                'class' => 'Flower\ModelBundle\Entity\User\User',
+                'property' => 'username',
+                'multiple' => false,
+            ))
+            ->add("description", 'textarea', array(
+                'required' => false,
+                'attr' => array('rows' => '10'),
+            ))
+            ->add('save', 'submit', array('label' => 'Save'))
+            ->add('saveAndAdd', 'submit', array('label' => 'Save and add'));
     }
+
     /**
      * {@inheritdoc}
      */

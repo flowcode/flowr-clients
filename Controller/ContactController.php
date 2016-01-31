@@ -30,12 +30,16 @@ class ContactController extends Controller
     public function indexAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $accountAlias = 'c';
-        $qb = $em->getRepository('FlowerModelBundle:Clients\Contact')->createQueryBuilder($accountAlias);
-        $qb->join("c.accounts",'a');
-        /* filter by org position */
-        $orgPositionSrv = $this->get('user.service.orgposition');
-        $qb = $orgPositionSrv->addPositionFilter($qb, $this->getUser(), 'a');
+        $contactAlias = 'c';
+        $qb = $em->getRepository('FlowerModelBundle:Clients\Contact')->createQueryBuilder($contactAlias);
+        $accountAlias = 'a';
+        $qb->join("c.accounts",$accountAlias);
+
+        /* filter by org security groups */
+        if (!$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+            $secGroupSrv = $this->get('user.service.securitygroup');
+            $qb = $secGroupSrv->addSecurityGroupFilter($qb, $this->getUser(), $accountAlias);
+        }
 
         $this->addQueryBuilderSort($qb, 'contact');
         $paginator = $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), 20);

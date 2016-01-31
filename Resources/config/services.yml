@@ -16,7 +16,7 @@ services:
 
     form.type.callevent:
         class: Flower\ClientsBundle\Form\Type\CallEventType
-        arguments: ["@security.context"]
+        arguments: ['@client.service.account']
         tags:
             - { name: form.type, alias: contact_type }
 
