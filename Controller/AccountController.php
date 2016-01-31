@@ -2,6 +2,7 @@
 
 namespace Flower\ClientsBundle\Controller;
 
+use Flower\ModelBundle\Entity\Board\History;
 use PHPExcel;
 use PHPExcel_IOFactory;
 
@@ -187,7 +188,7 @@ class AccountController extends BaseController
             $em->persist($account);
             $em->flush();
 
-
+            $this->get('board.service.history')->addSimpleUserActivity(History::TYPE_ACCOUNT, $this->getUser(), $account, History::CRUD_CREATE);
 
             return $this->redirect($this->generateUrl('account_show', array('id' => $account->getId())));
         }
@@ -235,6 +236,8 @@ class AccountController extends BaseController
         ));
         if ($editForm->handleRequest($request)->isValid()) {
             $this->getDoctrine()->getManager()->flush();
+
+            $this->get('board.service.history')->addSimpleUserActivity(History::TYPE_ACCOUNT, $this->getUser(), $account, History::CRUD_UPDATE);
 
             return $this->redirect($this->generateUrl('account_show', array('id' => $account->getId())));
         }

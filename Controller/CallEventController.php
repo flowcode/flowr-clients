@@ -4,6 +4,7 @@ namespace Flower\ClientsBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
 use Flower\ClientsBundle\Form\Type\CallEventType;
+use Flower\ModelBundle\Entity\Board\History;
 use Flower\ModelBundle\Entity\Clients\CallEvent;
 use Flower\ModelBundle\Entity\Clients\CallEventStatus;
 use Flower\ModelBundle\Entity\User\User;
@@ -325,6 +326,9 @@ class CallEventController extends BaseController
             $em = $this->getDoctrine()->getManager();
             $em->persist($callEvent);
             $em->flush();
+
+            $this->get('board.service.history')->addSimpleUserActivity(History::TYPE_CALL_EVENT, $this->getUser(), $callEvent, History::CRUD_CREATE);
+
             $nextAction = $form->get('saveAndAdd')->isClicked() ? 'callevent_new' : 'callevent_show';
             if($form->get('saveAndAdd')->isClicked() && $callEvent->getAccount()){
                 return $this->redirectToRoute("callevent_new_account", array("account" => $callEvent->getAccount()->getId()));
@@ -432,6 +436,9 @@ class CallEventController extends BaseController
         ));
         if ($editForm->handleRequest($request)->isValid()) {
             $this->getDoctrine()->getManager()->flush();
+
+            $this->get('board.service.history')->addSimpleUserActivity(History::TYPE_CALL_EVENT, $this->getUser(), $callEvent, History::CRUD_UPDATE);
+
             $nextAction = $editForm->get('saveAndAdd')->isClicked() ? 'callevent_new' : 'callevent_show';
             if($callEvent->getAccount() && $editForm->get('saveAndAdd')->isClicked()){
                 return $this->redirectToRoute("callevent_new_account", array("account" => $callEvent->getAccount()->getId()));
