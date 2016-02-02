@@ -219,29 +219,27 @@ class ContactRepository extends EntityRepository
         return ceil($count / $pageSize);
     }
 
-    public function search($completeText, $texts, $limit = 10)
+    public function search($qbOriginal, $completeText, $texts, $limit = 10)
     {
-        $qb = $this->createQueryBuilder("c");
-        $qb->orWhere("c.lastname like :text")
-            ->orWhere("c.firstname like :text")
-            ->orWhere("c.phone like :text")
-            ->orWhere("c.email like :text")
+        $qb = $qbOriginal;
+        $qb->andWhere("c.lastname like :text OR c.firstname like :text OR c.phone like :text OR c.email like :text")
             ->setParameter("text", "%".$completeText."%");
         $qb->setMaxResults($limit);
 
         $result = $qb->getQuery()->getResult();
-        $qb = $this->createQueryBuilder("c");
+        $qb = $qbOriginal;
         $count = 0;
+        $andWhere  = "";
         foreach ($texts as $text) {
-            $qb->orWhere("c.lastname like :text_".$count)
-            ->orWhere("c.firstname like :text_".$count)
-            ->setParameter("text_".$count, "%".$text."%");
-            $qb->setMaxResults($limit);
+            $andWhere .= "c.lastname like :text_".$count. " OR c.firstname like :text_".$count;
+            $qb->setParameter("text_".$count, "%".$text."%");
             $count ++;
         }
+        $qb->andWhere($andWhere);
+        $qb->setMaxResults($limit);
+
         $result = array_merge($result,$qb->getQuery()->getResult());
         return array_unique($result, SORT_REGULAR);
-
     }
 
 }

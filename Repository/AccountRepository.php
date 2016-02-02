@@ -21,25 +21,22 @@ class AccountRepository extends EntityRepository
             ->setParameter("text", $completeText);
         $qb->setMaxResults($limit);
         $result = $qb->getQuery()->getResult();
-        $qb->orWhere("a.name like :text")
-            ->orWhere("a.businessName like :text")
-            ->orWhere("a.id like :text")
-            ->orWhere("a.cuit like :text")
-            ->orWhere("a.phone like :text")
+//
+        $qb = $qbOriginal;
+        $qb->andWhere("a.name like :text OR a.businessName like :text OR a.id like :text OR a.cuit like :text OR a.phone like :text ")
             ->setParameter("text", "%" . $completeText . "%");
         $qb->setMaxResults($limit);
         $result = array_merge($result, $qb->getQuery()->getResult());
         $qb = $qbOriginal;
         $count = 0;
+        $orWhere = "";
         foreach ($texts as $text) {
-            $qb->orWhere("a.name like :text_" . $count)
-                ->orWhere("a.businessName like :text_" . $count)
-                ->orWhere("a.cuit like :text_" . $count)
-                ->orWhere("a.phone like :text_" . $count)
-                ->setParameter("text_" . $count, "%" . $text . "%");
-            $qb->setMaxResults($limit);
+            $orWhere .= " a.name like :text_" . $count. " OR a.businessName like :text_" . $count. " OR a.cuit like :text_" . $count. " OR a.phone like :text_" . $count;
+            $qb->setParameter("text_" . $count, "%" . $text . "%");
             $count++;
         }
+        $qb->andWhere($orWhere);
+        $qb->setMaxResults($limit);
         $result = array_merge($result, $qb->getQuery()->getResult());
         return array_unique($result, SORT_REGULAR);
     }
@@ -49,7 +46,6 @@ class AccountRepository extends EntityRepository
 
         return $qb;
     }
-
     public function findByBoard($board)
     {
         $qb = $this->createQueryBuilder("a");

@@ -19,10 +19,13 @@ class AccountController extends FOSRestController
         $em = $this->getDoctrine()->getManager();
         $accountAlias = "ac";
         $qb = $em->getRepository('FlowerModelBundle:Clients\Account')->createQueryBuilder($accountAlias);
-                /* filter by org position */
-        $orgPositionSrv = $this->get('user.service.orgposition');
-        $qb = $orgPositionSrv->addPositionFilter($qb, $this->getUser(), $accountAlias);
-        
+                
+        /* filter by org security groups */
+        if (!$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+            $secGroupSrv = $this->get('user.service.securitygroup');
+            $qb = $secGroupSrv->addSecurityGroupFilter($qb, $this->getUser(), $accountAlias);
+        }
+
         $accounts = $qb->getQuery()->getResult();
 
         $view = FOSView::create($accounts, Codes::HTTP_OK)->setFormat('json');

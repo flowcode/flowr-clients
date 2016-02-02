@@ -120,14 +120,16 @@ class CallEventController extends BaseController
         $pageCount = ceil($count /$limit );
         $pagesInRange = range(1, $pageCount);
 
-        $orgPositionSrv = $this->get('user.service.orgposition');
-        $lowerUsers = $orgPositionSrv->getLowerPositionUsers($this->getUser());
-        $lowerPositionUsers = array();
-        $where = " a.assignee in (";
-        foreach ($lowerUsers as $lowerUser) {
-             $lowerPositionUsers[] = $lowerUser->getId();
+        if (!$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+            $securityGroupSrv = $this->get('user.service.securitygroup');
+            $lowerSecurityGroups = $securityGroupSrv->getLowerGroupsIds($this->getUser());
+            if(count($lowerSecurityGroups) > 0){
+                $where = " sg.id in (";
+                $where .= implode(",", $lowerSecurityGroups).")";
+            }else{
+                $where = " 1=2 "; //if the user don't have security group don't show data
+            }
         }
-        $where .= implode(",", $lowerPositionUsers).")";
 
         $accountsfilterd = $em->getRepository('FlowerModelBundle:Clients\CallEvent')->getPlannerAccounts($filters,$order,$limit,$offset,$where);
 
@@ -347,7 +349,7 @@ class CallEventController extends BaseController
      *
      * @Route("/new/{account}", name="callevent_new_account")
      * @Method("GET")
-     * @Template("FlowerClientsBundle:CallEvent:publicProfile.html.twig")
+     * @Template("FlowerClientsBundle:CallEvent:show.html.twig")
      */
     public function newForAccountAction(Account $account)
     {

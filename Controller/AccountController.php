@@ -17,7 +17,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
-
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 /**
  * Account controller.
  *
@@ -153,6 +153,7 @@ class AccountController extends BaseController
     public function newAction()
     {
         $account = new Account();
+        $account->setAssignee($this->getUser());
         $form = $this->createForm($this->get("form.type.account"), $account);
 
         return array(

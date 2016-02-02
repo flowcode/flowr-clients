@@ -47,6 +47,7 @@ class CallEventRepository extends EntityRepository
 
 	protected function getPlannerQuery(){
 		return " FROM FlowerModelBundle:Clients\Account a 
+                JOIN  a.securityGroups sg
 				LEFT JOIN  FlowerModelBundle:Clients\CallEvent ce WITH  a.id = ce.account  and (ce.status in (:statuses_finished) or ce.status is null)
 				LEFT JOIN  FlowerModelBundle:Clients\CallEvent cepending WITH  a.id = cepending.account and cepending.status not in (:statuses_finished)
 				LEFT JOIN FlowerModelBundle:Clients\CallEventStatus ces WITH ces.id = ce.status 
