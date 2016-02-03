@@ -221,13 +221,13 @@ class ContactRepository extends EntityRepository
 
     public function search($qbOriginal, $completeText, $texts, $limit = 10)
     {
-        $qb = $qbOriginal;
+        $qb = clone $qbOriginal;
         $qb->andWhere("c.lastname like :text OR c.firstname like :text OR c.phone like :text OR c.email like :text")
             ->setParameter("text", "%".$completeText."%");
         $qb->setMaxResults($limit);
 
         $result = $qb->getQuery()->getResult();
-        $qb = $qbOriginal;
+        $qb = clone $qbOriginal;
         $count = 0;
         $andWhere  = "";
         foreach ($texts as $text) {

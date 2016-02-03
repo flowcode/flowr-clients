@@ -185,7 +185,6 @@ class AccountController extends BaseController
                     $account->addSecurityGroup($securityGroup);
                 }
             }
-
             $em->persist($account);
             $em->flush();
 
