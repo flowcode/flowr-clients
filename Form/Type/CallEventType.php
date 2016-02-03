@@ -29,7 +29,6 @@ class CallEventType extends AbstractType
                 'property' => 'name',
                 'multiple' => false,
             ))
-            ->add('contactName', null, array('required' => false))
             ->add('date', 'collot_datetime', array('required' => true, 'pickerOptions' =>
                 array('format' => 'dd/mm/yyyy  hh:ii',
                     'autoclose' => true,
@@ -44,12 +43,14 @@ class CallEventType extends AbstractType
                 'property' => 'username',
                 'multiple' => false,
             ))
+			->add('contactName',null, array( 'required' => false))
             ->add("description", 'textarea', array(
                 'required' => false,
                 'attr' => array('rows' => '10'),
             ))
             ->add('save', 'submit', array('label' => 'Save'))
-            ->add('saveAndAdd', 'submit', array('label' => 'Save and add'));
+            ->add('saveAndAdd', 'submit', array('label' => 'Save and add'))
+        ;
     }
 
     /**
