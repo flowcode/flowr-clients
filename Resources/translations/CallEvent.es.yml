@@ -14,16 +14,21 @@ Save: Guardar
 'This Page': 'Página actual'
 'Yes': Si
 'You are about to delete an item': 'Usted esta por borrar un elemento'
-assignee: 'asignado a'
+assignee: Asignado a
 'calls planner': 'Planificador de llamadas'
 contactName: 'atendió (nombre)'
 'create call': 'crear llamado'
 'create calls': 'crear llamados'
-date: fecha
+date: Fecha
 description: Descripción
 'no': 'no'
-status: estado
-subject: tema
+status: Estado
+subject: Tema
 'this procedure is irreversible': 'esta accion será irreversible'
 'yes': si
-account: cuenta
+account: Cuenta
+Account: Cuenta
+diffDates: Días de último llamado
+Status: Último estado
+LastDate: Fecha último llamado
+Has penddings: Tiene pendientes?

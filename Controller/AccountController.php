@@ -112,9 +112,11 @@ class AccountController extends BaseController
     public function showAction(Account $account, Request $request)
     {
         $user = $this->getUser();
-        $canSee = $this->get("user.service.securitygroup")->userCanSeeEntity($user,$account);
-        if(!$canSee){
-            throw new AccessDeniedException();
+        if (!$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+            $canSee = $this->get("user.service.securitygroup")->userCanSeeEntity($user,$account);
+            if(!$canSee){
+                throw new AccessDeniedException();
+            }
         }
         $deleteForm = $this->createDeleteForm($account->getId(), 'account_delete');
 
@@ -126,7 +128,7 @@ class AccountController extends BaseController
         $currentProjects = $em->getRepository("FlowerModelBundle:Project\Project")->findBy(array("account" => $account));
 
         $qb = $em->getRepository('FlowerModelBundle:Clients\Contact')->getByAccountQuery($account->getId());
-        $contacts = $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), 5);
+        $contacts = $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), 50);
 
         $qb = $em->getRepository('FlowerModelBundle:Clients\CallEvent')->getByAccountQuery($account->getId());
         $accauntcalls = $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), 5);

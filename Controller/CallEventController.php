@@ -127,7 +127,7 @@ class CallEventController extends BaseController
         $offset = ($current -1) * $limit;
         $pageCount = ceil($count /$limit );
         $pagesInRange = range(1, $pageCount);
-
+        $where = "";
         if (!$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             $securityGroupSrv = $this->get('user.service.securitygroup');
             $lowerSecurityGroups = $securityGroupSrv->getLowerGroupsIds($this->getUser());
@@ -284,9 +284,11 @@ class CallEventController extends BaseController
     public function showAction(CallEvent $callevent, Request $request)
     {
         $user = $this->getUser();
-        $canSee = $this->get("user.service.securitygroup")->userCanSeeEntity($user,$callevent->getAccount());
-        if(!$canSee){
-            throw new AccessDeniedException();
+        if (!$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+            $canSee = $this->get("user.service.securitygroup")->userCanSeeEntity($user,$callevent->getAccount());
+            if(!$canSee){
+                throw new AccessDeniedException();
+            }
         }
         $deleteForm = $this->createDeleteForm($callevent->getId(), 'callevent_delete');
 
