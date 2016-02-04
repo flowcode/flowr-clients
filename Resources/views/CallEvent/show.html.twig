@@ -4,9 +4,9 @@
 
 {% block body %}
     <section class="content">
+        {{ include("FlowerClientsBundle::appnav-postventa.html.twig", { }) }} 
         <div class="row">
             <div class="col-md-6">
-                {{ include("FlowerClientsBundle::appnav-postventa.html.twig", { }) }} 
                 <div class="box" id="showCallEvent">
                     <div class="box-header">
                         <h4>{{ callevent.subject |capitalize}}</h4>

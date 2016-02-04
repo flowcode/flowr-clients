@@ -83,10 +83,11 @@ class AccountController extends BaseController
         $accountAlias = 'a';
         $qb = $em->getRepository('FlowerModelBundle:Clients\Account')->createQueryBuilder($accountAlias);
         $qb->leftJoin("a.activity","ac");
-        /* filter by org position */
-        $orgPositionSrv = $this->get('user.service.orgposition');
-        $qb = $orgPositionSrv->addPositionFilter($qb, $this->getUser(), $accountAlias);
-
+        /* filter by org security groups */
+        if (!$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+            $secGroupSrv = $this->get('user.service.securitygroup');
+            $qb = $secGroupSrv->addSecurityGroupFilter($qb, $this->getUser(), $accountAlias);
+        }
         $limit = 20;
         $currPage = $request->query->get('page');
         if($currPage){
@@ -110,6 +111,11 @@ class AccountController extends BaseController
      */
     public function showAction(Account $account, Request $request)
     {
+        $user = $this->getUser();
+        $canSee = $this->get("user.service.securitygroup")->userCanSeeEntity($user,$account);
+        if(!$canSee){
+            throw new AccessDeniedException();
+        }
         $deleteForm = $this->createDeleteForm($account->getId(), 'account_delete');
 
         $em = $this->getDoctrine()->getManager();

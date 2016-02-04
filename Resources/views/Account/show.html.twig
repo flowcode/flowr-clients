@@ -4,9 +4,9 @@
 
 {% block body %}
     <section class="content">
+        {{ include("FlowerClientsBundle::appnav.html.twig", { 'app_account': true }) }} 
         <div class="row">
             <div class="col-sm-8">
-                {{ include("FlowerClientsBundle::appnav.html.twig", { 'app_account': true }) }} 
                 <div class="box" id="showAccount">
                     <div class="box-header">
                         <h3 class="box-title">#{{ account.id }} {{ account.name|capitalize }}</h3>
