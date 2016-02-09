@@ -16,6 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 /**
  * CallEvent controller.
  *
@@ -36,13 +37,15 @@ class CallEventController extends BaseController
     {
         $em = $this->getDoctrine()->getManager();        
         $qb = $em->getRepository('FlowerModelBundle:Clients\CallEvent')->createQueryBuilder('ce');
+        $accountAlias = "a";
         $qb->leftJoin("ce.status","s");
-        $qb->leftJoin("ce.account","a");
+        $qb->leftJoin("ce.account",$accountAlias);
         $qb->leftJoin("ce.assignee","u");
-        /* filter by org position */
-        $orgPositionSrv = $this->get('user.service.orgposition');
-        $qb = $orgPositionSrv->addPositionFilter($qb, $this->getUser(), "a");
-
+        /* filter by org security groups */
+        if (!$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+            $secGroupSrv = $this->get('user.service.securitygroup');
+            $qb = $secGroupSrv->addSecurityGroupFilter($qb, $this->getUser(), $accountAlias);
+        }
 
         $translator = $this->get('translator');
         $dateformat = $translator->trans('fullDateTime');
@@ -67,7 +70,12 @@ class CallEventController extends BaseController
         
         $accountAlias = "ac";
         $qb = $em->getRepository('FlowerModelBundle:Clients\Account')->createQueryBuilder($accountAlias);
-        $qb = $orgPositionSrv->addPositionFilter($qb, $this->getUser(), $accountAlias);
+        /* filter by org security groups */
+        if (!$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+            $secGroupSrv = $this->get('user.service.securitygroup');
+            $qb = $secGroupSrv->addSecurityGroupFilter($qb, $this->getUser(), $accountAlias);
+        }
+
         $accounts = $qb->getQuery()->getResult();
 
 
@@ -119,7 +127,7 @@ class CallEventController extends BaseController
         $offset = ($current -1) * $limit;
         $pageCount = ceil($count /$limit );
         $pagesInRange = range(1, $pageCount);
-
+        $where = "";
         if (!$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             $securityGroupSrv = $this->get('user.service.securitygroup');
             $lowerSecurityGroups = $securityGroupSrv->getLowerGroupsIds($this->getUser());
@@ -275,6 +283,13 @@ class CallEventController extends BaseController
      */
     public function showAction(CallEvent $callevent, Request $request)
     {
+        $user = $this->getUser();
+        if (!$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+            $canSee = $this->get("user.service.securitygroup")->userCanSeeEntity($user,$callevent->getAccount());
+            if(!$canSee){
+                throw new AccessDeniedException();
+            }
+        }
         $deleteForm = $this->createDeleteForm($callevent->getId(), 'callevent_delete');
 
         $editForm = $this->createForm($this->get(CallEventController::formName), $callevent, array(

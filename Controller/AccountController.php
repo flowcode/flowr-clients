@@ -83,10 +83,11 @@ class AccountController extends BaseController
         $accountAlias = 'a';
         $qb = $em->getRepository('FlowerModelBundle:Clients\Account')->createQueryBuilder($accountAlias);
         $qb->leftJoin("a.activity","ac");
-        /* filter by org position */
-        $orgPositionSrv = $this->get('user.service.orgposition');
-        $qb = $orgPositionSrv->addPositionFilter($qb, $this->getUser(), $accountAlias);
-
+        /* filter by org security groups */
+        if (!$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+            $secGroupSrv = $this->get('user.service.securitygroup');
+            $qb = $secGroupSrv->addSecurityGroupFilter($qb, $this->getUser(), $accountAlias);
+        }
         $limit = 20;
         $currPage = $request->query->get('page');
         if($currPage){
@@ -110,6 +111,13 @@ class AccountController extends BaseController
      */
     public function showAction(Account $account, Request $request)
     {
+        $user = $this->getUser();
+        if (!$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+            $canSee = $this->get("user.service.securitygroup")->userCanSeeEntity($user,$account);
+            if(!$canSee){
+                throw new AccessDeniedException();
+            }
+        }
         $deleteForm = $this->createDeleteForm($account->getId(), 'account_delete');
 
         $em = $this->getDoctrine()->getManager();
@@ -120,7 +128,7 @@ class AccountController extends BaseController
         $currentProjects = $em->getRepository("FlowerModelBundle:Project\Project")->findBy(array("account" => $account));
 
         $qb = $em->getRepository('FlowerModelBundle:Clients\Contact')->getByAccountQuery($account->getId());
-        $contacts = $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), 5);
+        $contacts = $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), 50);
 
         $qb = $em->getRepository('FlowerModelBundle:Clients\CallEvent')->getByAccountQuery($account->getId());
         $accauntcalls = $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), 5);
@@ -185,7 +193,6 @@ class AccountController extends BaseController
                     $account->addSecurityGroup($securityGroup);
                 }
             }
-
             $em->persist($account);
             $em->flush();
 
