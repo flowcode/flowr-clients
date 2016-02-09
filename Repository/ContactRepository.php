@@ -49,7 +49,7 @@ class ContactRepository extends EntityRepository
         return $qb->getQuery()->getSingleScalarResult();
     }
 
-    public function getByContactList($contactListId, $offset, $limit)
+    public function getByContactList($contactListId, $offset, $limit, $search = null)
     {
         $qb = $this->createQueryBuilder("c");
         $qb->join("FlowerModelBundle:Marketing\ContactList", "cl", "WITH", "1=1");
@@ -57,6 +57,13 @@ class ContactRepository extends EntityRepository
         $qb->where("cl.id = :contact_list_id");
         $qb->andWhere("c2.id = c.id");
         $qb->setParameter("contact_list_id", $contactListId);
+
+        if(!is_null($search)){
+            $qb->andWhere("(c2.firstname LIKE :firstname OR c2.lastname LIKE :lastname)")
+                ->setParameter(":firstname", "%".$search."%")
+                ->setParameter(":lastname", "%".$search."%")
+            ;
+        }
 
         $qb->setFirstResult($offset * $limit);
         $qb->setMaxResults($limit);

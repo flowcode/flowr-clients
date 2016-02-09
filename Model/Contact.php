@@ -25,7 +25,7 @@ abstract class Contact
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"search", "public_api"})
+     * @Groups({"search", "public_api", "private_api"})
      */
     protected $id;
 
@@ -33,7 +33,7 @@ abstract class Contact
      * @var string
      *
      * @ORM\Column(name="firstname", type="string", length=255, nullable=true)
-     * @Groups({"search", "public_api"})
+     * @Groups({"search", "public_api", "private_api"})
      */
     protected $firstname;
 
@@ -41,7 +41,7 @@ abstract class Contact
      * @var string
      *
      * @ORM\Column(name="lastname", type="string", length=255, nullable=true)
-     * @Groups({"search", "public_api"})
+     * @Groups({"search", "public_api", "private_api"})
      */
     protected $lastname;
 
@@ -49,7 +49,7 @@ abstract class Contact
      * @var string
      *
      * @ORM\Column(name="email", type="string", length=255, nullable=true)
-     * @Groups({"search", "public_api"})
+     * @Groups({"search", "public_api", "private_api"})
      */
     protected $email;
 
@@ -57,7 +57,7 @@ abstract class Contact
      * @var string
      *
      * @ORM\Column(name="address", type="string", length=255, nullable=true)
-     * @Groups({"search"})
+     * @Groups({"search", "private_api"})
      */
     protected $address;
 
@@ -94,6 +94,7 @@ abstract class Contact
      * @var integer
      *
      * @ORM\Column(name="email_grade", type="string", length=255, nullable=true)
+     * @Groups({"private_api"})
      */
     protected $emailGrade;
 
