@@ -158,6 +158,7 @@ abstract class Account
         $this->contacts = new ArrayCollection();
         $this->boards = new ArrayCollection();
         $this->securityGroups = new ArrayCollection();
+        $this->assignee = new ArrayCollection();
     }
 
     /**
@@ -308,24 +309,33 @@ abstract class Account
         return "#".$this->id." ".$this->name;
     }
 
-
     /**
-     * Set assignee
+     * Add assignee
      *
      * @param \Flower\ModelBundle\Entity\User\User $assignee
      * @return Account
      */
-    public function setAssignee(\Flower\ModelBundle\Entity\User\User $assignee = null)
+    public function addAssignee(\Flower\ModelBundle\Entity\User\User $assignee)
     {
-        $this->assignee = $assignee;
+        $this->assignee[] = $assignee;
 
         return $this;
     }
 
     /**
+     * Remove assignee
+     *
+     * @param \Flower\ModelBundle\Entity\User\User $assignee
+     */
+    public function removeAssignee(\Flower\ModelBundle\Entity\User\User $assignee)
+    {
+        $this->assignee->removeElement($assignee);
+    }
+
+    /**
      * Get assignee
      *
-     * @return \Flower\ModelBundle\Entity\User\User
+     @return \Doctrine\Common\Collections\Collection
      */
     public function getAssignee()
     {

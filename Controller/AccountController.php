@@ -163,7 +163,7 @@ class AccountController extends BaseController
     public function newAction()
     {
         $account = new Account();
-        $account->setAssignee($this->getUser());
+        //$account->setAssignee($this->getUser());
         $form = $this->createForm($this->get("form.type.account"), $account);
 
         return array(
@@ -187,9 +187,16 @@ class AccountController extends BaseController
             $em = $this->getDoctrine()->getManager();
 
             /* add default security groups */
-            $assigneeGroup = $this->get("user.service.securitygroup")->getDefaultForUser($account->getAssignee());
-            $account->addSecurityGroup($assigneeGroup);
-            $parentGroups = $this->get("user.service.securitygroup")->getParentsGroups($account->getAssignee());
+            $parentGroups = array();
+            foreach($account->getAssignee() as $assignee){
+                $assigneeGroup = $this->get("user.service.securitygroup")->getDefaultForUser($assignee);
+                $account->addSecurityGroup($assigneeGroup);
+                $groups = $this->get("user.service.securitygroup")->getParentsGroups($assignee);
+                foreach($groups as $group){
+                    $parentGroups[] = $group;
+                }
+            }
+
             foreach($parentGroups as $securityGroup){
                 if(!$account->getSecurityGroups()->contains($securityGroup)){
                     $account->addSecurityGroup($securityGroup);
