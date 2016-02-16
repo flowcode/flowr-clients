@@ -98,7 +98,7 @@ abstract class Account
     protected $subsidiaries;
 
     /**
-     * @ManyToOne(targetEntity="\Flower\ModelBundle\Entity\User\User")
+     * @ManyToMany(targetEntity="\Flower\ModelBundle\Entity\User\User")
      * @JoinColumn(name="user_id", referencedColumnName="id")
      * */
     protected $assignee;

@@ -65,7 +65,7 @@
                                 </tr>
                                 <tr>
                                     <th scope="row">{{'Assignee'|trans({}, 'Account')}}</th>
-                                    <td>{{ account.assignee |capitalize}}</td>
+                                    <td>{{ account.assignee |join(",")}}</td>
                                 </tr>
                                 <tr>
                                     <th scope="row">{{'Phone'|trans({}, 'Account')}}</th>

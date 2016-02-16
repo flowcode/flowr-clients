@@ -35,7 +35,9 @@ class AccountType extends AbstractType
                 ->add('assignee',null, array('query_builder' => function (EntityRepository $er) {
                             return $er->createQueryBuilder('u')
                                 ->orderBy('u.username', 'ASC');
-                        },))
+                        },
+                        'expanded' => false,
+                        'multiple' => true,))
         ;
 
         if($this->authorizationChecker->isGranted("ROLE_ADMIN")){

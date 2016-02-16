@@ -39,14 +39,16 @@ class AccountController extends BaseController
         $accountAlias = "a";
         $qb = $em->getRepository('FlowerModelBundle:Clients\Account')->createQueryBuilder($accountAlias);
         $qb->leftJoin("a.activity","ac");
+        $qb->leftJoin("a.assignee","u");
 
         /* filter by org security groups */
+        
         if (!$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             $secGroupSrv = $this->get('user.service.securitygroup');
             $qb = $secGroupSrv->addSecurityGroupFilter($qb, $this->getUser(), $accountAlias);
         }
 
-        $filters = array('activityFilter' => "ac.id",'accountAssigneeFilter' => "a.assignee",);
+        $filters = array('activityFilter' => "ac.id",'accountAssigneeFilter' => "u.id",);
 
         if($request->query->has('reset')) {
             $request->getSession()->set('filter.account', null);
