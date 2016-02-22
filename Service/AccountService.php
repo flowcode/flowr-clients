@@ -2,8 +2,10 @@
 
 namespace Flower\ClientsBundle\Service;
 
+use Flower\ModelBundle\Entity\Clients\Account;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use PHPExcel_Style_Fill;
+
 /**
  * Description of AccountService
  *
@@ -28,7 +30,8 @@ class AccountService
      * @param bool $enabledOnly
      * @return mixed
      */
-    public function findAll($enabledOnly = true){
+    public function findAll($enabledOnly = true)
+    {
         $alias = 'a';
         $qb = $this->em->getRepository('FlowerModelBundle:Clients\Account')->getFindAllQueryBuilder($alias);
         //$qb->andWhere($alias.".enabled = :enabled")->setParameter('enabled', $enabledOnly);
@@ -51,41 +54,63 @@ class AccountService
     {
         $data = array();
         $data["header"] =
-        array("values" => 
-                 array( 
+            array("values" =>
+                array(
                     "id",
                     "Nombre",
                     "Razón Social",
                     "ciut/cuil",
                     "Teléfono", "Dirección",
                     "Actividad"),
-            "styles" =>  array(
-                                'fill' => array(
-                                    'type' => PHPExcel_Style_Fill::FILL_SOLID,
-                                    'color' => array('rgb' => 'd22729')
-                                )
-                            ));
+                "styles" => array(
+                    'fill' => array(
+                        'type' => PHPExcel_Style_Fill::FILL_SOLID,
+                        'color' => array('rgb' => 'd22729')
+                    )
+                ));
         $index = 1;
         foreach ($accounts as $account) {
-            $id = $account->getId()? : " ";
-            $name = $account->getName()? : " ";
-            $businessName = $account->getBusinessName()? : " ";
-            $cuit = $account->getCuit()? : " ";
-            $phone = $account->getPhone()? : " ";
-            $address = $account->getAddress()? : " ";
-            $activity = $account->getActivity()? : " ";
-            $data[$index] = 
-            array("values" => 
-                array(
-                    $id,
-                    $name ,
-                    $businessName,
-                    $cuit,
-                    $phone ,
-                    $address ,
-                    $activity ));
+            $id = $account->getId() ?: " ";
+            $name = $account->getName() ?: " ";
+            $businessName = $account->getBusinessName() ?: " ";
+            $cuit = $account->getCuit() ?: " ";
+            $phone = $account->getPhone() ?: " ";
+            $address = $account->getAddress() ?: " ";
+            $activity = $account->getActivity() ?: " ";
+            $data[$index] =
+                array("values" =>
+                    array(
+                        $id,
+                        $name,
+                        $businessName,
+                        $cuit,
+                        $phone,
+                        $address,
+                        $activity));
             $index++;
         }
         return $data;
+    }
+
+    /**
+     * Add security groups.
+     *
+     * @param Account $account
+     * @return Account
+     */
+    public function addSecurityGroups(Account $account)
+    {
+        $assignee = $account->getAssignee();
+        $assigneeGroup = $this->container->get("user.service.securitygroup")->getDefaultForUser($assignee);
+        $account->addSecurityGroup($assigneeGroup);
+        $parentGroups = $this->container->get("user.service.securitygroup")->getParentsGroups($assignee);
+        foreach ($parentGroups as $securityGroup) {
+            if (!$account->getSecurityGroups()->contains($securityGroup)) {
+                $account->addSecurityGroup($securityGroup);
+            }
+        }
+
+        return $account;
+
     }
 }

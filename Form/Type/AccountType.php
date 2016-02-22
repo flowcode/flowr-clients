@@ -24,29 +24,24 @@ class AccountType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-                ->add('name')
-                ->add('businessName', null, array('required' => true))
-                ->add('phone', null, array('required' => false))
-                ->add('address', null, array('required' => false))
-                ->add('activity')
-                ->add('status')
-                ->add('billingType', null, array('required' => false))
-                ->add('cuit', null, array('required' => false,"label" => "CUIT/CUIL/DNI"))
-                ->add('assignee',null, array('query_builder' => function (EntityRepository $er) {
-                            return $er->createQueryBuilder('u')
-                                ->orderBy('u.username', 'ASC');
-                        },
-                        'expanded' => false,
-                        'multiple' => true,))
+            ->add('name')
+            ->add('businessName', null, array('required' => true))
+            ->add('phone', null, array('required' => false))
+            ->add('address', null, array('required' => false))
+            ->add('activity')
+            ->add('status')
+            ->add('billingType', null, array('required' => false))
+            ->add('cuit', null, array('required' => false, "label" => "CUIT/CUIL/DNI"))
+            ->add('assignee')
         ;
 
-        if($this->authorizationChecker->isGranted("ROLE_ADMIN")){
+        if ($this->authorizationChecker->isGranted("ROLE_ADMIN")) {
             $builder->add('securityGroups', 'entity', array(
-                        'class' => 'FlowerModelBundle:User\SecurityGroup',
-                        'property' => 'name',
-                        'required' => false,
-                        'multiple' => true,
-                    ));
+                'class' => 'FlowerModelBundle:User\SecurityGroup',
+                'property' => 'name',
+                'required' => false,
+                'multiple' => true,
+            ));
         }
 
     }

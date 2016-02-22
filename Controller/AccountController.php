@@ -18,6 +18,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+
 /**
  * Account controller.
  *
@@ -38,36 +39,35 @@ class AccountController extends BaseController
         $em = $this->getDoctrine()->getManager();
         $accountAlias = "a";
         $qb = $em->getRepository('FlowerModelBundle:Clients\Account')->createQueryBuilder($accountAlias);
-        $qb->leftJoin("a.activity","ac");
-        $qb->leftJoin("a.assignee","u");
+        $qb->leftJoin("a.activity", "ac");
+        $qb->leftJoin("a.assignee", "u");
 
         /* filter by org security groups */
-        
         if (!$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             $secGroupSrv = $this->get('user.service.securitygroup');
             $qb = $secGroupSrv->addSecurityGroupFilter($qb, $this->getUser(), $accountAlias);
         }
 
-        $filters = array('activityFilter' => "ac.id",'accountAssigneeFilter' => "u.id",);
+        $filters = array('activityFilter' => "ac.id", 'accountAssigneeFilter' => "u.id",);
 
-        if($request->query->has('reset')) {
+        if ($request->query->has('reset')) {
             $request->getSession()->set('filter.account', null);
             return $this->redirectToRoute("account");
         }
 
-        $this->saveFilters($request, $filters, 'account','account');
-        $paginator = $this->filter($qb,'account',$request);
+        $this->saveFilters($request, $filters, 'account', 'account');
+        $paginator = $this->filter($qb, 'account', $request);
         $activities = $em->getRepository('FlowerModelBundle:Clients\Activity')->findAll();
         $activityFilter = $request->query->get("activityFilter");
-        $users = $em->getRepository('FlowerModelBundle:User\User')->findBy(array(),array("username" => "ASC"));
+        $users = $em->getRepository('FlowerModelBundle:User\User')->findBy(array(), array("username" => "ASC"));
         $filters = $this->getFilters('account');
-        if(!$activityFilter && $filters['activityFilter'] && $filters['activityFilter']["value"]){
+        if (!$activityFilter && $filters['activityFilter'] && $filters['activityFilter']["value"]) {
             $activityFilter = $filters['activityFilter']["value"];
         }
         $filters = $this->getFilters('account');
         return array(
             'paginator' => $paginator,
-            'accountAssigneeFilter' => isset($filters['accountAssigneeFilter'])?$filters['accountAssigneeFilter']["value"] : null,
+            'accountAssigneeFilter' => isset($filters['accountAssigneeFilter']) ? $filters['accountAssigneeFilter']["value"] : null,
             'users' => $users,
             'activityFilter' => $activityFilter,
             'activities' => $activities,
@@ -84,7 +84,7 @@ class AccountController extends BaseController
         $em = $this->getDoctrine()->getManager();
         $accountAlias = 'a';
         $qb = $em->getRepository('FlowerModelBundle:Clients\Account')->createQueryBuilder($accountAlias);
-        $qb->leftJoin("a.activity","ac");
+        $qb->leftJoin("a.activity", "ac");
         /* filter by org security groups */
         if (!$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             $secGroupSrv = $this->get('user.service.securitygroup');
@@ -92,14 +92,14 @@ class AccountController extends BaseController
         }
         $limit = 20;
         $currPage = $request->query->get('page');
-        if($currPage){
-            $accounts = $this->filter($qb,'account',$request, $limit, $currPage);
+        if ($currPage) {
+            $accounts = $this->filter($qb, 'account', $request, $limit, $currPage);
         } else {
-            $accounts = $this->filter($qb,'account',$request, -1);
+            $accounts = $this->filter($qb, 'account', $request, -1);
         }
-        
+
         $data = $this->get("client.service.account")->accountDataExport($accounts);
-        $this->get("client.service.excelexport")->exportData($data,"Cuentas","Mi descripcion");
+        $this->get("client.service.excelexport")->exportData($data, "Cuentas", "Mi descripcion");
         die();
         return $this->redirectToRoute("account");
     }
@@ -115,8 +115,8 @@ class AccountController extends BaseController
     {
         $user = $this->getUser();
         if (!$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
-            $canSee = $this->get("user.service.securitygroup")->userCanSeeEntity($user,$account);
-            if(!$canSee){
+            $canSee = $this->get("user.service.securitygroup")->userCanSeeEntity($user, $account);
+            if (!$canSee) {
                 throw new AccessDeniedException();
             }
         }
@@ -187,21 +187,8 @@ class AccountController extends BaseController
             $em = $this->getDoctrine()->getManager();
 
             /* add default security groups */
-            $parentGroups = array();
-            foreach($account->getAssignee() as $assignee){
-                $assigneeGroup = $this->get("user.service.securitygroup")->getDefaultForUser($assignee);
-                $account->addSecurityGroup($assigneeGroup);
-                $groups = $this->get("user.service.securitygroup")->getParentsGroups($assignee);
-                foreach($groups as $group){
-                    $parentGroups[] = $group;
-                }
-            }
+            $account = $this->get("client.service.account")->addSecurityGroups($account);
 
-            foreach($parentGroups as $securityGroup){
-                if(!$account->getSecurityGroups()->contains($securityGroup)){
-                    $account->addSecurityGroup($securityGroup);
-                }
-            }
             $em->persist($account);
             $em->flush();
 
@@ -252,6 +239,15 @@ class AccountController extends BaseController
             'method' => 'PUT',
         ));
         if ($editForm->handleRequest($request)->isValid()) {
+
+            /* remove previous security groups */
+            foreach ($account->getSecurityGroups() as $securityGroup) {
+                $account->removeSecurityGroup($securityGroup);
+            }
+
+            /* add default security groups */
+            $account = $this->get("client.service.account")->addSecurityGroups($account);
+
             $this->getDoctrine()->getManager()->flush();
 
             $this->get('board.service.history')->addSimpleUserActivity(History::TYPE_ACCOUNT, $this->getUser(), $account, History::CRUD_UPDATE);
@@ -280,9 +276,9 @@ class AccountController extends BaseController
     }
 
     /**
-     * @param string $name  session name
+     * @param string $name session name
      * @param string $field field name
-     * @param string $type  sort type ("ASC"/"DESC")
+     * @param string $type sort type ("ASC"/"DESC")
      */
     protected function setOrder($name, $field, $type = 'ASC')
     {
@@ -302,17 +298,17 @@ class AccountController extends BaseController
 
     /**
      * @param QueryBuilder $qb
-     * @param string       $name
+     * @param string $name
      */
     protected function addQueryBuilderSort(QueryBuilder $qb, $name)
     {
         $alias = current($qb->getDQLPart('from'))->getAlias();
         if (is_array($order = $this->getOrder($name))) {
-            if (strpos($order['field'], '.') !== FALSE){
+            if (strpos($order['field'], '.') !== FALSE) {
                 $qb->orderBy($order['field'], $order['type']);
-            }else{
+            } else {
                 $qb->orderBy($alias . '.' . $order['field'], $order['type']);
-            }            
+            }
         }
     }
 
@@ -337,17 +333,16 @@ class AccountController extends BaseController
     /**
      * Create Delete form
      *
-     * @param integer                       $id
-     * @param string                        $route
+     * @param integer $id
+     * @param string $route
      * @return Form
      */
     protected function createDeleteForm($id, $route)
     {
         return $this->createFormBuilder(null, array('attr' => array('id' => 'delete')))
-                        ->setAction($this->generateUrl($route, array('id' => $id)))
-                        ->setMethod('DELETE')
-                        ->getForm()
-        ;
+            ->setAction($this->generateUrl($route, array('id' => $id)))
+            ->setMethod('DELETE')
+            ->getForm();
     }
 
     /**
@@ -361,10 +356,10 @@ class AccountController extends BaseController
     {
         $board = new Board();
         $form = $this->createForm($this->get('form.type.board'), $board);
-                $form = $this->createForm($this->get("form.type.board"), $board, array(
-                    'action' => $this->generateUrl('account_board_create',array("id" => $account->getId())),
-                    'method' => 'POST',
-                ));
+        $form = $this->createForm($this->get("form.type.board"), $board, array(
+            'action' => $this->generateUrl('account_board_create', array("id" => $account->getId())),
+            'method' => 'POST',
+        ));
 
         return array(
             'board' => $board,
@@ -395,7 +390,7 @@ class AccountController extends BaseController
 
         return array(
             'board' => $board,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         );
     }
 }

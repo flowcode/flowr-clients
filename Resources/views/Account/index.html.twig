@@ -140,6 +140,9 @@
                             <th scope="col">{{ thead('account', 'id', 'id') }}</th>
                             <th scope="col">{{ thead('account', 'name', 'Name') }}</th>
                             <th scope="col">{{ thead('account', 'businessName', 'Business name') }}</th>
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <th scope="col">{{ thead('account', 'assignee', 'Assignee') }}</th>
+                            {% endif %}
                             <th scope="col">{{ thead('account', 'phone', 'Phone') }}</th>
                             <th scope="col">{{ thead('account', 'address', 'Address') }}</th>
                             <th scope="col">{{ thead('account', 'cuit', 'cuit') }}</th>
@@ -152,6 +155,9 @@
                                 <td><a href="{{ path('account_show', {id: account.id}) }}">{{ account.id }}</a></td>
                                 <td><a href="{{ path('account_show', {id: account.id}) }}">{{ account.name }}</a></td>
                                 <td>{{ account.businessName }}</td>
+                                {% if is_granted('ROLE_ADMIN') %}
+                                <td>{{ account.assignee }}</td>
+                                {% endif %}
                                 <td>{{ account.phone }}</td>
                                 <td>{{ account.address }}</td>
                                 <td>{{ account.cuit }}</td>

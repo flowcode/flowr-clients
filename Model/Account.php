@@ -15,7 +15,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use JMS\Serializer\Annotation\Groups;
 use Flower\ModelBundle\Entity\User\User;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;   
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
 /**
  * Account
  *
@@ -58,13 +59,13 @@ abstract class Account
      * @Groups({"search", "public_api", "api"})
      */
     protected $phone;
-    
+
     /**
      * @ManyToOne(targetEntity="\Flower\ModelBundle\Entity\Clients\BillingType")
      * @JoinColumn(name="billingtype_id", referencedColumnName="id")
      * */
     protected $billingType;
-    
+
     /**
      * @ManyToOne(targetEntity="\Flower\ModelBundle\Entity\Clients\AccountStatus")
      * @JoinColumn(name="accountstatus_id", referencedColumnName="id")
@@ -98,18 +99,19 @@ abstract class Account
     protected $subsidiaries;
 
     /**
-     * @ManyToMany(targetEntity="\Flower\ModelBundle\Entity\User\User")
+     * @ManyToOne(targetEntity="\Flower\ModelBundle\Entity\User\User")
      * @JoinColumn(name="user_id", referencedColumnName="id")
-     * */
+     * @Groups({"api","public_api"})
+     */
     protected $assignee;
 
     /**
      * @ManyToOne(targetEntity="\Flower\ModelBundle\Entity\Clients\Activity")
      * @JoinColumn(name="activity_id", referencedColumnName="id")
      * @Groups({"api","public_api"})
-     * */
+     */
     protected $activity;
-    
+
     /**
      * @ManyToMany(targetEntity="\Flower\ModelBundle\Entity\Board\Board")
      * @JoinTable(name="accounts_boards",
@@ -147,7 +149,7 @@ abstract class Account
      * */
     protected $notes;
 
-    
+
     /**
      * @ORM\OneToMany(targetEntity="\Flower\ModelBundle\Entity\Clients\CallEvent", mappedBy="account")
      */
@@ -158,7 +160,6 @@ abstract class Account
         $this->contacts = new ArrayCollection();
         $this->boards = new ArrayCollection();
         $this->securityGroups = new ArrayCollection();
-        $this->assignee = new ArrayCollection();
     }
 
     /**
@@ -193,24 +194,26 @@ abstract class Account
     {
         return $this->name;
     }
+
     /**
-    * Get businessName
-    * @return  
-    */
+     * Get businessName
+     * @return string
+     */
     public function getBusinessName()
     {
         return $this->businessName;
     }
-    
+
     /**
-    * Set businessName
-    * @return  
-    */
+     * Set businessName
+     * @return string
+     */
     public function setBusinessName($businessName)
     {
         $this->businessName = $businessName;
         return $this;
     }
+
     /**
      * Set phone
      *
@@ -306,36 +309,25 @@ abstract class Account
 
     public function __toString()
     {
-        return "#".$this->id." ".$this->name;
+        return "#" . $this->id . " " . $this->name;
     }
 
     /**
-     * Add assignee
+     * Set assignee
      *
      * @param \Flower\ModelBundle\Entity\User\User $assignee
      * @return Account
      */
-    public function addAssignee(\Flower\ModelBundle\Entity\User\User $assignee)
+    public function setAssignee(\Flower\ModelBundle\Entity\User\User $assignee)
     {
-        $this->assignee[] = $assignee;
+        $this->assignee = $assignee;
 
         return $this;
     }
 
     /**
-     * Remove assignee
-     *
-     * @param \Flower\ModelBundle\Entity\User\User $assignee
-     */
-    public function removeAssignee(\Flower\ModelBundle\Entity\User\User $assignee)
-    {
-        $this->assignee->removeElement($assignee);
-    }
-
-    /**
      * Get assignee
-     *
-     @return \Doctrine\Common\Collections\Collection
+     * @return \Flower\ModelBundle\Entity\User\User $assignee
      */
     public function getAssignee()
     {
@@ -481,7 +473,7 @@ abstract class Account
     /**
      * Get activity
      *
-     * @return \Flower\ModelBundle\Entity\Clients\Activity 
+     * @return \Flower\ModelBundle\Entity\Clients\Activity
      */
     public function getActivity()
     {
@@ -514,7 +506,7 @@ abstract class Account
     /**
      * Get calls
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getCalls()
     {
@@ -522,18 +514,18 @@ abstract class Account
     }
 
     /**
-    * Get billingType
-    * @return  
-    */
+     * Get billingType
+     * @return
+     */
     public function getBillingType()
     {
         return $this->billingType;
     }
-    
+
     /**
-    * Set billingType
-    * @return  
-    */
+     * Set billingType
+     * @return
+     */
     public function setBillingType($billingType)
     {
         $this->billingType = $billingType;
@@ -541,18 +533,18 @@ abstract class Account
     }
 
     /**
-    * Get status
-    * @return  
-    */
+     * Get status
+     * @return
+     */
     public function getStatus()
     {
         return $this->status;
     }
-    
+
     /**
-    * Set status
-    * @return  
-    */
+     * Set status
+     * @return
+     */
     public function setStatus($status)
     {
         $this->status = $status;
@@ -585,7 +577,7 @@ abstract class Account
     /**
      * Get subsidiaries
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getSubsidiaries()
     {
