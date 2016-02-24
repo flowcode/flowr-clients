@@ -121,6 +121,7 @@
 
 {% block javascripts %}
     {{ parent() }}
+    {{ form_javascript(edit_form) }}
     <script type="text/javascript">
         function showEdit(show){
             if(show){

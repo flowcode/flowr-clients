@@ -33,12 +33,16 @@ class ContactType extends AbstractType
                 ->add('address', null, array('required' => false))
                 ->add('phone', null, array('required' => false))
                 ->add('observations', null, array('required' => false))
-                ->add('accounts', 'entity', array(
+                ->add('accounts', 'genemu_jqueryselect2_entity', array(
                     'class' => 'FlowerModelBundle:Clients\Account',
+                    'property' => 'name',
+                    'multiple' => true,
+                    'required' => false,
                     'choices' => $this->accountService->findAll(),
-                    'multiple'    => true,
-                    'required' => false
-                ))
+                    'query_builder' => function (EntityRepository $er) {
+                            return $er->createQueryBuilder('a')
+                                ->orderBy('a.name', 'ASC');
+                        }))
         ;
     }
 

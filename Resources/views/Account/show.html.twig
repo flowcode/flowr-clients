@@ -249,7 +249,7 @@
 {% endblock %}
 {% block javascripts %}
     {{ parent() }}
-
+    {{ form_javascript(edit_form) }}
     <script type="text/javascript">
         var accountId = "{{ account.id }}";
         var type = "account";

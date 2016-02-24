@@ -32,7 +32,14 @@ class AccountType extends AbstractType
             ->add('status')
             ->add('billingType', null, array('required' => false))
             ->add('cuit', null, array('required' => false, "label" => "CUIT/CUIL/DNI"))
-            ->add('assignee')
+            ->add('assignee', 'genemu_jqueryselect2_entity', array(
+                    'class' => 'Flower\ModelBundle\Entity\User\User',
+                    'property' => 'happyName',
+                    'multiple' => false,
+                    'query_builder' => function (EntityRepository $er) {
+                            return $er->createQueryBuilder('u')
+                                ->orderBy('u.username', 'ASC');
+                        }))
         ;
 
         if ($this->authorizationChecker->isGranted("ROLE_ADMIN")) {

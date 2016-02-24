@@ -52,6 +52,7 @@ class AccountController extends BaseController
 
         if ($request->query->has('reset')) {
             $request->getSession()->set('filter.account', null);
+            $request->getSession()->set('sort.account', null);
             return $this->redirectToRoute("account");
         }
 
@@ -294,22 +295,6 @@ class AccountController extends BaseController
         $session = $this->getRequest()->getSession();
 
         return $session->has('sort.' . $name) ? $session->get('sort.' . $name) : null;
-    }
-
-    /**
-     * @param QueryBuilder $qb
-     * @param string $name
-     */
-    protected function addQueryBuilderSort(QueryBuilder $qb, $name)
-    {
-        $alias = current($qb->getDQLPart('from'))->getAlias();
-        if (is_array($order = $this->getOrder($name))) {
-            if (strpos($order['field'], '.') !== FALSE) {
-                $qb->orderBy($order['field'], $order['type']);
-            } else {
-                $qb->orderBy($alias . '.' . $order['field'], $order['type']);
-            }
-        }
     }
 
     /**
