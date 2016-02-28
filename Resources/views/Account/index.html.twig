@@ -1,27 +1,10 @@
 {% extends "FlowerCoreBundle::layout.html.twig" %}
 
 {% block title %}{{ '%entity% list'|trans({'%entity%': 'Account'}, 'Account') }} - {{ parent() }}{% endblock %}
-{% macro thead(name, field, label) %}
-    {% spaceless %}
-        {% set sort = app.session.get('sort.' ~ name) %}
-        {% if sort and sort.field == field %}
-            {% if sort.type == 'DESC' %}
-                <a href="{{ path('account_sort', {field: field, type: 'ASC'}) }}">{{ label | trans({},'Account')}} <i class="fa fa-sort-down"></i></a>
-                {% elseif sort.type == 'ASC' %}
-                <a href="{{ path('account_sort', {field: field, type: 'DESC'}) }}">{{ label | trans({},'Account')}} <i class="fa fa-sort-up"></i></a>
-                {% endif %}
-            {% else %}
-            <a href="{{ path('account_sort', {field: field, type: 'ASC'}) }}">{{ label | trans({},'Account')}} <i class="fa fa-sort"></i></a>
-            {% endif %}
-        {% endspaceless %}
-    {% endmacro %}
-
-{% from _self import thead %}
-
 
 {% block body %}
-    <section class="content">    
-        {{ include("FlowerClientsBundle::appnav.html.twig", { 'app_account': true }) }} 
+    <section class="content">
+        {{ include("FlowerClientsBundle::appnav.html.twig", { 'app_account': true }) }}
         <div class="box">
             <div class="box-header">
                 <h3 class="box-title"></h3>
@@ -29,13 +12,18 @@
                     <a class="btn btn-link btn-sm" href={{ path('account_new') }}>
                         <i class="fa fa-plus"></i> {{ 'Create a new %entity%'|trans({'%entity%': 'Account'}, 'Account') }}
                     </a>
+                    <a class="btn btn-link btn-sm" href={{ path('account_import') }}>
+                        <i class="fa fa-plus"></i> {{ 'import'|trans|title }}
+                    </a>
+
                     <div class="btn-group">
                         <button class="btn btn-link btn-sm dropdown-toggle" data-toggle="dropdown" type="button">
                             <i class="fa fa-download"></i> {{ '%entity%'|trans({'%entity%': 'Export'}, 'Account') }}
                         </button>
                         <ul class="dropdown-menu" style="min-width: inherit;">
                             <li>
-                                <a class="btn btn-link btn-sm" href={{ path('account_export' , {'page':paginator.currentPageNumber})}} style="color:#CC3E32;">
+                                <a class="btn btn-link btn-sm"
+                                   href={{ path('account_export' , {'page':paginator.currentPageNumber}) }} style="color:#CC3E32;">
                                     {{ 'This %entity%'|trans({'%entity%': 'Page'}, 'Account') }}
                                 </a>
                             </li>
@@ -43,123 +31,154 @@
                                 <a class="btn btn-link btn-sm" href={{ path('account_export') }} style="color:#CC3E32;">
                                     {{ 'All %entity%'|trans({'%entity%': 'Pages'}, 'Account') }}
                                 </a>
-                            </li> 
+                            </li>
                         </ul>
                     </div>
                 </div>
             </div>
             <div class="panel-heading">
                 <div class="btn-group">
-                    <div class="panel-heading">               
-                        <button type="button" class="btn btn-default btn-sm filter collapsed" data-toggle="collapse" data-target="#filter">{{'filter'|trans| capitalize }} <i class="fa fa-filter"></i> </button>
+                    <button type="button" class="btn  btn-sm  btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{ "Action"|trans|capitalize }} <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu multi-level">
+                        <li class="dropdown-submenu">
+                            <a href="#">{{ "assignee to"|trans|capitalize }}</a>
+                            <ul class="dropdown-menu">
+                                {% for user in users %}
+                                    <li>
+                                        <a href="#" class="bulk-action"  action="{{ path('account_bulk_user',{id:user.id}) }}" data-id="{{user.id}}" >{{ user.happyname|capitalize }}</a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <div class="btn-group">
+                    <div class="panel-heading">
+                        <button type="button" class="btn btn-default btn-sm filter collapsed" data-toggle="collapse"
+                                data-target="#filter">{{ 'filter'|trans| capitalize }} <i class="fa fa-filter"></i>
+                        </button>
                     </div>
                 </div>
                 {% set open = "" %}
-                {% if activityFilter |length > 0 %}
+                {% if filter.assignee|length > 0 or filter.activity|length > 0 %}
                     {% set open = "in" %}
                 {% endif %}
-                <div id="filter" class="collapse {{open}} row filters-content">
+                <div id="filter" class="collapse {{ open }} row filters-content">
                     <form method="get" action="" class=" form-horizontal">
-                        <div  class="col-sm-6" >
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label " for="activityFilter">{{'Activity' | trans}}</label>
-                                <div class="col-sm-8">
-                                    {% set multiple = "" %}
-                                    {% set icon = "ion-plus-circled" %}
-                                    {% if activityFilter |length > 1 %}
-                                        {% set  multiple = "multiple='true'" %}
-                                        {% set icon = "ion-ios-minus-outline" %}
-                                    {% endif %}
-                                    <select id="activityFilter" name="activityFilter[]" {{multiple}} class="form-control">
-                                        <option value=""></option>
-                                        {% set  selected = "" %}
-                                        {% if "-1" in activityFilter %}
-                                            {% set  selected = "selected" %}
-                                        {% endif %}
-                                        <option value="-1" {{selected}}> {{'Not Assignee' | trans}}</option>
-                                        {% for activity in activities %}
-                                            {% set  selected = "" %}
-                                            {% if activity.id in activityFilter %}
-                                                {% set  selected = "selected" %}
-                                            {% endif %}
-                                            <option value="{{activity.id}}" {{selected}}>{{activity.name}}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                
-                                <div class="col-sm-1">
-                                    <span class="cursor-pointer text-left  ionicons {{icon}}" style="margin-top: 8px;" onclick="toogleSelect(activityFilter,this)"></span>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label" for="activityFilter">
+                                        {{ 'name'|trans|title }}
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <input placeholder="{{ 'name'|trans }}" name="filter[name]" class="form-control"
+                                               value="{{ filter.name }}">
+                                    </div>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <div class=" col-sm-9">
-                                    <a class="btn btn-default btn-sm" href="{{ path('account') }}?reset"><i class="fa fa-times"></i> {{'clean' | trans | capitalize}}</a>
-                                    <button class="btn btn-primary btn-sm" type="submit">{{'apply' | trans | capitalize}}</button>
-                                </div>
-                            </div>
+
                         </div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label " for="accountAssigneeFilter">{{'Assignee' | trans}}</label>
-                                <div class="col-sm-8">
-                                    {% set multiple = "" %}
-                                    {% set icon = "ion-plus-circled" %}
-                                    {% if accountAssigneeFilter |length > 1 %}
-                                        {% set  multiple = "multiple='true'" %}
-                                        {% set icon = "ion-ios-minus-outline" %}
-                                    {% endif %}
-                                    <select id="accountAssigneeFilter" name="accountAssigneeFilter[]" {{multiple}} class="form-control">
-                                        <option value=""></option>
-                                        {% set  selected = "" %}
-                                        {% if "-1" in accountAssigneeFilter %}
-                                            {% set  selected = "selected" %}
-                                        {% endif %}
-                                        <option value="-1" {{selected}}> {{'Not Assignee' | trans}}</option>
-                                        {% for user in users %}
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label " for="activityFilter">
+                                        {{ 'Activity' | trans }}
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <select id="activityFilter" name="filter[activity][]" multiple="multiple"
+                                                class="form-control filter">
+                                            <option value=""></option>
                                             {% set  selected = "" %}
-                                            {% if user.id in accountAssigneeFilter %}
+                                            {% if "-1" in filter.activity %}
                                                 {% set  selected = "selected" %}
                                             {% endif %}
-                                            <option value="{{user.id}}" {{selected}}>{{user.happyname}}</option>
-                                        {% endfor %}
-                                    </select>
+                                            <option value="-1" {{ selected }}> {{ 'Not Assignee' | trans }}</option>
+                                            {% for activity in activities %}
+                                                {% set  selected = "" %}
+                                                {% if activity.id in filter.activity %}
+                                                    {% set  selected = "selected" %}
+                                                {% endif %}
+                                                <option value="{{ activity.id }}" {{ selected }}>{{ activity.name }}</option>
+                                            {% endfor %}
+
+                                        </select>
+                                    </div>
                                 </div>
-                                
-                                <div class="col-sm-1">
-                                    <span class="cursor-pointer text-left  ionicons {{icon}}" style="margin-top: 8px;" onclick="toogleSelect(accountAssigneeFilter,this)"></span>
+                                <div class="form-group">
+                                    <div class=" col-sm-9">
+                                        <a class="btn btn-default btn-sm" href="{{ path('account') }}?reset"><i
+                                                    class="fa fa-times"></i> {{ 'clean' | trans | capitalize }}</a>
+                                        <button class="btn btn-primary btn-sm"
+                                                type="submit">{{ 'apply' | trans | capitalize }}</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label "
+                                           for="assignee">{{ 'Assignee' | trans }}</label>
+                                    <div class="col-sm-8">
+                                        <select id="assignee" name="filter[assignee][]" multiple="multiple"
+                                                class="form-control filter">
+                                            <option value=""></option>
+                                            {% set  selected = "" %}
+                                            {% if  "-1" in filter.assignee %}
+                                                {% set  selected = "selected" %}
+                                            {% endif %}
+                                            <option value="-1" {{ selected }}> {{ 'Not Assignee' | trans }}</option>
+                                            {% for user in users %}
+                                                {% set  selected = "" %}
+                                                {% if user.id in filter.assignee %}
+                                                    {% set  selected = "selected" %}
+                                                {% endif %}
+                                                <option value="{{ user.id }}" {{ selected }}>{{ user.happyname }}</option>
+                                            {% endfor %}
+
+                                        </select>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
                     </form>
                 </div>
             </div>
-            <div class="box-body">    
+            <div class="box-body">
                 <table class="table table-condensed">
                     <thead>
-                        <tr>
-                            <th scope="col">{{ thead('account', 'id', 'id') }}</th>
-                            <th scope="col">{{ thead('account', 'name', 'Name') }}</th>
-                            <th scope="col">{{ thead('account', 'businessName', 'Business name') }}</th>
-                            <th scope="col">{{ thead('account', 'u.username', 'Assignee') }}</th>
-                            <th scope="col">{{ thead('account', 'phone', 'Phone') }}</th>
-                            <th scope="col">{{ thead('account', 'address', 'Address') }}</th>
-                            <th scope="col">{{ thead('account', 'cuit', 'cuit') }}</th>
-                            <th scope="col">{{ thead('account', 'ac.name', 'Activity') }}</th>
-                        </tr>
+                    <tr>
+                        <th>
+                            <input type="checkbox" onclick="selectAll(this)">
+                        </th>
+                        <th>{{ knp_pagination_sortable(paginator, 'Id'|trans({},'Account'), 'a.id') }}</th>
+                        <th>{{ knp_pagination_sortable(paginator, 'Name'|trans({},'Account'), 'a.name') }}</th>
+                        <th>{{ knp_pagination_sortable(paginator, 'Business name'|trans({},'Account'), 'a.businessName') }}</th>
+                        <th>{{ knp_pagination_sortable(paginator, 'Assignee'|trans({},'Account'), 'u.username') }}</th>
+                        <th>{{ knp_pagination_sortable(paginator, 'Phone'|trans({},'Account'), 'a.phone') }}</th>
+                        <th>{{ knp_pagination_sortable(paginator, 'Address'|trans({},'Account'), 'a.address') }}</th>
+                        <th>{{ knp_pagination_sortable(paginator, 'cuit'|trans({},'Account'), 'a.cuit') }}</th>
+                        <th>{{ knp_pagination_sortable(paginator, 'Activity'|trans({},'Account'), 'ac.name') }}</th>
+                    </tr>
                     </thead>
                     <tbody>
-                        {% for account in paginator %}
-                            <tr>
-                                <td><a href="{{ path('account_show', {id: account.id}) }}">{{ account.id }}</a></td>
-                                <td><a href="{{ path('account_show', {id: account.id}) }}">{{ account.name }}</a></td>
-                                <td>{{ account.businessName }}</td>
-                                <td>{{ account.assignee }}</td>
-                                <td>{{ account.phone }}</td>
-                                <td>{{ account.address }}</td>
-                                <td>{{ account.cuit }}</td>
-                                <td>{{ account.activity | capitalize}}</td>
-                            </tr>
-                        {% endfor %}
+                    {% for account in paginator %}
+                        <tr>
+                            <td>
+                                <input type="checkbox" value="{{ account.id }}" name="accounts[]" class="bulk-check">
+                            </td>
+                            <td><a href="{{ path('account_show', {id: account.id}) }}">{{ account.id }}</a></td>
+                            <td><a href="{{ path('account_show', {id: account.id}) }}">{{ account.name }}</a></td>
+                            <td>{{ account.businessName }}</td>
+                            <td>{{ account.assignee }}</td>
+                            <td>{{ account.phone }}</td>
+                            <td>{{ account.address }}</td>
+                            <td>{{ account.cuit }}</td>
+                            <td>{{ account.activity | capitalize }}</td>
+                        </tr>
+                    {% endfor %}
                     </tbody>
                 </table>
 
@@ -169,31 +188,36 @@
 
             </div>
 
-    </section>        
+    </section>
 
 {% endblock %}
 {% block javascripts %}
     {{ parent() }}
     <script type="text/javascript">
 
-        function selectAll(parent){
-            $(".bulk input.bulk-check").attr("checked",parent.checked);
-        }
-        function toogleSelect (element, me) {
-            var multiple = $(element).attr("multiple");
-            if(multiple === undefined){
-                $(element).attr("multiple",true);
-                $(me).addClass("ion-ios-minus-outline")
-                $(me).removeClass("ion-plus-circled")
-            }else{
-                $(element).removeAttr("multiple");
-                $(me).removeClass("ion-ios-minus-outline")
-                $(me).addClass("ion-plus-circled")
-            }
+        function selectAll(parent) {
+            $("input.bulk-check").attr("checked", parent.checked);
         }
 
         function CopyMe(oFileInput, sTargetID) {
             document.getElementById(sTargetID).value = oFileInput.value;
         }
+        $(".bulk-action").click(function () {
+            var action = $(this).attr("action");
+            var accountsIds = [];
+            $("input.bulk-check:checked").each(function () {
+                accountsIds.push($(this).val());
+            });
+
+            $.ajax({
+                "url": action,
+                "type": "GET",
+                "data": {"accounts": accountsIds},
+                "success": function () {
+                    location.reload();
+                }
+            });
+
+        });
     </script>
 {% endblock %}

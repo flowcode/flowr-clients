@@ -47,6 +47,30 @@ class AccountService
     }
 
     /**
+     * @param array $filter
+     * @param array $order
+     * @return mixed
+     */
+    public function getFilteredQueryBuilder($filter = array(), $order = array())
+    {
+        $qb = $this->em->getRepository('FlowerModelBundle:Clients\Account')->getFindFilteredQueryBuilder($filter);
+        return $qb;
+    }
+
+    /**
+     * @param array $filter
+     * @param array $order
+     * @param int $maxResults
+     * @param int $page
+     * @return mixed
+     */
+    public function getFindAllPaged($filter = array(), $order = array(), $maxResults = 20, $page = 1)
+    {
+        $qb = $this->getFindAllPagedQueryBuilder($filter, $order, $maxResults, $page);
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
      * AccountDataExport() genera el contenido a ser exportado segun vista.
      *
      */

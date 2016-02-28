@@ -1,0 +1,40 @@
+{% extends "FlowerCoreBundle::layout.html.twig" %}
+
+{% block title %}{{ '%entity% edit'|trans({'%entity%': 'Account'}, 'Account') }} - {{ parent() }}{% endblock %}
+
+{% block body %}
+    <section class="content">
+        {{ include("FlowerClientsBundle::appnav.html.twig", { 'app_account': true }) }}
+        <div class="box">
+            <div class="box-header">
+                <h3 class="box-title">{{ "imports"|trans|title }}</h3>
+            </div>
+            <div class="box-body">
+                <table class="table table-hover record_properties">
+                    <thead>
+                    <tr>
+                        <th>Estado</th>
+                        <th>Iniciado</th>
+                        <th>Actualizado</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for process in proceses %}
+                        <tr>
+                            {% if process.status == 0 %}
+                                <td><span class="label label-default">Terminado</span></td>
+                            {% elseif process.status == 1 %}
+                                <td><span class="label label-warning">Procesando</span></td>
+                            {% endif %}
+                            <td>{{ process.created|date('fullDateTime'|trans) }}</td>
+                            <td>{{ process.updated|date('fullDateTime'|trans) }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+

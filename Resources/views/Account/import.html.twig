@@ -1,0 +1,46 @@
+{% extends "FlowerCoreBundle::layout.html.twig" %}
+
+{% block title %}{{ '%entity% edit'|trans({'%entity%': 'Account'}, 'Account') }} - {{ parent() }}{% endblock %}
+
+{% block body %}
+    <section class="content" multi-app="flowerAccountImporter">
+        {{ include("FlowerClientsBundle::appnav.html.twig", { 'app_account': true }) }}
+        <div class="box">
+            <div class="box-header">
+                <h3 class="box-title">{{ "import"|trans|title }}</h3>
+            </div>
+            <div class="box-body">
+                <div ng-view>
+                    Loading....
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('bundles/flowercore/js/angular/mgonto-angular-wizard/dist/angular-wizard.css') }}"
+          rel="stylesheet" type="text/css"/>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        var importsUrl = "{{ path("account_imports") }}";
+        var rootPath = "{{ path("dashboard") }}";
+    </script>
+
+    <script src="{{ asset('bundles/flowercore/js/underscore.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('bundles/flowercore/js/angular/mgonto-angular-wizard/dist/angular-wizard.js') }}"
+            type="text/javascript"></script>
+
+    <script src="{{ asset('bundles/flowercore/js/angular/ng-file-upload.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('bundles/flowerclients/js/angular/importer/app-accountimporter.js') }}"
+            type="text/javascript"></script>
+    <script src="{{ asset('bundles/flowerclients/js/angular/importer/controller/importerCtrl.js') }}"
+            type="text/javascript"></script>
+
+{% endblock %}
+
+

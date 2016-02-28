@@ -2,7 +2,10 @@
 
 namespace Flower\ClientsBundle\Controller;
 
+use Ddeboer\DataImport\Reader\CsvReader;
 use Flower\ModelBundle\Entity\Board\History;
+use Flower\ModelBundle\Entity\Marketing\ImportProcess;
+use Flower\ModelBundle\Entity\User\User;
 use PHPExcel;
 use PHPExcel_IOFactory;
 
@@ -16,6 +19,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Form;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
@@ -36,41 +40,38 @@ class AccountController extends BaseController
      */
     public function indexAction(Request $request)
     {
+
+        /* filters */
+        $filter = $request->get("filter", array());
+        $filter["name"] = isset($filter["name"]) ? $filter["name"] : null;
+        $filter["assignee"] = isset($filter["assignee"]) ? $filter["assignee"] : array();
+        $filter["activity"] = isset($filter["activity"]) ? $filter["activity"] : array();
+
         $em = $this->getDoctrine()->getManager();
-        $accountAlias = "a";
-        $qb = $em->getRepository('FlowerModelBundle:Clients\Account')->createQueryBuilder($accountAlias);
-        $qb->leftJoin("a.activity", "ac");
-        $qb->leftJoin("a.assignee", "u");
+
+        /* main query builder */
+        $qb = $this->get('client.service.account')->getFilteredQueryBuilder($filter);
 
         /* filter by org security groups */
         if (!$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             $secGroupSrv = $this->get('user.service.securitygroup');
-            $qb = $secGroupSrv->addSecurityGroupFilter($qb, $this->getUser(), $accountAlias);
+            $qb = $secGroupSrv->addSecurityGroupFilter($qb, $this->getUser(), 'a');
         }
 
-        $filters = array('activityFilter' => "ac.id", 'accountAssigneeFilter' => "u.id",);
-
         if ($request->query->has('reset')) {
-            $request->getSession()->set('filter.account', null);
             $request->getSession()->set('sort.account', null);
             return $this->redirectToRoute("account");
         }
 
-        $this->saveFilters($request, $filters, 'account', 'account');
-        $paginator = $this->filter($qb, 'account', $request);
-        $activities = $em->getRepository('FlowerModelBundle:Clients\Activity')->findAll();
-        $activityFilter = $request->query->get("activityFilter");
+        $paginator = $this->get('knp_paginator')->paginate($qb, $request->get('page', 1), 20);
+
         $users = $em->getRepository('FlowerModelBundle:User\User')->findBy(array(), array("username" => "ASC"));
-        $filters = $this->getFilters('account');
-        if (!$activityFilter && $filters['activityFilter'] && $filters['activityFilter']["value"]) {
-            $activityFilter = $filters['activityFilter']["value"];
-        }
-        $filters = $this->getFilters('account');
+        $activities = $em->getRepository('FlowerModelBundle:Clients\Activity')->findAll();
+
         return array(
             'paginator' => $paginator,
-            'accountAssigneeFilter' => isset($filters['accountAssigneeFilter']) ? $filters['accountAssigneeFilter']["value"] : null,
             'users' => $users,
-            'activityFilter' => $activityFilter,
+            'filter' => $filter,
             'activities' => $activities,
         );
     }
@@ -378,4 +379,121 @@ class AccountController extends BaseController
             'form' => $form->createView(),
         );
     }
+
+    /**
+     * Finds and displays a ContactList entity.
+     *
+     * @Route("/import/launch", name="account_import_launch")
+     * @Method("POST")
+     */
+    public function launchImportAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $filename = $request->get("filename");
+        $colDef = $request->get("col_def");
+
+        $importProcess = new ImportProcess();
+        $importProcess->setFileName($filename);
+        $importProcess->setType(ImportProcess::TYPE_ACCOUNT);
+        $importProcess->setStatus(ImportProcess::STATUS_IN_PROGRESS);
+        $importProcess->setColdef(json_encode($colDef, true));
+
+        $em->persist($importProcess);
+        $em->flush();
+
+        /* launch process */
+        $rootDir = $this->get('kernel')->getRootDir();
+        $env = $this->container->get('kernel')->getEnvironment();
+        $commandCall = "php " . $rootDir . "/console flower:import:account --env=" . $env . "  " . $importProcess->getId() . " > /dev/null &";
+        exec($commandCall);
+
+        return new JsonResponse(array(
+            "result" => "ok"
+        ));
+    }
+
+    /**
+     * Finds and displays a ContactList entity.
+     *
+     * @Route("/upload", name="account_import_upload")
+     * @Method("POST")
+     */
+    public function uploadAction(Request $request)
+    {
+        $uploadedFile = $request->files->get('file');
+
+        $fileCode = md5($uploadedFile->getFilename() . time());
+
+        $tempDir = $this->get('kernel')->getRootDir() . "/../web/uploads/tmp/";
+        $filename = $fileCode . ".csv";
+        $uploadedFile->move($tempDir, $filename);
+
+        $file = new \SplFileObject($tempDir . $filename);
+        $reader = new CsvReader($file);
+
+        foreach ($reader as $row) {
+            $fileFirstRow = $row;
+            break;
+        }
+
+        return new JsonResponse(array(
+            "filename" => $filename,
+            "first_row" => $fileFirstRow,
+        ));
+    }
+
+    /**
+     * All imports.
+     *
+     * @Route("/imports", name="account_imports")
+     * @Method("GET")
+     * @Template()
+     */
+    public function importsAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $proceses = $em->getRepository('FlowerModelBundle:Marketing\ImportProcess')->findBy(array("type" => ImportProcess::TYPE_ACCOUNT));
+
+        return array(
+            'proceses' => $proceses
+        );
+    }
+
+    /**
+     * Import new accounts.
+     *
+     * @Route("/import", name="account_import")
+     * @Method("GET")
+     * @Template()
+     */
+    public function importAction(Request $request)
+    {
+
+        return array();
+    }
+
+
+    /**
+     *
+     * @Route("/bulk/assign/user/{id}", name="account_bulk_user", requirements={"id"="\d+"})
+     * @Method("GET")
+     */
+    public function bulkSetAssigneeAction(User $user, Request $request)
+    {
+        $accounts = $request->get("accounts");
+        if (!$accounts) {
+            return new JsonResponse(null, 403);
+        }
+
+        $em = $this->getDoctrine()->getManager();
+        foreach ($accounts as $accountId) {
+            $account = $em->getRepository('FlowerModelBundle:Clients\Account')->find($accountId);
+            $account->setAssignee($user);
+        }
+        $em->flush();
+
+        return new JsonResponse(null, 200);
+    }
+
 }

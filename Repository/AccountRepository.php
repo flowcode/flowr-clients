@@ -27,13 +27,13 @@ class AccountRepository extends EntityRepository
             ->setParameter("text", "%" . $completeText . "%");
         $qb->setMaxResults($limit);
 
-        $result2= $qb->getQuery()->getResult();
+        $result2 = $qb->getQuery()->getResult();
         $result = array_merge($result, $result2);
         $qb = clone $qbOriginal;
         $count = 0;
         $orWhere = "";
         foreach ($texts as $text) {
-            $orWhere .= " a.name like :text_" . $count. " OR a.businessName like :text_" . $count. " OR a.cuit like :text_" . $count. " OR a.phone like :text_" . $count;
+            $orWhere .= " a.name like :text_" . $count . " OR a.businessName like :text_" . $count . " OR a.cuit like :text_" . $count . " OR a.phone like :text_" . $count;
             $qb->setParameter("text_" . $count, "%" . $text . "%");
             $count++;
         }
@@ -43,11 +43,66 @@ class AccountRepository extends EntityRepository
         return array_unique($result, SORT_REGULAR);
     }
 
-    public function getFindAllQueryBuilder($alias = "a"){
+    public function getFindAllQueryBuilder($alias = "a")
+    {
         $qb = $this->createQueryBuilder($alias);
 
         return $qb;
     }
+
+
+    public function getFindFilteredQueryBuilder($filter = array(), $order = array())
+    {
+        $qb = $this->getFindAllQueryBuilder("a");
+
+        $qb->leftJoin("a.activity", "ac");
+        $qb->leftJoin("a.assignee", "u");
+
+        /* by name */
+        if (isset($filter['name'])) {
+            $qb->andWhere("a.name LIKE :account_name")->setParameter("account_name", "%".$filter['name']."%");
+        }
+
+        /* by assignee */
+        if (isset($filter['assignee']) && (count($filter['assignee']) > 0)) {
+            $assigneeArr = array();
+            if (is_array($filter['assignee'])) {
+                $assigneeArr = $filter['assignee'];
+            } else {
+                $assigneeArr[] = $filter['assignee'];
+            }
+            $qb->andWhere("a.assignee IN (:account_assignee)")->setParameter("account_assignee", $assigneeArr);
+        }
+
+        /* by activity */
+        if (isset($filter['activity']) && (count($filter['activity']) > 0)) {
+            $activityArr = array();
+            if (is_array($filter['activity'])) {
+                $activityArr = $filter['activity'];
+            } else {
+                $activityArr[] = $filter['activity'];
+            }
+            $qb->andWhere("a.activity IN (:account_activity)")->setParameter("account_activity", $activityArr);
+        }
+
+        /* order */
+        foreach ($order as $orderCol => $orderDir) {
+            $qb->addOrderBy($orderCol, $orderDir);
+        }
+
+        return $qb;
+    }
+
+    public function getFindFilteredPagedQueryBuilder($filter = array(), $order = array(), $maxResults = 20, $offset = 0){
+        $qb = $this->getFindFilteredQueryBuilder($filter, $order);
+
+        /* pagination */
+        $qb->setMaxResults($maxResults);
+        $qb->setFirstResult($offset);
+
+        return $qb;
+    }
+
     public function findByBoard($board)
     {
         $qb = $this->createQueryBuilder("a");
