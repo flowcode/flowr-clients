@@ -122,6 +122,11 @@ abstract class Account
     protected $boards;
 
     /**
+     * @OneToMany(targetEntity="\Flower\ModelBundle\Entity\Planner\Event", mappedBy="account")
+     */
+    private $events;
+
+    /**
      * @ManyToMany(targetEntity="\Flower\ModelBundle\Entity\User\SecurityGroup")
      * @JoinTable(name="account_user_security_groups",
      *      joinColumns={@JoinColumn(name="account_id", referencedColumnName="id")},
@@ -616,5 +621,23 @@ abstract class Account
     {
         return $this->securityGroups;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getEvents()
+    {
+        return $this->events;
+    }
+
+    /**
+     * @param mixed $events
+     */
+    public function setEvents($events)
+    {
+        $this->events = $events;
+    }
+
+
 
 }

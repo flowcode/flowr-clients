@@ -127,12 +127,13 @@ class AccountService
         $assignee = $account->getAssignee();
         $assigneeGroup = $this->container->get("user.service.securitygroup")->getDefaultForUser($assignee);
         $account->addSecurityGroup($assigneeGroup);
-        $parentGroups = $this->container->get("user.service.securitygroup")->getParentsGroups($assignee);
-        foreach ($parentGroups as $securityGroup) {
-            if (!$account->getSecurityGroups()->contains($securityGroup)) {
-                $account->addSecurityGroup($securityGroup);
-            }
-        }
+
+        //$parentGroups = $this->container->get("user.service.securitygroup")->getParentsGroups($assignee);
+        //foreach ($parentGroups as $securityGroup) {
+        //    if (!$account->getSecurityGroups()->contains($securityGroup)) {
+        //        $account->addSecurityGroup($securityGroup);
+        //    }
+        //}
 
         return $account;
 

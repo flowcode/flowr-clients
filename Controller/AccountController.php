@@ -126,16 +126,26 @@ class AccountController extends BaseController
 
         $em = $this->getDoctrine()->getManager();
 
-        $todoStatus = $em->getRepository("FlowerModelBundle:Board\TaskStatus")->findOneBy(array("name" => TaskStatus::STATUS_TODO));
+        $todoStatus = $em->getRepository('FlowerModelBundle:Board\TaskStatus')->findOneBy(array("name" => TaskStatus::STATUS_TODO));
         $accountBoards = $account->getBoards();
 
-        $currentProjects = $em->getRepository("FlowerModelBundle:Project\Project")->findBy(array("account" => $account));
+        /* current projects */
+        $currentProjects = $em->getRepository('FlowerModelBundle:Project\Project')->findBy(array("account" => $account));
 
+        /* contacts */
         $qb = $em->getRepository('FlowerModelBundle:Clients\Contact')->getByAccountQuery($account->getId());
         $contacts = $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), 50);
 
+        /* calls */
         $qb = $em->getRepository('FlowerModelBundle:Clients\CallEvent')->getByAccountQuery($account->getId());
         $accauntcalls = $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), 5);
+
+        /* last sales */
+        $accountSales = $em->getRepository('FlowerModelBundle:Sales\Sale')->findBy(array("account" => $account), array(), 5);
+
+        /* last events */
+        $lastEvents = $em->getRepository('FlowerModelBundle:Planner\Event')->findBy(array("account" => $account), array(), 5);
+
 
         $editForm = $this->createForm($this->get("form.type.account"), $account, array(
             'action' => $this->generateUrl('account_update', array('id' => $account->getid())),
@@ -151,6 +161,8 @@ class AccountController extends BaseController
             'accountBoards' => $accountBoards,
             'currentProjects' => $currentProjects,
             'contacts' => $contacts,
+            'accountSales' => $accountSales,
+            'lastEvents' => $lastEvents,
             'delete_form' => $deleteForm->createView(),
         );
     }
@@ -490,8 +502,17 @@ class AccountController extends BaseController
         foreach ($accounts as $accountId) {
             $account = $em->getRepository('FlowerModelBundle:Clients\Account')->find($accountId);
             $account->setAssignee($user);
+
+            /* remove previous security groups */
+            foreach ($account->getSecurityGroups() as $securityGroup) {
+                $account->removeSecurityGroup($securityGroup);
+            }
+
+            /* add default security groups */
+            $account = $this->get("client.service.account")->addSecurityGroups($account);
+            $em->flush();
+
         }
-        $em->flush();
 
         return new JsonResponse(null, 200);
     }

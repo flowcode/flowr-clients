@@ -392,7 +392,7 @@ class CallEventController extends BaseController
      *
      * @Route("/duplicate/{call}", name="callevent_duplicate")
      * @Method("GET")
-     * @Template("FlowerClientsBundle:CallEvent:publicProfile.html.twig")
+     * @Template("FlowerClientsBundle:CallEvent:show.html.twig")
      */
     public function duplicateAction(CallEvent $call)
     {
