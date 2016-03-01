@@ -1,16 +1,25 @@
-		<div class="nav-app">
-            <ul class="nav nav-tabs ">
-                <li role="presentation" class="app-icon">
-                    <img src="{{ asset('bundles/flowercore/images/icons/CustomerSupport-100.png') }}" class="img-responsive">
-                </li>
-                <li role="presentation" 
-                {% if app_calls is defined %}class="active"{% endif %}
-                >
-                    <a href="{{ path('callevent') }}">{{ '%entity% list'|trans({'%entity%': 'CallEvent'}, 'CallEvent') }}</a>
-                </li>
-                <li role="presentation" {% if app_call_planner is defined %}class="active"{% endif %}
-                >
-                    <a href="{{ path('callevent_planner') }}">{{ 'calls planner'|trans({}, 'CallEvent') }}</a>
-                </li>
-            </ul>
+<section class="sidebar">
+    <div class="app-header">
+        <div class="row">
+            <div class="col-sm-12">
+                <img src="{{ asset('bundles/flowercore/images/icons/CustomerSupport-100.png') }}"
+                     class="img-responsive pull-left" width="40">
+                <span>{{ 'calls'|trans|title }}</span>
+            </div>
         </div>
+    </div>
+    <ul class="sidebar-menu">
+
+        <li {% if app_calls is defined %}class="active"{% endif %}>
+            <a href="{{ path('callevent') }}">
+                {{ '%entity% list'|trans({'%entity%': 'CallEvent'}, 'CallEvent') }}
+            </a>
+        </li>
+
+
+        <li {% if app_call_planner is defined %}class="active"{% endif %}>
+            <a href="{{ path('callevent_planner') }}">{{ 'calls planner'|trans({}, 'CallEvent') }}</a>
+        </li>
+
+    </ul>
+</section>

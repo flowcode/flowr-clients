@@ -2,6 +2,10 @@
 
 {% block title %}{{ '%entity% edit'|trans({'%entity%': 'Opportunity'}, 'Opportunity') }} - {{ parent() }}{% endblock %}
 
+{% block app_menu %}
+    {{ include("FlowerClientsBundle::appnav.html.twig", { 'app_opportunity': true }) }}
+{% endblock %}
+
 {% block body %}
     <section class="content-header">
         <h1>

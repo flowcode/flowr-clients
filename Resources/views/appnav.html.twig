@@ -1,22 +1,32 @@
-		<div class="nav-app">
-            <ul class="nav nav-tabs ">
-                <li role="presentation" class="app-icon" >
-                    <img src="{{ asset('bundles/flowercore/images/icons/Contacts-100.png') }}">
-                </li>
-                <li role="presentation" 
-                {% if app_account is defined %}class="active"{% endif %}
-                >
-                    <a href="{{ path('account') }}">{{ '%entity% list'|trans({'%entity%': 'Account'}, 'Account') }}</a>
-                </li>
-                <li role="presentation" {% if app_contact is defined %}class="active"{% endif %}
-                >
-                    <a href="{{ path('contact') }}">{{ '%entity% list'|trans({'%entity%': 'Contact'}, 'Contact') }}</a>
-                </li>
-                {% if is_granted('ROLE_OPORTUNITIES') %}
-                    <li role="presentation" {% if app_opportunity is defined %}class="active"{% endif %}
-                    >
-                        <a href="{{ path('opportunity') }}">{{ '%entity% list'|trans({'%entity%': 'Opportunity'}, 'Opportunity') }}</a>
-                    </li>
-                {% endif %}
-            </ul>
+<section class="sidebar">
+    <div class="app-header">
+        <div class="row">
+            <div class="col-sm-12">
+                <img src="{{ asset('bundles/flowercore/images/icons/Contacts-100.png') }}"
+                     class="img-responsive pull-left" width="40">
+                <span>{{ 'clients'|trans|title }}</span>
+            </div>
         </div>
+    </div>
+    <ul class="sidebar-menu">
+
+        <li {% if app_account is defined %}class="active"{% endif %}>
+            <a href="{{ path('account') }}">
+                {{ '%entity% list'|trans({'%entity%': 'Account'}, 'Account') }}
+            </a>
+        </li>
+
+        <li {% if app_contact is defined %}class="active"{% endif %}>
+            <a href="{{ path('contact') }}">
+                {{ '%entity% list'|trans({'%entity%': 'Contact'}, 'Contact') }}
+            </a>
+        </li>
+        {% if is_granted('ROLE_OPORTUNITIES') %}
+            <li {% if app_opportunity is defined %}class="active"{% endif %}>
+                <a href="{{ path('opportunity') }}">
+                    {{ '%entity% list'|trans({'%entity%': 'Opportunity'}, 'Opportunity') }}
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+</section>

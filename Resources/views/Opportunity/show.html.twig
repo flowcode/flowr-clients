@@ -2,11 +2,22 @@
 
 {% block title %}{{ '%entity% edit'|trans({'%entity%': 'Opportunity'}, 'Opportunity') }} - {{ parent() }}{% endblock %}
 
+{% block app_menu %}
+    {{ include("FlowerClientsBundle::appnav.html.twig", { 'app_opportunity': true }) }}
+{% endblock %}
+
 {% block body %}
-<section class="content">
+    <section class="content-header">
+        <h1>
+            <a href="{{ path('opportunity') }}">{{ 'Opportunities' | trans({}, 'Opportunity')}}</a>
+            /
+            {{opportunity.name | capitalize}}
+        </h1>
+
+    </section>
+    <section class="content">
     <div class="row">
         <div class="col-sm-8">
-            {{ include("FlowerClientsBundle::appnav.html.twig", { 'app_opportunity': true }) }} 
             <div class="box" id="showOpportunity">
                 <div class="box-header">
                     <h3 class="box-title">{{ opportunity.name | capitalize}}</h3>

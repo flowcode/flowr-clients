@@ -2,7 +2,14 @@
 
 {% block title %}{{ '%entity% creation'|trans({'%entity%': 'CallEvent'}, 'CallEvent') }} - {{ parent() }}{% endblock %}
 
-{% block body %}  
+{% block app_menu %}
+    {{ include("FlowerClientsBundle::appnav-postventa.html.twig", { 'app_calls': true }) }}
+{% endblock %}
+
+{% block body %}
+    <section class="content-header">
+        <h1>{{ 'call create'|trans|title }}</h1>
+    </section>
     <section class="content">
         {{ include("FlowerClientsBundle::appnav-postventa.html.twig", { }) }} 
         <div class="box">

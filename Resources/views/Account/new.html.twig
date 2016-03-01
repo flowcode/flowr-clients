@@ -2,9 +2,12 @@
 
 {% block title %}{{ '%entity% creation'|trans({'%entity%': 'Account'}, 'Account') }} - {{ parent() }}{% endblock %}
 
+{% block app_menu %}
+    {{ include("FlowerClientsBundle::appnav.html.twig", { 'app_account': true }) }}
+{% endblock %}
+
 {% block body %}
     <section class="content">
-        {{ include("FlowerClientsBundle::appnav.html.twig", { 'app_account': true }) }} 
         <div class="box">
             <div class="box-header">
             </div>

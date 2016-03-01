@@ -2,31 +2,39 @@
 
 {% block title %}{{ '%entity% edit'|trans({'%entity%': 'CallEvent'}, 'CallEvent') }} - {{ parent() }}{% endblock %}
 
+{% block app_menu %}
+    {{ include("FlowerClientsBundle::appnav-postventa.html.twig", { 'app_calls': true }) }}
+{% endblock %}
+
 {% block body %}
+    <section class="content-header">
+        <h1>{{ callevent.subject|title }}</h1>
+    </section>
     <section class="content">
-        {{ include("FlowerClientsBundle::appnav-postventa.html.twig", { }) }} 
         <div class="row">
             <div class="col-md-6">
                 <div class="box" id="showCallEvent">
                     <div class="box-header">
-                        <h4>{{ callevent.subject |capitalize}}</h4>
+                        <h4>{{ callevent.subject |capitalize }}</h4>
                         <div class="box-tools">
                             {% if delete_form  is defined %}
-                            {{ form_start(delete_form) }}
-                            {{ form_widget(delete_form) }}
+                                {{ form_start(delete_form) }}
+                                {{ form_widget(delete_form) }}
 
-                            <div class="btn-group record_actions">
-                                <a class="btn btn-link  btn-sm"  href="{{path('callevent_duplicate',{call:callevent.id})}}">{{'duplicate'| trans | capitalize}}</a>
-                                <button class="btn btn-link btn-sm" type="submit">{{ 'Delete'|trans({}, 'CallEvent') }}</button>
+                                <div class="btn-group record_actions">
+                                    <a class="btn btn-link  btn-sm"
+                                       href="{{ path('callevent_duplicate',{call:callevent.id}) }}">{{ 'duplicate'| trans | capitalize }}</a>
+                                    <button class="btn btn-link btn-sm"
+                                            type="submit">{{ 'Delete'|trans({}, 'CallEvent') }}</button>
 
-                                <a id="edutbuttom" href="#" class="btn btn-link  btn-sm" onclick="showEdit(true)">
-                                    {{ 'Edit'|trans({}, 'Account') }}
-                                </a>
+                                    <a id="edutbuttom" href="#" class="btn btn-link  btn-sm" onclick="showEdit(true)">
+                                        {{ 'Edit'|trans({}, 'Account') }}
+                                    </a>
 
-                            </div>
+                                </div>
 
-                            <input name="modal" type="hidden" value="0">
-                            {{ form_end(delete_form) }}
+                                <input name="modal" type="hidden" value="0">
+                                {{ form_end(delete_form) }}
 
 
                             {% else %}
@@ -41,27 +49,27 @@
                     <div class="box-body">
                         <table class="table table-hover record_properties">
                             <tbody>
-                                <tr>
-                                    <th scope="row">{{'status'|trans({}, 'CallEvent') | capitalize}}</th>
-                                    <td>{{ callevent.status }}</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">{{'assignee'|trans({}, 'CallEvent') | capitalize}}</th>
-                                    <td>{{ callevent.assignee }}</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">{{'date'|trans({}, 'CallEvent') | capitalize}}</th>
-                                    <td>{{ callevent.date | date ('fullDateTime' | trans)}}</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">{{'contactName'|trans({}, 'CallEvent') | capitalize}}</th>
-                                    <td>{{ callevent.contactName }}</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">{{'description'|trans({}, 'CallEvent') | capitalize}}</th>
-                                    <td>{{ callevent.description }}</td>
-                                </tr>
-                                
+                            <tr>
+                                <th scope="row">{{ 'status'|trans({}, 'CallEvent') | capitalize }}</th>
+                                <td>{{ callevent.status }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">{{ 'assignee'|trans({}, 'CallEvent') | capitalize }}</th>
+                                <td>{{ callevent.assignee }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">{{ 'date'|trans({}, 'CallEvent') | capitalize }}</th>
+                                <td>{{ callevent.date | date ('fullDateTime' | trans) }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">{{ 'contactName'|trans({}, 'CallEvent') | capitalize }}</th>
+                                <td>{{ callevent.contactName }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">{{ 'description'|trans({}, 'CallEvent') | capitalize }}</th>
+                                <td>{{ callevent.description }}</td>
+                            </tr>
+
                             </tbody>
                         </table>
                     </div>
@@ -74,14 +82,14 @@
                         <div class="box-tools">
                             <div class="btn-group record_actions">
                                 <a class="btn btn-link  btn-sm" onclick="showEdit(false)">
-                                {{ 'Cancel'|trans({}, 'Account') }}
+                                    {{ 'Cancel'|trans({}, 'Account') }}
                                 </a>
                             </div>
                         </div>
                     </div>
                     <div class="box-body">
                         {{ form_start(edit_form) }}
-                            {{ form_widget(edit_form) }}
+                        {{ form_widget(edit_form) }}
                         {{ form_end(edit_form) }}
                     </div>
                 </div>
@@ -90,27 +98,27 @@
                 <div class="col-md-6">
                     <div class="box">
                         <div class="box-header">
-                            <a href="{{path('account_show',{id:callevent.account.id})}}">
-                                <h4>{{ callevent.account |capitalize}}</h4>
+                            <a href="{{ path('account_show',{id:callevent.account.id}) }}">
+                                <h4>{{ callevent.account |capitalize }}</h4>
                             </a>
                         </div>
                         <div class="box-body">
                             <table class="table table-hover record_properties">
                                 <tbody>
-                                    <tr>
-                                        <th scope="row">{{'phone'|trans({}, 'Account')}}</th>
-                                        <td>{{ callevent.account.phone }}</td>
-                                    </tr>
+                                <tr>
+                                    <th scope="row">{{ 'phone'|trans({}, 'Account') }}</th>
+                                    <td>{{ callevent.account.phone }}</td>
+                                </tr>
 
-                                    <tr>
-                                        <th scope="row">{{'address'|trans({}, 'Account')}}</th>
-                                        <td>{{ callevent.account.address }}</td>
-                                    </tr>
+                                <tr>
+                                    <th scope="row">{{ 'address'|trans({}, 'Account') }}</th>
+                                    <td>{{ callevent.account.address }}</td>
+                                </tr>
 
-                                    <tr>
-                                        <th scope="row">{{'cuit'|trans({}, 'Account')}}</th>
-                                        <td>{{ callevent.account.cuit }}</td>
-                                    </tr>
+                                <tr>
+                                    <th scope="row">{{ 'cuit'|trans({}, 'Account') }}</th>
+                                    <td>{{ callevent.account.cuit }}</td>
+                                </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -122,7 +130,8 @@
                         <div class="box-header">
                             <h3 class="box-title">{{ 'contacts'|trans|capitalize }}</h3>
                             <div class="box-tools">
-                                <a class="btn btn-link" href="{{ path('contact_new_to_account', { id: callevent.account.id }) }}">
+                                <a class="btn btn-link"
+                                   href="{{ path('contact_new_to_account', { id: callevent.account.id }) }}">
                                     <i class="fa fa-plus"></i>
                                 </a>
                             </div>
@@ -130,33 +139,34 @@
                         <div class="box-body">
                             <table class="table table-condensed">
                                 <thead>
-                                    <tr>
-                                        <th>{{ 'name'|trans }}</th>
-                                        <th>{{ 'email'|trans }}</th>
-                                        <th>{{ 'phone'|trans }}</th>
-                                    </tr>
+                                <tr>
+                                    <th>{{ 'name'|trans }}</th>
+                                    <th>{{ 'email'|trans }}</th>
+                                    <th>{{ 'phone'|trans }}</th>
+                                </tr>
                                 </thead>
                                 <tbody>
-                                    {% for contact in callevent.account.contacts %}
-                                        <tr>
-                                            <td>
-                                                <a href="{{ path('contact_show', {id: contact.id}) }}">{{ contact.happyname }} </a>
-                                            </td>
-                                            <td>
-                                                {{ contact.email }}
-                                            </td>
-                                            <td>{{ contact.phone }}</td>
-                                        </tr>
-                                    {% endfor %}
+                                {% for contact in callevent.account.contacts %}
+                                    <tr>
+                                        <td>
+                                            <a href="{{ path('contact_show', {id: contact.id}) }}">{{ contact.happyname }} </a>
+                                        </td>
+                                        <td>
+                                            {{ contact.email }}
+                                        </td>
+                                        <td>{{ contact.phone }}</td>
+                                    </tr>
+                                {% endfor %}
                                 </tbody>
                             </table>
                         </div>
                     </div>
-                     <div class="box collapsed-box" >
+                    <div class="box collapsed-box">
                         <div class="box-header">
                             <h3 class="box-title">{{ 'calls history'|trans|capitalize }}</h3>
                             <div class="box-tools">
-                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i>
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                            class="fa fa-plus"></i>
                                 </button>
                             </div>
                         </div>
@@ -165,20 +175,23 @@
                                 {% for call in callevent.account.calls %}
                                     {% if  call.id !=  callevent.id and ( not call.status or (call.status and call.status.finished == 1 ) ) %}
                                         <li class="item cursor-pointer" id="_calls" ng-repeat="item in notes.notes">
-                                            <a onclick="toggleMoreDate('more_data-{{call.id}}')">
-                                                {{call.subject}} 
+                                            <a onclick="toggleMoreDate('more_data-{{ call.id }}')">
+                                                {{ call.subject }}
                                             </a>
-                                            
-                                            <small class="text-muted pull-right"><i class="fa fa-calendar"></i> {{call.date| date("smallDate" | trans)}}</small>
+
+                                            <small class="text-muted pull-right"><i
+                                                        class="fa fa-calendar"></i> {{ call.date| date("smallDate" | trans) }}
+                                            </small>
                                             
                                             <span class="product-description">
-                                                {{call.status}}
+                                                {{ call.status }}
                                             </span>
-                                            <div id="more_data-{{call.id}}" style="display: none;">
-                                                <p>{{call.description}}</p>
+                                            <div id="more_data-{{ call.id }}" style="display: none;">
+                                                <p>{{ call.description }}</p>
                                                 <div class="pull-right">
-                                                    <a class="product-title" href="{{path('callevent_show',{id:call.id})}}">
-                                                        <small class="text-muted pull-right">{{'show complete' | trans({}, 'Account')}}</small>
+                                                    <a class="product-title"
+                                                       href="{{ path('callevent_show',{id:call.id}) }}">
+                                                        <small class="text-muted pull-right">{{ 'show complete' | trans({}, 'Account') }}</small>
                                                     </a>
                                                 </div>
                                             </div>
@@ -191,7 +204,7 @@
                         </div>
                     </div>
                 </div>
-        {% endif %}
+            {% endif %}
         </div>
         <div id="delete_confirm" class="modal fade">
             <div class="modal-dialog">
@@ -201,7 +214,8 @@
                         <h3>{{ 'Confirm delete'|trans({}, 'CallEvent') }}</h3>
                     </div>
                     <div class="modal-body">
-                        <p>{{ 'You are about to delete an item'|trans({}, 'CallEvent') }}, {{ 'this procedure is irreversible'|trans({}, 'CallEvent') }}.</p>
+                        <p>{{ 'You are about to delete an item'|trans({}, 'CallEvent') }}
+                            , {{ 'this procedure is irreversible'|trans({}, 'CallEvent') }}.</p>
                         <p>{{ 'Do you want to proceed?'|trans({}, 'CallEvent') }}</p>
                     </div>
                     <div class="modal-footer">
@@ -218,19 +232,19 @@
 {% block javascripts %}
     {{ parent() }}
     <script type="text/javascript">
-        function toggleMoreDate(element){
-            $("#"+element).toggle();
+        function toggleMoreDate(element) {
+            $("#" + element).toggle();
         }
-        function showEdit(show){
-            if(show){
+        function showEdit(show) {
+            if (show) {
                 $("#showCallEvent").hide();
                 $("#editFormCallEvent").show();
-            }else{
+            } else {
                 $("#showCallEvent").show();
                 $("#editFormCallEvent").hide();
             }
         }
-        
+
     </script>
     {{ form_javascript(edit_form) }}
 {% endblock %}

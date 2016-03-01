@@ -18,10 +18,16 @@
 
 {% from _self import thead %}
 
+{% block app_menu %}
+    {{ include("FlowerClientsBundle::appnav.html.twig", { 'app_opportunity': true }) }}
+{% endblock %}
+
 
 {% block body %}
+    <section class="content-header">
+        <h1>{{ 'opportunities'|trans|title }}</h1>
+    </section>
     <section class="content">
-        {{ include("FlowerClientsBundle::appnav.html.twig", { 'app_opportunity': true }) }} 
         <div class="box">
             <div class="box-header">
                 <div class="box-tools pull-right">

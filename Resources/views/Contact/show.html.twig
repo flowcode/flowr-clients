@@ -2,9 +2,15 @@
 
 {% block title %}{{ '%entity% edit'|trans({'%entity%': 'Contact'}, 'Contact') }} - {{ parent() }}{% endblock %}
 
+{% block app_menu %}
+    {{ include("FlowerClientsBundle::appnav.html.twig", { 'app_contact': true }) }}
+{% endblock %}
+
 {% block body %}
-    <section class="content">    
-        {{ include("FlowerClientsBundle::appnav.html.twig", { 'app_contact': true }) }} 
+    <section class="content-header">
+        <h1>{{ contact.happyname | trans({}, 'Contact')}}</h1>
+    </section>
+    <section class="content">
         <div class="box" id="showContact">
             {% if contact.accounts | length > 0  %}
                 <div class="box-small-nav">
@@ -14,7 +20,7 @@
             {% endif %}
             <div class="box-header">
                 <h3 class="box-title">
-                    {{ contact.happyname | trans({}, 'Contact')}}
+
                 </h3>
                 <div class="box-tools">
                     {{ form_start(delete_form) }}
