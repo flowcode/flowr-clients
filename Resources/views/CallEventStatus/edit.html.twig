@@ -2,9 +2,13 @@
 
 {% block title %}{{ '%entity% edit'|trans({'%entity%': 'CallEventStatus'}, 'CallEventStatus') }} - {{ parent() }}{% endblock %}
 
+{% block app_menu %}
+    {{ include("FlowerCoreBundle:Default:admin_nav.html.twig") }}
+{% endblock %}
+
 {% block body %}
     <section class="content-header">
-        {% include 'FlowerCoreBundle:Default:admin_nav.html.twig' %}
+
         <h1><a href="{{ path('admin_dash') }}"> {{ 'Settings'|trans}}</a>
             /
             <a href="{{ path('calleventstatus') }}"> {{ '%entity% list'|trans({'%entity%': 'CallEventStatus'}, 'CallEventStatus') }}</a>

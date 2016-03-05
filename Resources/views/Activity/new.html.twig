@@ -2,9 +2,12 @@
 
 {% block title %}{{ '%entity% creation'|trans({'%entity%': 'Activity'}, 'Activity') }} - {{ parent() }}{% endblock %}
 
+{% block app_menu %}
+    {{ include("FlowerCoreBundle:Default:admin_nav.html.twig") }}
+{% endblock %}
+
 {% block body %}
     <section class="content-header">
-        {% include 'FlowerCoreBundle:Default:admin_nav.html.twig' %}
         <h1>
             <a href="{{ path('admin_clients_activity') }}"> {{ '%entity% list'|trans({'%entity%': 'Activity'}, 'Activity') }}</a>
             /
