@@ -19,13 +19,7 @@ class OpportunityType extends AbstractType
             ->add('name')
             ->add('description')
             ->add('price')
-            ->add('status', 'choice', array(
-                'choices' => array(
-                    Opportunity::status_pending => 'pending',
-                    Opportunity::status_won => 'won',
-                    Opportunity::status_lost => 'lost'
-                )
-            ))
+            ->add('status')
             ->add('assignee')
             ->add('contact', null, array('required' => false))
             ->add('account', null, array('required' => false))

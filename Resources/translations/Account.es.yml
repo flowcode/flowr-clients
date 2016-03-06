@@ -1,8 +1,8 @@
-'%entity%': 'Cuenta'
+'%entity%': 'Organización'
 '%entity% creation': 'Creación de Cuenta'
-'%entity% edit': 'Edición de Cuenta'
-'%entity% list': Cuentas
-Account %name%: Cuenta %name%
+'%entity% edit': 'Edición de Organización'
+'%entity% list': Organizaciones
+Account %name%: Organización %name%
 Activity: Actividad
 Address: Dirección
 'All %entity%': Todo
@@ -13,7 +13,7 @@ CUIT/CUIL/DNI: CUIT/CUIL/DNI
 Cancel: Cancelar
 'Confirm delete': 'Confirmar borrado'
 Create: Crear
-'Create a new %entity%': 'Crear Cuenta'
+'Create a new %entity%': 'Crear Organización'
 Created: Agregado
 Delete: Borrar
 'Do you want to proceed?': '¿Desea continuar de todos modos?'

@@ -28,5 +28,10 @@
                 </a>
             </li>
         {% endif %}
+        <li {% if app_reports is defined %}class="active"{% endif %}>
+            <a href="{{ path('clients_report_opportunity') }}">
+                {{ 'reports'|trans|title }}
+            </a>
+        </li>
     </ul>
 </section>

@@ -12,11 +12,24 @@ use Doctrine\ORM\EntityRepository;
  */
 class OpportunityRepository extends EntityRepository
 {
-	public function findByBoard($board){
+    public function findByBoard($board)
+    {
         $qb = $this->createQueryBuilder("o");
-        $qb->join("o.boards","b");
+        $qb->join("o.boards", "b");
         $qb->where("b.id = :board")->setParameter("board", $board->getId());
         $querry = $qb->getQuery();
         return $querry->getOneOrNullResult();
     }
+
+    public function getQuickStatus()
+    {
+        $qb = $this->createQueryBuilder("o");
+        $qb->select("s.name, count(o) as quantity");
+        $qb->join("o.status", "s");
+        $qb->groupBy("s.name");
+
+
+        return $qb->getQuery()->getArrayResult();
+    }
+
 }

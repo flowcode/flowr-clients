@@ -55,9 +55,14 @@ class OpportunityController extends Controller
             'action' => $this->generateUrl('opportunity_update', array('id' => $opportunity->getid())),
             'method' => 'PUT',
         ));
+
+        /* last events */
+        $nextEvents = $em->getRepository('FlowerModelBundle:Planner\Event')->findBy(array("opportunity" => $opportunity), array('startDate' => 'DESC'), 5);
+
         return array(
-            'edit_form'   => $editForm->createView(),
+            'edit_form' => $editForm->createView(),
             'opportunity' => $opportunity,
+            'nextEvents' => $nextEvents,
             'opportunityBoards' => $opportunityBoards,
             'delete_form' => $deleteForm->createView(),
         );
@@ -77,7 +82,7 @@ class OpportunityController extends Controller
 
         return array(
             'opportunity' => $opportunity,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         );
     }
 
@@ -102,7 +107,7 @@ class OpportunityController extends Controller
 
         return array(
             'opportunity' => $opportunity,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         );
     }
 
@@ -123,7 +128,7 @@ class OpportunityController extends Controller
 
         return array(
             'opportunity' => $opportunity,
-            'edit_form'   => $editForm->createView(),
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
     }
@@ -150,7 +155,7 @@ class OpportunityController extends Controller
 
         return array(
             'opportunity' => $opportunity,
-            'edit_form'   => $editForm->createView(),
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
     }
@@ -169,9 +174,9 @@ class OpportunityController extends Controller
     }
 
     /**
-     * @param string $name  session name
+     * @param string $name session name
      * @param string $field field name
-     * @param string $type  sort type ("ASC"/"DESC")
+     * @param string $type sort type ("ASC"/"DESC")
      */
     protected function setOrder($name, $field, $type = 'ASC')
     {
@@ -191,7 +196,7 @@ class OpportunityController extends Controller
 
     /**
      * @param QueryBuilder $qb
-     * @param string       $name
+     * @param string $name
      */
     protected function addQueryBuilderSort(QueryBuilder $qb, $name)
     {
@@ -222,8 +227,8 @@ class OpportunityController extends Controller
     /**
      * Create Delete form
      *
-     * @param integer                       $id
-     * @param string                        $route
+     * @param integer $id
+     * @param string $route
      * @return \Symfony\Component\Form\Form
      */
     protected function createDeleteForm($id, $route)
@@ -231,10 +236,10 @@ class OpportunityController extends Controller
         return $this->createFormBuilder(null, array('attr' => array('id' => 'delete')))
             ->setAction($this->generateUrl($route, array('id' => $id)))
             ->setMethod('DELETE')
-            ->getForm()
-        ;
+            ->getForm();
     }
-        /**
+
+    /**
      * Displays a form to create a new Board entity.
      *
      * @Route("/board/{id}/new", name="board_new_to_opportunity")
@@ -245,7 +250,7 @@ class OpportunityController extends Controller
     {
         $board = new Board();
         $form = $this->createForm($this->get("form.type.board"), $board, array(
-            'action' => $this->generateUrl('oporunity_board_create',array("id"=>$opportunity->getId())),
+            'action' => $this->generateUrl('oporunity_board_create', array("id" => $opportunity->getId())),
             'method' => 'POST',
         ));
 
@@ -277,7 +282,7 @@ class OpportunityController extends Controller
 
         return array(
             'board' => $board,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         );
     }
 }

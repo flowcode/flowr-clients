@@ -21,3 +21,9 @@ lost: perdido
 pending: pendiente
 'this procedure is irreversible': 'esta accion será irreversible'
 won: ganado
+
+status_pending: pendiente
+status_lost: perdida
+status_won: ganada
+
+opportunities by status: oportunidades por estado

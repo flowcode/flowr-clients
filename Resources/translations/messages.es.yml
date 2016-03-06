@@ -19,3 +19,8 @@ phone: teléfono
 start: inicio
 error.delete.activity: La activitdad no puede ser eliminada ya que contiene cuentas relacionadas.
 last sales: "ventas recientes"
+
+
+
+
+reports: reportes

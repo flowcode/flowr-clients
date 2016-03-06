@@ -17,11 +17,8 @@ use Flower\ModelBundle\Entity\User\User;
  * Opportunity
  *
  */
-abstract  class Opportunity
+abstract class Opportunity
 {
-    const status_pending = 'status_pending';
-    const status_won = 'status_won';
-    const status_lost = 'status_lost';
 
     /**
      * @var integer
@@ -54,10 +51,9 @@ abstract  class Opportunity
     protected $price;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="status", type="string", length=255)
-     */
+     * @ManyToOne(targetEntity="\Flower\ModelBundle\Entity\Clients\OpportunityStatus")
+     * @JoinColumn(name="status_id", referencedColumnName="id")
+     * */
     protected $status;
 
     /**
@@ -91,6 +87,11 @@ abstract  class Opportunity
     protected $boards;
 
     /**
+     * @OneToMany(targetEntity="\Flower\ModelBundle\Entity\Planner\Event", mappedBy="opportunity")
+     */
+    private $events;
+
+    /**
      * @var DateTime
      *
      * @Gedmo\Timestampable(on="create")
@@ -109,6 +110,7 @@ abstract  class Opportunity
     function __construct()
     {
         $this->boards = new ArrayCollection();
+        $this->events = new ArrayCollection();
     }
 
 
@@ -366,4 +368,22 @@ abstract  class Opportunity
     {
         return $this->boards;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getEvents()
+    {
+        return $this->events;
+    }
+
+    /**
+     * @param mixed $events
+     */
+    public function setEvents($events)
+    {
+        $this->events = $events;
+    }
+
+
 }
