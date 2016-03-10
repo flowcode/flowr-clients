@@ -157,13 +157,12 @@
                     <div class="tab-content">
 
                         <div class="tab-pane" id="account_contacts">
-                            <div class="box">
+                            <div class="">
                                 <div class="box-header">
-                                    <h3 class="box-title">{{ 'contacts'|trans|capitalize }}</h3>
                                     <div class="box-tools">
-                                        <a class="btn btn-link"
+                                        <a class="btn btn-link btn-sm"
                                            href="{{ path('contact_new_to_account', { id: account.id }) }}">
-                                            <i class="fa fa-plus"></i>
+                                            <i class="fa fa-plus"></i> {{'%entity% creation' |trans({}, 'Contact')}}
                                         </a>
                                     </div>
                                 </div>
@@ -200,13 +199,12 @@
 
                         <div class="tab-pane" id="account_boards">
                             {% if is_granted('ROLE_BOARD') %}
-                                <div class="box">
+                                <div class="">
                                     <div class="box-header">
-                                        <h3 class="box-title">{{ 'boards'|trans|capitalize }}</h3>
                                         <div class="box-tools">
-                                            <a class="btn btn-link"
+                                            <a class="btn btn-link btn-sm"
                                                href="{{ path('board_new_to_account', { id: account.id }) }}">
-                                                <i class="fa fa-plus"></i>
+                                                <i class="fa fa-plus"></i> {{'%entity% creation' |trans({}, 'Board')}}
                                             </a>
                                         </div>
                                     </div>
@@ -229,16 +227,16 @@
 
                         <div class="tab-pane" id="account-calls">
                             {% if is_granted('ROLE_CALL') %}
-                                <div class="box">
+                                <div class="">
                                     <div class="box-header">
-                                        <a class="btn btn-link" style="padding-left: 0px;"
+                                        <a class="btn btn-link btn-sm" style="padding-left: 0px;"
                                            href="{{ path('callevent') }}?accountFilter%5B%5D={{ account.id }}"><h3
                                                     class="box-title"></h3></a>
                                         <div class="box-tools">
 
-                                            <a class="btn btn-link"
+                                            <a class="btn btn-link btn-sm"
                                                href="{{ path('callevent_new_account',{account:account.id}) }}">
-                                                <i class="fa fa-plus"></i>
+                                                <i class="fa fa-plus"></i> {{'%entity% creation' |trans({}, 'CallEvent')}}
                                             </a>
                                         </div>
                                     </div>
@@ -268,9 +266,8 @@
 
                         <div class="tab-pane" id="account-projects">
                             {% if is_granted('ROLE_PROJECT') %}
-                                <div class="box box-solid">
+                                <div class="">
                                     <div class="box-header">
-                                        <h3 class="box-title">{{ 'current projects'|trans|capitalize }}</h3>
                                         <div class="box-tools">
                                         </div>
                                     </div>
@@ -296,12 +293,11 @@
                         </div>
 
                         <div class="tab-pane" id="account-events">
-                            <div class="box">
+                            <div class="">
                                 <div class="box-header">
-                                    <h3 class="box-title">{{ 'last events'|trans|capitalize }}</h3>
                                     <div class="box-tools">
-                                        <a class="btn btn-link" onclick="quickEvent()">
-                                            <i class="fa fa-plus"></i>
+                                        <a class="btn btn-link btn-sm" onclick="quickEvent()">
+                                            <i class="fa fa-plus"></i> {{'%entity% creation' |trans({}, 'Event')}}
                                         </a>
                                     </div>
                                 </div>
@@ -329,7 +325,7 @@
                         </div>
 
                         <div class="tab-pane active" id="account-notes">
-                            <div class="box" multi-app="flowerNotes">
+                            <div class="" multi-app="flowerNotes">
                                 <div ng-view>
 
                                 </div>
@@ -337,12 +333,8 @@
                         </div>
 
                         <div class="tab-pane" id="account-sales">
-                            <div class="box">
+                            <div class="">
                                 <div class="box-header">
-                                    <a class="btn btn-link" style="padding-left: 0px;"
-                                       href="{{ path('sale') }}?accountFilter%5B%5D={{ account.id }}&assigneeFilter[]=&accountAssigneeFilter[]=&startDateFilter=&endDateFilter=&statusFilter[]=&ownerFilter[]=">
-                                        <h3 class="box-title">{{ 'last sales'|trans|capitalize }}</h3>
-                                    </a>
                                     <div class="box-tools"></div>
                                 </div>
                                 <div class="box-body">
@@ -360,6 +352,12 @@
                                     </span>
                                             </li>
                                         {% endfor %}
+                                        <li class="text-center">
+                                            <a class="btn btn-link btn-sm" style="padding-left: 0px;"
+                                               href="{{ path('sale') }}?accountFilter%5B%5D={{ account.id }}&assigneeFilter[]=&accountAssigneeFilter[]=&startDateFilter=&endDateFilter=&statusFilter[]=&ownerFilter[]=">
+                                                {{ 'Ver más'|trans|capitalize }}
+                                            </a>
+                                        </li>
                                     </ul>
                                 </div>
                                 <div class="box-footer">
@@ -379,6 +377,7 @@
 {% endblock %}
 {% block javascripts %}
     {{ parent() }}
+
     {{ form_javascript(edit_form) }}
     <script type="text/javascript">
         var accountId = "{{ account.id }}";
