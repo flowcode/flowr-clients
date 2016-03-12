@@ -44,7 +44,7 @@ class CallEventController extends BaseController
         /* filter by org security groups */
         if (!$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             $secGroupSrv = $this->get('user.service.securitygroup');
-            $qb = $secGroupSrv->addSecurityGroupFilter($qb, $this->getUser(), $accountAlias);
+            $qb = $secGroupSrv->addLowerSecurityGroupsFilter($qb, $this->getUser(), $accountAlias);
         }
 
         $translator = $this->get('translator');
@@ -73,7 +73,7 @@ class CallEventController extends BaseController
         /* filter by org security groups */
         if (!$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             $secGroupSrv = $this->get('user.service.securitygroup');
-            $qb = $secGroupSrv->addSecurityGroupFilter($qb, $this->getUser(), $accountAlias);
+            $qb = $secGroupSrv->addLowerSecurityGroupsFilter($qb, $this->getUser(), $accountAlias);
         }
 
         $accounts = $qb->getQuery()->getResult();

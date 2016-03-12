@@ -55,7 +55,7 @@ class AccountController extends BaseController
         /* filter by org security groups */
         if (!$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             $secGroupSrv = $this->get('user.service.securitygroup');
-            $qb = $secGroupSrv->addSecurityGroupFilter($qb, $this->getUser(), 'a');
+            $qb = $secGroupSrv->addLowerSecurityGroupsFilter($qb, $this->getUser(), 'a');
         }
 
         if ($request->query->has('reset')) {
@@ -90,7 +90,7 @@ class AccountController extends BaseController
         /* filter by org security groups */
         if (!$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             $secGroupSrv = $this->get('user.service.securitygroup');
-            $qb = $secGroupSrv->addSecurityGroupFilter($qb, $this->getUser(), $accountAlias);
+            $qb = $secGroupSrv->addLowerSecurityGroupsFilter($qb, $this->getUser(), $accountAlias);
         }
         $limit = 20;
         $currPage = $request->query->get('page');
@@ -139,7 +139,7 @@ class AccountController extends BaseController
         $accauntcalls = $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), 5);
 
         /* last sales */
-        $accountSales = $em->getRepository('FlowerModelBundle:Sales\Sale')->findBy(array("account" => $account), array(), 5);
+        $accountSales = $em->getRepository('FlowerModelBundle:Sales\Sale')->findBy(array("account" => $account), array("id" => "DESC"), 5);
 
         /* last events */
         $lastEvents = $em->getRepository('FlowerModelBundle:Planner\Event')->findBy(array("account" => $account), array(), 5);

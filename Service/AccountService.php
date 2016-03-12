@@ -40,7 +40,7 @@ class AccountService
         if (!$this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             $user = $this->container->get('security.context')->getToken()->getUser();
             $secGroupSrv = $this->container->get('user.service.securitygroup');
-            $qb = $secGroupSrv->addSecurityGroupFilter($qb, $user, $alias);
+            $qb = $secGroupSrv->addLowerSecurityGroupsFilter($qb, $user, $alias);
         }
 
         return $qb->getQuery()->getResult();
@@ -115,7 +115,16 @@ class AccountService
         }
         return $data;
     }
-
+    public function validateNewAccount(Account $account)
+    {
+        $errors = array();
+        $warning = array();
+        $otherAccount = $this->em->getRepository('FlowerModelBundle:Clients\Account')->findBy(array("businessName" => $account->getBusinessName()));
+        if($otherAccount){
+            $warning[] = "Existe un cliente con este nombre";
+        }
+        return $errors;
+    }
     /**
      * Add security groups.
      *
