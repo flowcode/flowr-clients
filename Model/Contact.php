@@ -83,6 +83,13 @@ abstract class Contact
     protected $accounts;
 
     /**
+     * @ManyToOne(targetEntity="\Flower\ModelBundle\Entity\Clients\ContactSource")
+     * @JoinColumn(name="contact_source_id", referencedColumnName="id")
+     * @Groups({"api","public_api"})
+     */
+    protected $source;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="observations", type="text", nullable=true)
@@ -368,27 +375,27 @@ abstract class Contact
     }
 
     /**
-    * Get observations
-    * @return String
-    */
+     * Get observations
+     * @return String
+     */
     public function getObservations()
     {
         return $this->observations;
     }
 
     /**
-    * Set observations
-    * @return boolean
-    */
+     * Set observations
+     * @return boolean
+     */
     public function setAllowCampaignMail($allowCampaignMail)
     {
         $this->allowCampaignMail = $allowCampaignMail;
     }
 
     /**
-    * Set observations
-    * @return String
-    */
+     * Set observations
+     * @return String
+     */
     public function setObservations($observations)
     {
         $this->observations = $observations;
@@ -396,21 +403,39 @@ abstract class Contact
     }
 
     /**
-    * Get emailGrade
-    * @return string
-    */
+     * Get emailGrade
+     * @return string
+     */
     public function getEmailGrade()
     {
         return $this->emailGrade;
     }
 
     /**
-    * Set emailGrade
-    * @return string
-    */
+     * Set emailGrade
+     * @return string
+     */
     public function setEmailGrade($emailGrade)
     {
         $this->emailGrade = $emailGrade;
         return $this;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getSource()
+    {
+        return $this->source;
+    }
+
+    /**
+     * @param mixed $source
+     */
+    public function setSource($source)
+    {
+        $this->source = $source;
+    }
+
+
 }

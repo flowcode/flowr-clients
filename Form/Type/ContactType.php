@@ -27,23 +27,23 @@ class ContactType extends AbstractType
     {
 
         $builder
-                ->add('firstname', null, array('required' => false))
-                ->add('lastname', null, array('required' => false))
-                ->add('email')
-                ->add('address', null, array('required' => false))
-                ->add('phone', null, array('required' => false))
-                ->add('observations', null, array('required' => false))
-                ->add('accounts', 'genemu_jqueryselect2_entity', array(
-                    'class' => 'FlowerModelBundle:Clients\Account',
-                    'property' => 'name',
-                    'multiple' => true,
-                    'required' => false,
-                    'choices' => $this->accountService->findAll(),
-                    'query_builder' => function (EntityRepository $er) {
-                            return $er->createQueryBuilder('a')
-                                ->orderBy('a.name', 'ASC');
-                        }))
-        ;
+            ->add('firstname', null, array('required' => false))
+            ->add('lastname', null, array('required' => false))
+            ->add('email')
+            ->add('address', null, array('required' => false))
+            ->add('phone', null, array('required' => false))
+            ->add('source')
+            ->add('observations', null, array('required' => false))
+            ->add('accounts', 'genemu_jqueryselect2_entity', array(
+                'class' => 'FlowerModelBundle:Clients\Account',
+                'property' => 'name',
+                'multiple' => true,
+                'required' => false,
+                'choices' => $this->accountService->findAll(),
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('a')
+                        ->orderBy('a.name', 'ASC');
+                }));
     }
 
     /**

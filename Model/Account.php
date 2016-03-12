@@ -113,18 +113,14 @@ abstract class Account
     protected $activity;
 
     /**
-     * @ManyToMany(targetEntity="\Flower\ModelBundle\Entity\Board\Board")
-     * @JoinTable(name="accounts_boards",
-     *      joinColumns={@JoinColumn(name="account_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@JoinColumn(name="board_id", referencedColumnName="id", unique=true)}
-     *      )
-     **/
-    protected $boards;
-
-    /**
      * @OneToMany(targetEntity="\Flower\ModelBundle\Entity\Planner\Event", mappedBy="account")
      */
-    private $events;
+    protected $events;
+
+    /**
+     * @OneToMany(targetEntity="\Flower\ModelBundle\Entity\Board\Task", mappedBy="account")
+     */
+    protected $tasks;
 
     /**
      * @ManyToMany(targetEntity="\Flower\ModelBundle\Entity\User\SecurityGroup")
@@ -164,6 +160,7 @@ abstract class Account
     {
         $this->contacts = new ArrayCollection();
         $this->boards = new ArrayCollection();
+        $this->tasks = new ArrayCollection();
         $this->securityGroups = new ArrayCollection();
     }
 
@@ -430,39 +427,6 @@ abstract class Account
 
 
     /**
-     * Add boards
-     *
-     * @param \Flower\ModelBundle\Entity\Board\Board $boards
-     * @return Account
-     */
-    public function addBoard(\Flower\ModelBundle\Entity\Board\Board $boards)
-    {
-        $this->boards[] = $boards;
-
-        return $this;
-    }
-
-    /**
-     * Remove boards
-     *
-     * @param \Flower\ModelBundle\Entity\Board\Board $boards
-     */
-    public function removeBoard(\Flower\ModelBundle\Entity\Board\Board $boards)
-    {
-        $this->boards->removeElement($boards);
-    }
-
-    /**
-     * Get boards
-     *
-     * @return Collection
-     */
-    public function getBoards()
-    {
-        return $this->boards;
-    }
-
-    /**
      * Set activity
      *
      * @param \Flower\ModelBundle\Entity\Clients\Activity $activity
@@ -638,6 +602,21 @@ abstract class Account
         $this->events = $events;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getTasks()
+    {
+        return $this->tasks;
+    }
+
+    /**
+     * @param mixed $tasks
+     */
+    public function setTasks($tasks)
+    {
+        $this->tasks = $tasks;
+    }
 
 
 }

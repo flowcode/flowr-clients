@@ -139,7 +139,7 @@
                             <a href="#account-events" data-toggle="tab">{{ 'events'|trans|title }}</a>
                         </li>
                         <li>
-                            <a href="#account_contacts" data-toggle="tab">Contacts</a>
+                            <a href="#account_contacts" data-toggle="tab">{{ 'contacts'|trans|title }}</a>
                         </li>
                         <li>
                             <a href="#account-calls" data-toggle="tab">{{ 'calls'|trans|capitalize }}</a>
@@ -148,7 +148,7 @@
                             <a href="#account-sales" data-toggle="tab">{{ 'sales'|trans|capitalize }}</a>
                         </li>
                         <li>
-                            <a href="#account_boards" data-toggle="tab">{{ 'boards'|trans|title }}</a>
+                            <a href="#account_boards" data-toggle="tab">{{ 'tasks'|trans|title }}</a>
                         </li>
                         <li>
                             <a href="#account-projects" data-toggle="tab">{{ 'projects'|trans|title }}</a>
@@ -202,24 +202,15 @@
                             {% if is_granted('ROLE_BOARD') %}
                                 <div class="box">
                                     <div class="box-header">
-                                        <h3 class="box-title">{{ 'boards'|trans|capitalize }}</h3>
+                                        <h3 class="box-title">{{ 'tasks'|trans|title }}</h3>
                                         <div class="box-tools">
-                                            <a class="btn btn-link"
-                                               href="{{ path('board_new_to_account', { id: account.id }) }}">
-                                                <i class="fa fa-plus"></i>
+                                            <a class="btn btn-link" onclick="quickTask()">
+                                                <i class="ionicons ion-ios-plus-empty"></i> {{ "new"|trans|title }}
                                             </a>
                                         </div>
                                     </div>
                                     <div class="box-body">
-                                        <ul>
-                                            {% for board in accountBoards %}
-                                                <li>
-                                                    <a class="" href="{{ path('board_show', {id:board.id}) }}">
-                                                        {{ board.name }}
-                                                    </a>
-                                                </li>
-                                            {% endfor %}
-                                        </ul>
+                                        {{ include('FlowerBoardBundle:Task:taskList.html.twig', { 'tasks': accountPendingTasks }) }}
                                     </div>
                                     <div class="box-footer">
                                     </div>
@@ -393,6 +384,8 @@
     <script src="{{ asset('bundles/flowercore/js/angular/notes/controller/notesController.js') }}"
             type="text/javascript"></script>
     <script type="text/javascript">
+        var quick_task_url = "{{ path('task_new_quick') }}?account={{ account.id }}";
+
         function showEdit(show) {
             if (show) {
                 $("#showAccount").hide();

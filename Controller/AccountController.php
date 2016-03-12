@@ -126,8 +126,6 @@ class AccountController extends BaseController
 
         $em = $this->getDoctrine()->getManager();
 
-        $todoStatus = $em->getRepository('FlowerModelBundle:Board\TaskStatus')->findOneBy(array("name" => TaskStatus::STATUS_TODO));
-        $accountBoards = $account->getBoards();
 
         /* current projects */
         $currentProjects = $em->getRepository('FlowerModelBundle:Project\Project')->findBy(array("account" => $account));
@@ -146,23 +144,27 @@ class AccountController extends BaseController
         /* last events */
         $lastEvents = $em->getRepository('FlowerModelBundle:Planner\Event')->findBy(array("account" => $account), array(), 5);
 
+        /* tasks */
+        $accountPendingTasks = $em->getRepository('FlowerModelBundle:Board\Task')->findBy(array("account" => $account));
 
         $editForm = $this->createForm($this->get("form.type.account"), $account, array(
             'action' => $this->generateUrl('account_update', array('id' => $account->getid())),
             'method' => 'PUT',
         ));
+
         $qb = $em->getRepository('FlowerModelBundle:Clients\Subsidiary')->getByAccountQuery($account->getId());
         $subsidiaries = $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), 5);
+
         return array(
             'edit_form' => $editForm->createView(),
             'accauntcalls' => $accauntcalls,
             'account' => $account,
             'subsidiaries' => $subsidiaries,
-            'accountBoards' => $accountBoards,
             'currentProjects' => $currentProjects,
             'contacts' => $contacts,
             'accountSales' => $accountSales,
             'lastEvents' => $lastEvents,
+            'accountPendingTasks' => $accountPendingTasks,
             'delete_form' => $deleteForm->createView(),
         );
     }
