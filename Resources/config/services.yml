@@ -8,6 +8,12 @@ services:
         arguments: ["@security.context", '@client.service.account']
         tags:
             - { name: form.type, alias: contact_type }
+
+    form.type.contact_public:
+            class: Flower\ClientsBundle\Form\Type\ContactPublicType
+            tags:
+                - { name: form.type, alias: contact_public_type }
+
     form.api.type.contact:
         class: Flower\ClientsBundle\Form\Type\Api\ContactType
         arguments: ["@security.context"]
