@@ -5,7 +5,7 @@ namespace Flower\ClientsBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Flower\ModelBundle\Entity\Clients\Opportunity;
+
 
 class OpportunityType extends AbstractType
 {
@@ -15,15 +15,22 @@ class OpportunityType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-
             ->add('name')
             ->add('description')
             ->add('price')
             ->add('status')
             ->add('assignee')
-            ->add('contact', null, array('required' => false))
-            ->add('account', null, array('required' => false))
-        ;
+            ->add('contact', 'tetranz_select2entity', [
+                'multiple' => false,
+                'remote_route' => 'flower_api_clients_contact_findall_simple',
+                'class' => '\Flower\ModelBundle\Entity\Clients\Contact',
+                'text_property' => 'name',
+                'minimum_input_length' => 2,
+                'page_limit' => 10,
+                'language' => 'es',
+                'placeholder' => 'Seleccionar contactos',
+            ])
+            ->add('account', null, array('required' => false));
     }
 
     /**

@@ -37,10 +37,17 @@ flower_api_clients_contact_create:
     defaults: { _controller: FlowerClientsBundle:Api\Contact:create }
     methods: [POST]
 
+flower_api_clients_contact_findall_simple:
+    path:     /simple/contacts
+    defaults: { _controller: FlowerClientsBundle:Api\Contact:getAllSimple }
+    methods: [GET]
+
 flower_api_clients_contact_findall:
     path:     /contacts
     defaults: { _controller: FlowerClientsBundle:Api\Contact:getAll }
     methods: [GET]
+
+
 flower_api_clients_contact_findallbyaccount:
     path:     /contacts/account/{accountId}
     defaults: { _controller: FlowerClientsBundle:Api\Contact:getByAccount }
