@@ -60,6 +60,7 @@ class AccountController extends BaseController
 
         if ($request->query->has('reset')) {
             $request->getSession()->set('sort.account', null);
+            $request->getSession()->set('filter.account', null);
             return $this->redirectToRoute("account");
         }
 
