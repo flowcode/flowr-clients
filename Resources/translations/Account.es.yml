@@ -26,7 +26,7 @@ Status: Estado
 'Yes': Si
 'You are about to delete an item': 'Usted esta por borrar un elemento'
 address: Dirección
-cuit: cuit
+cuit: CUIT
 phone: teléfono
 'show complete': 'ver completo'
 'this procedure is irreversible': 'esta accion será irreversible'

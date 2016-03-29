@@ -27,3 +27,5 @@ status_lost: perdida
 status_won: ganada
 
 opportunities by status: oportunidades por estado
+status: Estado
+quantity: Cantidad
