@@ -300,7 +300,7 @@
                                                 <a class="product-title" href="#">
                                                     {{ event.title|title }}
                                                     <small class="text-muted pull-right">
-                                                        <i class="fa fa-calendar"></i> {{ event.startDate|date("Y/m/d h:m") }}
+                                                        <i class="fa fa-calendar"></i> {{ event.startDate|date('fullDateTime' | trans) }}
                                                     </small>
                                                 </a>
                                     <span class="product-description">
