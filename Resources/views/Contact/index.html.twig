@@ -43,6 +43,7 @@
                             <th scope="col">{{ thead('contact', 'firstname', 'Firstname') }}</th>
                             <th scope="col">{{ thead('contact', 'lastname', 'Lastname') }}</th>
                             <th scope="col">{{ thead('contact', 'email', 'Email') }}</th>
+                            <th scope="col">{{ thead('contact', 'account', 'Account') }}</th>
                             <th scope="col">{{ thead('contact', 'address', 'Address') }}</th>
                             <th scope="col">{{ thead('contact', 'phone', 'Phone') }}</th>
                         </tr>
@@ -53,6 +54,9 @@
                                 <td><a href="{{ path('contact_show', {id: contact.id}) }}">{{ contact.firstname }}</a></td>
                                 <td><a href="{{ path('contact_show', {id: contact.id}) }}">{{ contact.lastname }}</a></td>
                                 <td>{{ contact.email }}</td>
+                                <td>
+                                    {{ contact.accounts|join(',') }}
+                                </td>
                                 <td>{{ contact.address }}</td>
                                 <td>{{ contact.phone }}</td>
                             </tr>

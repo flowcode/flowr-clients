@@ -33,7 +33,7 @@ class ContactController extends Controller
         $contactAlias = 'c';
         $qb = $em->getRepository('FlowerModelBundle:Clients\Contact')->createQueryBuilder($contactAlias);
         $accountAlias = 'a';
-        $qb->join("c.accounts",$accountAlias);
+        $qb->leftJoin("c.accounts", $accountAlias);
 
         /* filter by org security groups */
         if (!$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
@@ -120,7 +120,7 @@ class ContactController extends Controller
         $contact = new Contact();
         $form = $this->createForm($this->get('form.type.contact'), $contact);
         if ($form->handleRequest($request)->isValid()) {
-            $em = $this->getDoctrine()->getManager();            
+            $em = $this->getDoctrine()->getManager();
             $em->persist($contact);
             $em->flush();
 
@@ -195,9 +195,9 @@ class ContactController extends Controller
     }
 
     /**
-     * @param string $name  session name
+     * @param string $name session name
      * @param string $field field name
-     * @param string $type  sort type ("ASC"/"DESC")
+     * @param string $type sort type ("ASC"/"DESC")
      */
     protected function setOrder($name, $field, $type = 'ASC')
     {
@@ -217,7 +217,7 @@ class ContactController extends Controller
 
     /**
      * @param QueryBuilder $qb
-     * @param string       $name
+     * @param string $name
      */
     protected function addQueryBuilderSort(QueryBuilder $qb, $name)
     {
@@ -248,17 +248,16 @@ class ContactController extends Controller
     /**
      * Create Delete form
      *
-     * @param integer                       $id
-     * @param string                        $route
+     * @param integer $id
+     * @param string $route
      * @return Form
      */
     protected function createDeleteForm($id, $route)
     {
         return $this->createFormBuilder(null, array('attr' => array('id' => 'delete')))
-                        ->setAction($this->generateUrl($route, array('id' => $id)))
-                        ->setMethod('DELETE')
-                        ->getForm()
-        ;
+            ->setAction($this->generateUrl($route, array('id' => $id)))
+            ->setMethod('DELETE')
+            ->getForm();
     }
 
 }
