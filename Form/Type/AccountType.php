@@ -31,6 +31,7 @@ class AccountType extends AbstractType
             ->add('activity')
             ->add('status')
             ->add('billingType', null, array('required' => false))
+            ->add('financeAccount')
             ->add('cuit', null, array('required' => false, "label" => "CUIT/CUIL/DNI"))
             ->add('assignee', 'genemu_jqueryselect2_entity', array(
                     'class' => 'Flower\ModelBundle\Entity\User\User',

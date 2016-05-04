@@ -113,6 +113,12 @@ abstract class Account
     protected $activity;
 
     /**
+     * @ManyToOne(targetEntity="\Flower\FinancesBundle\Entity\Account")
+     * @JoinColumn(name="finance_account_id", referencedColumnName="id")
+     */
+    protected $financeAccount;
+
+    /**
      * @OneToMany(targetEntity="\Flower\ModelBundle\Entity\Planner\Event", mappedBy="account")
      */
     protected $events;
@@ -616,6 +622,22 @@ abstract class Account
     public function setTasks($tasks)
     {
         $this->tasks = $tasks;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFinanceAccount()
+    {
+        return $this->financeAccount;
+    }
+
+    /**
+     * @param mixed $financeAccount
+     */
+    public function setFinanceAccount($financeAccount)
+    {
+        $this->financeAccount = $financeAccount;
     }
 
 

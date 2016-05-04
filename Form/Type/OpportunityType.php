@@ -24,7 +24,7 @@ class OpportunityType extends AbstractType
                 'multiple' => false,
                 'remote_route' => 'flower_api_clients_contact_findall_simple',
                 'class' => '\Flower\ModelBundle\Entity\Clients\Contact',
-                'text_property' => 'name',
+                'text_property' => 'email',
                 'minimum_input_length' => 2,
                 'page_limit' => 10,
                 'language' => 'es',

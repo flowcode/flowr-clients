@@ -50,7 +50,7 @@ class OpportunityController extends Controller
         $deleteForm = $this->createDeleteForm($opportunity->getId(), 'opportunity_delete');
 
         $em = $this->getDoctrine()->getManager();
-        $opportunityBoards = $opportunity->getBoards();
+        $opportunityBoards = array();
         $editForm = $this->createForm(new OpportunityType(), $opportunity, array(
             'action' => $this->generateUrl('opportunity_update', array('id' => $opportunity->getid())),
             'method' => 'PUT',
