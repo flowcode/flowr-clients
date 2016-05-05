@@ -36,6 +36,30 @@ abstract class Account
     protected $id;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="client", type="boolean")
+     * @Groups({"public_api"})
+     */
+    protected $client;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="supplier", type="boolean")
+     * @Groups({"public_api"})
+     */
+    protected $supplier;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="employee", type="boolean")
+     * @Groups({"public_api"})
+     */
+    protected $employee;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
@@ -639,6 +663,57 @@ abstract class Account
     {
         $this->financeAccount = $financeAccount;
     }
+
+    /**
+     * @return boolean
+     */
+    public function isClient()
+    {
+        return $this->client;
+    }
+
+    /**
+     * @param boolean $client
+     */
+    public function setClient($client)
+    {
+        $this->client = $client;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isSupplier()
+    {
+        return $this->supplier;
+    }
+
+    /**
+     * @param boolean $supplier
+     */
+    public function setSupplier($supplier)
+    {
+        $this->supplier = $supplier;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isEmployee()
+    {
+        return $this->employee;
+    }
+
+    /**
+     * @param boolean $employee
+     */
+    public function setEmployee($employee)
+    {
+        $this->employee = $employee;
+    }
+
+
+
 
 
 }
