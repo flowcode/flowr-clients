@@ -1,0 +1,36 @@
+<section class="sidebar">
+    <div class="app-header">
+        <div class="row">
+            <div class="col-sm-12">
+                Organización: <strong>{{ app.user.getDefaultAccount.name|title }}</strong>
+            </div>
+        </div>
+    </div>
+    <ul class="sidebar-menu">
+
+        <li {% if app_dashboard is defined %}class="active"{% endif %}>
+            <a href="{{ path('client_access_index') }}">
+                {{ 'dashboard'|trans|title }}
+            </a>
+        </li>
+
+        <li {% if app_project is defined %}class="active"{% endif %}>
+            <a href="{{ path('client_access_project') }}">
+                {{ 'projects'|trans|title }}
+            </a>
+        </li>
+
+        <li {% if app_report is defined %}class="active"{% endif %}>
+            <a href="{{ path('client_access_report') }}">
+                {{ 'reports'|trans|title }}
+            </a>
+        </li>
+
+        <li {% if app_estimation is defined %}class="active"{% endif %}>
+            <a href="{{ path('client_access_estimation') }}">
+                {{ 'estimations'|trans|title }}
+            </a>
+        </li>
+
+    </ul>
+</section>

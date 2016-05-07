@@ -1,0 +1,151 @@
+{% extends "FlowerCoreBundle::base.html.twig" %}
+
+
+{% block wrapper %}
+    <div class="wrapper">
+        <div multi-app="flowerSearch">
+            <header class="main-header">
+
+                <a href="{{ path('dashboard') }}" class="logo navbar-brand">
+                    {{ render(controller('FlowerUserBundle:Organization:logo', {'size':'xs'})) }}
+                </a>
+
+                <nav class="navbar navbar-static-top">
+
+                    <div class="navbar-header">
+
+                        <!-- Navbar Right Menu -->
+                        <div class="navbar-custom-menu">
+                            <ul class="nav navbar-nav">
+
+                                <li class="dropdown notifications-menu" ng-controller="NotificationController"
+                                    notifications-widget alerts="alerts" notifications="notifications">
+                                </li>
+
+
+                                <!-- User Account Menu -->
+                                <li class="dropdown user user-menu">
+                                    <!-- Menu Toggle Button -->
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                        <i class="fa fa-user"></i>
+                                        <span class="hidden-xs">{{ app.user.getHappyName }}</span>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <!-- The user image in the menu -->
+                                        <li class="user-header">
+
+                                            <p>
+                                                {{ app.user.getHappyName }}
+                                                <small>{{ 'Member since' | trans }} Nov. 2012</small>
+                                            </p>
+                                        </li>
+                                        <!-- Menu Body -->
+                                        <li class="user-body">
+
+                                        </li>
+                                        <!-- Menu Footer-->
+                                        <li class="user-footer">
+                                            <div class="pull-right">
+                                                <a href="{{ path('client_access_security_logout') }}"
+                                                   class="btn btn-default btn-flat">{{ 'Sign out' | trans }}</a>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div><!-- /.navbar-custom-menu -->
+                    </div>
+
+                </nav>
+            </header>
+            <div id="search-app">
+                <div ng-view>
+                </div>
+            </div>
+            {{ render(controller('FlowerCoreBundle:Default:apps')) }}
+        </div>
+
+
+        <!-- Content Wrapper. Contains page content -->
+        <aside class="main-sidebar">
+            {% block app_menu %}
+            {% endblock %}
+        </aside>
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <a href="#" id="page-tour-start">
+                <i class="ionicons ion-ios-help-outline"></i>
+            </a>
+            {% block body %}
+            {% endblock %}
+        </div>
+
+        <footer class="main-footer" id="footer">
+            <div class="flowr-footer">
+                <a href="#" data-toggle="modal" data-target="#modal_flowr_info">
+                    <img src="{{ asset('bundles/flowercore/images/flowr_icon_alpha.png') }}" width="25">
+                </a>
+            </div>
+        </footer>
+
+    </div><!-- ./wrapper -->
+    <div class="modal fade" id="modal_account_event" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body"></div>
+            </div>
+        </div>
+    </div>
+
+
+
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        /* realtime updates */
+        var userId = '{{ app.user.id }}';
+        var pusher = new Pusher('{{ pusher_key }}', {
+            encrypted: true
+        });
+
+        $(document).ready(function () {
+            'use strict';
+            /* delete confirm */
+            $('a.delete').click(function (e) {
+                var url = $(this).attr("action");
+                e.preventDefault();
+                $('#delete_confirm').modal('show');
+                $('#delete_confirm').find('button.btn-danger').click(function () {
+                    $('#delete_confirm').modal('hide');
+                    document.location = url;
+                });
+            })
+            $('form#delete').submit(function (e) {
+                var $form = $(this), $hidden = $form.find('input[name="modal"]');
+                if ($hidden.val() === '0') {
+                    e.preventDefault();
+                    $('#delete_confirm').modal('show');
+                    $('#delete_confirm').find('button.btn-danger').click(function () {
+                        $('#delete_confirm').modal('hide');
+                        $hidden.val('1');
+                        $form.submit();
+                    });
+                }
+            });
+
+            $("#page-tour-start").click(function () {
+                $('#tour').crumble();
+            });
+
+            $("select.filter").select2();
+
+        });
+    </script>
+{% endblock %}

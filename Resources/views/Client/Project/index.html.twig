@@ -1,0 +1,74 @@
+{% extends "FlowerClientsBundle:Client:layout.html.twig" %}
+
+{% block title %}{{ '%entity% list'|trans({'%entity%': 'Opportunity'}, 'Opportunity') }} - {{ parent() }}{% endblock %}
+
+{% macro thead(name, field, label) %}
+    {% spaceless %}
+        {% set sort = app.session.get('sort.' ~ name) %}
+        {% if sort and sort.field == field %}
+            {% if sort.type == 'DESC' %}
+                <a href="{{ path('client_access_project_sort', {field: field, type: 'ASC'}) }}">{{ label | trans({},'Project')}} <i class="fa fa-sort-down"></i></a>
+            {% elseif sort.type == 'ASC' %}
+                <a href="{{ path('client_access_project_sort', {field: field, type: 'DESC'}) }}">{{ label | trans({},'Project')}} <i class="fa fa-sort-up"></i></a>
+            {% endif %}
+        {% else %}
+            <a href="{{ path('client_access_project_sort', {field: field, type: 'ASC'}) }}">{{ label | trans({},'Project')}} <i class="fa fa-sort"></i></a>
+        {% endif %}
+    {% endspaceless %}
+{% endmacro %}
+
+{% from _self import thead %}
+
+{% block app_menu %}
+    {{ include("FlowerClientsBundle:Client:appnav.html.twig",{'app_project':true}) }}
+{% endblock %}
+
+{% block body %}
+    <section class="content-header">
+        <h1>{{ 'projects'|trans|title }}</h1>
+    </section>
+    <section class="content">
+        <div class="box">
+            <div class="box-header">
+                <div class="box-tools pull-right">
+                </div>
+            </div>
+            <div class="box-body">
+                <table class="table table-hover table-condensed">
+                    <thead>
+                    <tr>
+                        <th scope="col">{{ thead('project', 'name', 'Name') }}</th>
+                        <th scope="col">{{ thead('project', 'assignee', 'Assignee') }}</th>
+                        <th scope="col">{{ thead('project', 'status', 'Status') }}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for project in paginator %}
+                        <tr>
+                            <td title="{{ project.description }}">
+                                <a class="btn btn-link" href="{{ path('client_access_project_show', {id: project.id}) }}">
+                                    {{ project.name }}
+                                </a>
+                            </td>
+                            <td>
+                                {% if project.assignee != null %}
+                                    {{ project.assignee.getHappyName() }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {{ include('FlowerProjectBundle:Project:status_text.html.twig', {'status':project.status}) }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+                {{ knp_pagination_render(paginator) }}
+            </div>
+            <div class="box-footer">
+
+            </div>
+
+    </section>
+
+{% endblock %}

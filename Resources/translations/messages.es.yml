@@ -24,3 +24,6 @@ last sales: "ventas recientes"
 
 
 reports: reportes
+
+layout.login: Entrar
+security.login.remember_me: Recordarme

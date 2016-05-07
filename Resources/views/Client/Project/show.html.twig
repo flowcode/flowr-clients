@@ -1,0 +1,206 @@
+{% extends "FlowerClientsBundle:Client:layout.html.twig" %}
+
+{% block title %}Project - {{ parent() }}{% endblock %}
+
+{% block app_menu %}
+    {{ include("FlowerClientsBundle:Client:appnav.html.twig",{'app_project':true}) }}
+{% endblock %}
+
+{% block body %}
+    <section class="content-header">
+        <h1>{{ project.name|title }}</h1>
+    </section>
+    <section class="content">
+        <div class="row">
+            <div class="col-md-5">
+                <div class="box" id='showProject'>
+                    <div class="box-header">
+                        <h3 class="box-title">
+                            {% if project.status == 'status_backlog' %}
+                                <i class="ionicons ion-ios-circle-outline text-yellow"
+                                   title="{{ project.status|trans }}"></i>
+                            {% elseif project.status == 'status_in_progress' %}
+                                <i class="ionicons ion-ios-circle-filled text-green"
+                                   title="{{ project.status|trans }}"></i>
+                            {% else %}
+                                <i class="ionicons ion-ios-circle-outline text-muted"
+                                   title="{{ project.status|trans }}"></i>
+                            {% endif %}
+
+                        </h3>
+                        <div class="box-tools pull-right">
+                        </div>
+                    </div>
+                    <div class="box-body">
+                        {{ project.description|raw }}
+                    </div>
+                    <div class="box-footer">
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-md-7">
+                <div class="nav-tabs-custom">
+                    <ul class="nav nav-tabs">
+                        <li class="active">
+                            <a href="#iterations" data-toggle="tab">{{ 'iterations'|trans|title }}</a>
+                        </li>
+                        <li>
+                            <a href="#events" data-toggle="tab">{{ 'events'|trans|title }}</a>
+                        </li>
+                        <li>
+                            <a href="#members" data-toggle="tab">{{ 'members'|trans|title }}</a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div class="tab-pane" id="events">
+                            <div class="">
+                                <div class="box-header">
+                                    <h3 class="box-title">{{ 'next events'|trans|capitalize }}</h3>
+                                    <div class="box-tools">
+                                        <a class="btn btn-link" href="#" onclick="quickEvent()">
+                                            <i class="fa fa-plus"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="box-body">
+                                    <ul class="products-list product-list-in-box">
+                                        {% for event in nextEvents %}
+                                            <li class="item cursor-pointer">
+                                                <a class="product-title" href="#">
+                                                    {{ event.title|title }}
+                                                    <small class="text-muted pull-right">
+                                                        <i class="fa fa-calendar"></i> {{ event.startDate|date('fullDateTime' | trans) }}
+                                                    </small>
+                                                </a>
+                                    <span class="product-description">
+                                        {{ event.description }}
+                                    </span>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                <div class="box-footer">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane" id="iterations">
+                            <div class="">
+                                <div class="box-header">
+                                    <h3 class="box-title">{{ 'iterations'|trans|title }}</h3>
+                                    <div class="box-tools">
+                                        <a class="btn btn-link"
+                                           href="{{ path('project_iteration_new', { "id": project.id }) }}">
+                                            <i class="fa fa-plus"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="box-body">
+                                    <table class="table table-condensed">
+                                        <tr>
+                                            <th>{{ 'name'|trans|title }}</th>
+                                            <th>{{ 'estimated'|trans|title }}</th>
+                                            <th>{{ 'spent'|trans|title }}</th>
+                                            <th>{{ '% Done'|trans|title }}</th>
+                                            <th>{{ 'start'|trans|title }}</th>
+                                            <th>{{ 'end'|trans|title }}</th>
+                                            <th></th>
+                                        </tr>
+                                        {% for iteration in iterations %}
+                                            <tr>
+                                                <td>
+                                                    {% set iteration_status_class = '' %}
+                                                    {% set iteration_status_msg = 'done' %}
+                                                    {% if iteration.status == 0 %}
+                                                        {% set iteration_status_class = 'text-muted' %}
+                                                        {% set iteration_status_msg = 'pending' %}
+                                                    {% elseif iteration.status == 1 %}
+                                                        {% set iteration_status_class = 'text-green' %}
+                                                        {% set iteration_status_msg = 'active' %}
+                                                    {% endif %}
+                                                    <a
+                                                            title="{{ iteration_status_msg }}"
+                                                            class="{{ iteration_status_class }}"
+                                                            href="{{ path('project_iteration_show', {'id':iteration.id}) }}">
+                                                        {{ iteration.name|title }}
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    {{ iteration.estimation }}
+                                                </td>
+                                                <td>
+                                                    {{ iteration.spent }}
+                                                </td>
+                                                <td>
+                                                    {% if iteration.todo_count+iteration.doing_count+iteration.done_count > 0 %}
+                                                        {{ ((iteration.done_count*100)/(iteration.todo_count+iteration.doing_count+iteration.done_count))|number_format }}
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    {% if iteration.dueDate %}
+                                                        {{ iteration.startDate|date('smallDate'| trans) }}
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    {% if iteration.dueDate %}
+                                                        {{ iteration.dueDate|date('smallDate'| trans) }}
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    {% if iteration.status == 1 %}
+                                                        <a href="{{ path('project_iteration_default_view', {'id':iteration.id}) }}"
+                                                           class="btn btn-link btn-xs">
+                                                            {{ "tasks"|trans }}
+                                                        </a>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </table>
+                                </div>
+                                <div class="box-footer">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane" id="members">
+                            <div class="">
+
+                                <div class="box-header">
+                                    <h3 class="box-title">{{ 'members'|trans|title }}</h3>
+                                    <div class="box-tools">
+                                    </div>
+                                </div>
+                                <div class="box-body">
+                                    <ul class="users-list clearfix">
+                                        {% for member in project.members %}
+                                            <li>
+                                                {{ render(controller('FlowerUserBundle:Profile:avatar',{'user':member.user})) }}
+                                                <a class="users-list-name" href="#">
+                                                    {{ member.user.getHappyName() | title }}
+                                                </a>
+                                                
+                                    <span class="users-list-date {% if project.assignee != null and member.user != null and  project.assignee.id == member.user.id %}text-green{% endif %}">
+                                        {% if project.assignee != null and project.assignee.id == member.user.id %}
+                                            {{ 'assignee'|trans|title }},
+                                        {% endif %}
+                                        {{ member.memberRole | title }}
+                                    </span>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                <div class="box-footer">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+{% endblock %}

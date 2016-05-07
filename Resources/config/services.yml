@@ -43,3 +43,7 @@ services:
     client.service.callevent:
         class: Flower\ClientsBundle\Service\CallEventService
         arguments: ['@service_container']
+
+    client.service.security_client:
+            class: Flower\ClientsBundle\Service\ClientService
+            arguments: ['@service_container']

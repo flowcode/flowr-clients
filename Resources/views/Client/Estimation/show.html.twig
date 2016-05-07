@@ -1,0 +1,181 @@
+{% extends "FlowerClientsBundle:Client:layout.html.twig" %}
+
+{% block title %}Estimation - {{ parent() }}{% endblock %}
+
+{% block app_menu %}
+    {{ include("FlowerClientsBundle:Client:appnav.html.twig",{'app_estimation':true}) }}
+{% endblock %}
+
+{% block body %}
+    <section class="content-header">
+        <h1>{{ 'estimations'|trans|title }}</h1>
+    </section>
+    <section class="content">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="box">
+                    <div class="box-header">
+                        <h3 class="box-title"></h3>
+                        <div class="box-tools">
+                        </div>
+                    </div>
+                    <div class="box-body">
+                        <table class="table table-hover record_properties">
+                            <tbody>
+                            <tr>
+                                <th scope="row">{{ 'Name'|trans({}, 'Estimation') }}</th>
+                                <td>{{ estimation.name }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">{{ 'Ratioadmin'|trans({}, 'Estimation') }}</th>
+                                <td>{{ estimation.ratioAdmin }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">{{ 'Ratiotesting'|trans({}, 'Estimation') }}</th>
+                                <td>{{ estimation.ratioTesting }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">{{ 'Dailyworkinghours'|trans({}, 'Estimation') }}</th>
+                                <td>{{ estimation.dailyWorkingHours }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">{{ 'Account'|trans }}</th>
+                                <td>{{ estimation.account }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">{{ 'Project'|trans }}</th>
+                                <td>{{ estimation.project }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="box-footer">
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="box">
+                    <div class="box-header">
+                        <div class="box-tools">
+                        </div>
+                    </div>
+                    <div class="box-body">
+                        <table class="table table-condensed">
+                            <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Description</th>
+                                <th>Optimistic</th>
+                                <th>Pesimistic</th>
+                                <th>Average</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for item in data.items %}
+                                <tr>
+                                    <td>
+                                        {{ item.name }}
+                                    </td>
+                                    <td>
+                                        {{ item.description }}
+                                    </td>
+                                    <td>
+                                        {{ item.optimistic }}
+                                    </td>
+                                    <td>
+                                        {{ item.pesimistic }}
+                                    </td>
+                                    <td>
+                                        {{ item.average }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                            </tfoot>
+                            <tr>
+                                <td>
+                                    Total
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                    {{ data.totalHours.optimistic }}
+                                </td>
+                                <td>
+                                    {{ data.totalHours.pesimistic }}
+                                </td>
+                                <td>
+                                    {{ data.totalHours.average }}
+                                </td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+                <div class="box">
+                    <div class="box-header">
+                    </div>
+                    <div class="box-body">
+                        <table class="table table-condensed">
+                            <thead>
+                            <tr>
+                                <th>type</th>
+                                <th>optimistic</th>
+                                <th>pesimistic</th>
+                                <th>average</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>admin</td>
+                                <td>{{ data.adminHours.optimistic }}</td>
+                                <td>{{ data.adminHours.pesimistic }}</td>
+                                <td>{{ data.adminHours.average }}</td>
+                            </tr>
+                            <tr>
+                                <td>testing</td>
+                                <td>{{ data.testingHours.optimistic }}</td>
+                                <td>{{ data.testingHours.pesimistic }}</td>
+                                <td>{{ data.testingHours.average }}</td>
+                            </tr>
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td>
+                                    Total hours
+                                </td>
+                                <td>
+                                    {{ data.totalWorkHours.optimistic }}
+                                </td>
+                                <td>
+                                    {{ data.totalWorkHours.pesimistic }}
+                                </td>
+                                <td>
+                                    {{ data.totalWorkHours.average }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Total days
+                                </td>
+                                <td>
+                                    {{ data.totalDays.optimistic }}
+                                </td>
+                                <td>
+                                    {{ data.totalDays.pesimistic }}
+                                </td>
+                                <td>
+                                    {{ data.totalDays.average }}
+                                </td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+{% endblock %}

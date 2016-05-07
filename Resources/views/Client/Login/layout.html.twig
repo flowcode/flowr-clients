@@ -1,0 +1,24 @@
+{% extends 'FlowerCoreBundle::base.html.twig' %}
+
+{% block wrapper %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                {% for type, messages in app.session.flashbag.all() %}
+                    {% for key, message in messages %}
+                        <div class="flash-{{ type }}">
+                            {{ message|trans({}, 'FOSUserBundle') }}
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+
+                {% block content %}
+                    {% block fos_user_content %}
+                    {% endblock %}
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

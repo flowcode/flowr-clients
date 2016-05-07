@@ -13,11 +13,13 @@ use Doctrine\ORM\Mapping\ManyToOne;
 use Gedmo\Mapping\Annotation as Gedmo;
 use JMS\Serializer\Annotation\Groups;
 use Flower\ModelBundle\Entity\User\User;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\EquatableInterface;
 
 /**
  * Contact
  */
-abstract class Contact
+abstract class Contact implements UserInterface, EquatableInterface
 {
     /**
      * @var integer
@@ -421,6 +423,10 @@ abstract class Contact
         return $this;
     }
 
+    public function getDefaultAccount(){
+        return $this->getAccounts()->first();
+    }
+
     /**
      * @return mixed
      */
@@ -435,6 +441,39 @@ abstract class Contact
     public function setSource($source)
     {
         $this->source = $source;
+    }
+
+    public function isEqualTo(UserInterface $user)
+    {
+        if ($user->getUsername() == $this->getEmail()) {
+            return true;
+        }
+        return false;
+    }
+
+    public function getRoles()
+    {
+        return array('ROLE_CLIENT');
+    }
+
+    public function getPassword()
+    {
+        return '$2a$04$7kKdogvCOPp7zvgxntwvduOlon5yYHOUQDLrXS8TwwCyzm8Sn21ca';
+    }
+
+    public function getSalt()
+    {
+        return '';
+    }
+
+    public function getUsername()
+    {
+        return $this->getEmail();
+    }
+
+    public function eraseCredentials()
+    {
+        return null;
     }
 
 

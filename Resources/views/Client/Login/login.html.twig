@@ -1,0 +1,71 @@
+{% extends "FlowerClientsBundle:Client:Login/layout.html.twig" %}
+
+
+{% block stylesheets %}
+    {{ parent() }}
+    <script src='https://www.google.com/recaptcha/api.js'></script>
+{% endblock %}
+
+{% block fos_user_content %}
+    <div class="login-box">
+        <div class="login-logo">
+            <div class="text-center">
+                <img src="{{ organization_settings.getValue('logo')|imagine_filter('organization_logo_md') }}" class="">
+            </div>
+        </div><!-- /.login-logo -->
+        <div class="login-box-body">
+            {% if error %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error.messageKey|trans(error.messageData, 'security') }}
+                </div>
+            {% endif %}
+            <form action="{{ path("client_access_security_login") }}" method="post" role="form">
+
+                <input type="hidden" name="_password" value="client"/>
+
+                <div class="form-group has-feedback">
+                    <input name="_username" class="form-control" placeholder="Email"/>
+                    <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-8">
+                        <div class="checkbox icheck">
+                            <label>
+                                <input type="checkbox" name="_remember_me"
+                                       value="on"/> {{ 'security.login.remember_me'|trans }}
+                            </label>
+                        </div>
+                    </div><!-- /.col -->
+                    <div class="col-xs-4">
+                        <button type="submit"
+                                class="btn btn-primary btn-block btn-flat">{{ 'layout.login'|trans }}</button>
+                    </div><!-- /.col -->
+                </div>
+
+                <div class="g-recaptcha" data-sitekey="6LcZTh8TAAAAAL8giekWAdhMhRgdRrEd2FbOa7V3"></div>
+
+            </form>
+
+        </div><!-- /.login-box-body -->
+    </div><!-- /.login-box -->
+    <div class="flowr-footer">
+        <a href="#" data-toggle="modal" data-target="#modal_flowr_info">
+            <img src="{{ asset('bundles/flowercore/images/flowr_icon_alpha.png') }}" width="25">
+        </a>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(function () {
+            $('input').iCheck({
+                checkboxClass: 'icheckbox_square-blue',
+                radioClass: 'iradio_square-blue',
+                increaseArea: '20%' // optional
+            });
+        });
+    </script>
+{% endblock %}
