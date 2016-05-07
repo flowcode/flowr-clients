@@ -47,6 +47,52 @@ class AccountService
     }
 
     /**
+     * Fin all clients accounts for authenticated user.
+     *
+     * @param bool $enabledOnly
+     * @return mixed
+     */
+    public function findClients($enabledOnly = true)
+    {
+        $alias = 'a';
+        $qb = $this->em->getRepository('FlowerModelBundle:Clients\Account')->getFindAllQueryBuilder($alias);
+        $qb->andWhere($alias . ".client = :is_client")->setParameter('is_client', true);
+        //$qb->andWhere($alias . ".enabled = :is_enabled")->setParameter('is_enabled', $enabledOnly);
+
+        /* filter by org security groups */
+        if (!$this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+            $user = $this->container->get('security.context')->getToken()->getUser();
+            $secGroupSrv = $this->container->get('user.service.securitygroup');
+            $qb = $secGroupSrv->addLowerSecurityGroupsFilter($qb, $user, $alias);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * Fin all suppliers accounts for authenticated user.
+     *
+     * @param bool $enabledOnly
+     * @return mixed
+     */
+    public function findSuppliers($enabledOnly = true)
+    {
+        $alias = 'a';
+        $qb = $this->em->getRepository('FlowerModelBundle:Clients\Account')->getFindAllQueryBuilder($alias);
+        $qb->andWhere($alias . ".supplier = :is_supplier")->setParameter('is_supplier', true);
+        //$qb->andWhere($alias . ".enabled = :is_enabled")->setParameter('is_enabled', $enabledOnly);
+
+        /* filter by org security groups */
+        if (!$this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+            $user = $this->container->get('security.context')->getToken()->getUser();
+            $secGroupSrv = $this->container->get('user.service.securitygroup');
+            $qb = $secGroupSrv->addLowerSecurityGroupsFilter($qb, $user, $alias);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
      * @param array $filter
      * @param array $order
      * @return mixed
@@ -115,16 +161,18 @@ class AccountService
         }
         return $data;
     }
+
     public function validateNewAccount(Account $account)
     {
         $errors = array();
         $warning = array();
         $otherAccount = $this->em->getRepository('FlowerModelBundle:Clients\Account')->findBy(array("businessName" => $account->getBusinessName()));
-        if($otherAccount){
+        if ($otherAccount) {
             $warning[] = "Existe un cliente con este nombre";
         }
         return $errors;
     }
+
     /**
      * Add security groups.
      *
