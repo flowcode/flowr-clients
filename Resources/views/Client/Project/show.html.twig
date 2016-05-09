@@ -8,7 +8,14 @@
 
 {% block body %}
     <section class="content-header">
-        <h1>{{ project.name|title }}</h1>
+        <h1>
+            <a href="{{ path('client_access_project') }}">
+                {{ 'projects'|trans|title }}
+            </a>
+            /
+            {{ project.name|title }}
+        </h1>
+
     </section>
     <section class="content">
         <div class="row">
@@ -50,6 +57,9 @@
                             <a href="#events" data-toggle="tab">{{ 'events'|trans|title }}</a>
                         </li>
                         <li>
+                            <a href="#docs" data-toggle="tab">{{ 'docs'|trans|title }}</a>
+                        </li>
+                        <li>
                             <a href="#members" data-toggle="tab">{{ 'members'|trans|title }}</a>
                         </li>
                     </ul>
@@ -87,7 +97,7 @@
                             </div>
                         </div>
 
-                        <div class="tab-pane" id="iterations">
+                        <div class="tab-pane active" id="iterations">
                             <div class="">
                                 <div class="box-header">
                                     <h3 class="box-title">{{ 'iterations'|trans|title }}</h3>
@@ -102,8 +112,6 @@
                                     <table class="table table-condensed">
                                         <tr>
                                             <th>{{ 'name'|trans|title }}</th>
-                                            <th>{{ 'estimated'|trans|title }}</th>
-                                            <th>{{ 'spent'|trans|title }}</th>
                                             <th>{{ '% Done'|trans|title }}</th>
                                             <th>{{ 'start'|trans|title }}</th>
                                             <th>{{ 'end'|trans|title }}</th>
@@ -124,15 +132,9 @@
                                                     <a
                                                             title="{{ iteration_status_msg }}"
                                                             class="{{ iteration_status_class }}"
-                                                            href="{{ path('project_iteration_show', {'id':iteration.id}) }}">
+                                                            href="{{ path('client_access_project_iteration_show', {'id':iteration.id}) }}">
                                                         {{ iteration.name|title }}
                                                     </a>
-                                                </td>
-                                                <td>
-                                                    {{ iteration.estimation }}
-                                                </td>
-                                                <td>
-                                                    {{ iteration.spent }}
                                                 </td>
                                                 <td>
                                                     {% if iteration.todo_count+iteration.doing_count+iteration.done_count > 0 %}
@@ -162,6 +164,33 @@
                                     </table>
                                 </div>
                                 <div class="box-footer">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane" id="docs">
+                            <div class="">
+                                <div class="box-header">
+                                    <h3 class="box-title">{{ 'Docs'|trans({},'Project') }}</h3>
+                                    <div class="box-tools">
+                                        <a href="{{ path('docpage_add_toproj', {id:project.id}) }}">
+                                            <i class="fa fa-plus"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="box-body">
+                                    <ul>
+                                        {% for page in project.docPages %}
+                                            <li>
+                                                <a href="{{ path('docpage_show', {id:page.id}) }}">
+                                                    {{ page.title|title }}
+                                                </a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                <div class="box-footer">
+
                                 </div>
                             </div>
                         </div>
