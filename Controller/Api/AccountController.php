@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Flower\ClientsBundle\Form\Type\Api\AccountType;
 use Flower\ModelBundle\Entity\Clients\Account;
 use Symfony\Component\Form\Form;
+
 /**
  * Project controller.
  */
@@ -16,7 +17,7 @@ class AccountController extends FOSRestController
 {
     public function getAllAction(Request $request)
     {
-        $accounts = $this->get("client.service.account")->findAll();                
+        $accounts = $this->get("client.service.account")->findAll();
         $view = FOSView::create($accounts, Codes::HTTP_OK)->setFormat('json');
         $view->getSerializationContext()->setGroups(array('api'));
         return $this->handleView($view);
@@ -31,6 +32,7 @@ class AccountController extends FOSRestController
         $view->getSerializationContext()->setGroups(array('api'));
         return $this->handleView($view);
     }
+
     public function publicGetAllAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
@@ -50,7 +52,8 @@ class AccountController extends FOSRestController
         $view->getSerializationContext()->setGroups(array('public_api'));
         return $this->handleView($view);
     }
-     public function createAction(Request $request)
+
+    public function createAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
         $force = $request->get('force');
@@ -58,7 +61,7 @@ class AccountController extends FOSRestController
         $form = $this->createForm(new AccountType(), $account);
         $accountService = $this->get("client.service.account");
         $errors = $accountService->validateNewAccount($account);
-        if(count($errors) == 0){
+        if (count($errors) == 0) {
             $form->submit($request);
             if ($form->isValid()) {
                 $account->setAssignee($this->getUser());
@@ -67,13 +70,13 @@ class AccountController extends FOSRestController
                 $em->persist($account);
                 $em->flush();
 
-                $response = array("success" => true, "message" => "Account created", "entity" =>$account );
+                $response = array("success" => true, "message" => "Account created", "entity" => $account);
                 return $this->handleView(FOSView::create($response, Codes::HTTP_OK)->setFormat("json"));
             }
-            $response= array('success' => false, 'errors' => $form->getErrors());
+            $response = array('success' => false, 'errors' => $form->getErrors());
             return $this->handleView(FOSView::create($response, Codes::HTTP_NOT_FOUND)->setFormat("json"));
-        }else{
-            $response= array('success' => false, 'errors' => $errors);
+        } else {
+            $response = array('success' => false, 'errors' => $errors);
             return $this->handleView(FOSView::create($response, Codes::HTTP_NOT_FOUND)->setFormat("json"));
         }
     }

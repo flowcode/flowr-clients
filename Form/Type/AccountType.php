@@ -34,7 +34,14 @@ class AccountType extends AbstractType
             ->add('supplier')
             ->add('employee')
             ->add('billingType', null, array('required' => false))
-            ->add('financeAccount')
+            ->add('financeAccount', 'y_tree', array(
+                'class' => 'Flower\FinancesBundle\Entity\Account',
+                'orderFields' => array('root' => 'asc', 'lft' => 'asc'),
+                'prefixAttributeName' => 'data-level-prefix',
+                'treeLevelField' => 'lvl',
+                'required' => false,
+                'multiple' => false,
+                'attr' => array("class" => "tall")))
             ->add('cuit', null, array('required' => false, "label" => "CUIT/CUIL/DNI"))
             ->add('assignee', 'genemu_jqueryselect2_entity', array(
                     'class' => 'Flower\ModelBundle\Entity\User\User',
