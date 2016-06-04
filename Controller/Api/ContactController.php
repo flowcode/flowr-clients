@@ -17,7 +17,7 @@ class ContactController extends FOSRestController
     public function getAllAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $contacts = $em->getRepository('FlowerModelBundle:Clients\Contact')->findBy(array(), array(), 20);
+        $contacts = $em->getRepository('FlowerModelBundle:Clients\Contact')->getAll(0, 20, $request->get('q'));
 
         $view = FOSView::create($contacts, Codes::HTTP_OK)->setFormat('json');
         $view->getSerializationContext()->setGroups(array('public_api'));

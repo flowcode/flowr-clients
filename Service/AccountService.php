@@ -112,7 +112,7 @@ class AccountService
      */
     public function getFindAllPaged($filter = array(), $order = array(), $maxResults = 20, $page = 1)
     {
-        $qb = $this->getFindAllPagedQueryBuilder($filter, $order, $maxResults, $page);
+        $qb = $this->getFilteredQueryBuilder($filter, $order, $maxResults, $page);
         return $qb->getQuery()->getResult();
     }
 

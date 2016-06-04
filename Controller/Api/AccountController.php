@@ -35,8 +35,10 @@ class AccountController extends FOSRestController
 
     public function publicGetAllAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
-        $accounts = $em->getRepository('FlowerModelBundle:Clients\Account')->findAll();
+        $filter = array(
+            'name' => $request->get('q')
+        );
+        $accounts = $this->get("client.service.account")->getFindAllPaged($filter);
 
         $view = FOSView::create($accounts, Codes::HTTP_OK)->setFormat('json');
         $view->getSerializationContext()->setGroups(array('public_api'));

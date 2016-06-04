@@ -59,7 +59,7 @@ abstract class Contact implements UserInterface, EquatableInterface
      * @var string
      *
      * @ORM\Column(name="address", type="string", length=255, nullable=true)
-     * @Groups({"search", "private_api"})
+     * @Groups({"search", "private_api", "public_api"})
      */
     protected $address;
 
@@ -74,7 +74,7 @@ abstract class Contact implements UserInterface, EquatableInterface
      * @var string
      *
      * @ORM\Column(name="phone", type="string", length=255, nullable=true)
-     * @Groups({"search"})
+     * @Groups({"search", "public_api"})
      */
     protected $phone;
 
